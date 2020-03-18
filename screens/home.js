@@ -7,17 +7,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 class Home extends Component{
 
-  sayHi(){
-    console.log("hi");
-  }
-
   render(){
     return(
       <View>
         <Text>Ecran home</Text>
         <Button
-          title="Press me"
+          title="To event"
           onPress={() => this.props.navigation.navigate('EventForm')}
+        />
+        <Button
+          title="To login"
+          onPress={() => this.props.navigation.navigate('Login')}
         />
       </View>
     )

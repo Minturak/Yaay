@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Home from "./screens/home"
 import EventForm from "./screens/event-form"
+import Login from "./screens/login"
+import SignUp from "./screens/signUp"
 
 // The code below hides the message of Yellow box (on Android)
 import { YellowBox } from 'react-native';
@@ -23,9 +25,11 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="EventForm" component={EventForm} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="SignUp" component={SignUp} />
       </Stack.Navigator>
     </NavigationContainer>
   );
