@@ -12,6 +12,12 @@ import SignUp from "./screens/signUp"
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
 
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
+
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
 console.warn = message => {
@@ -25,7 +31,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="SignUp">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="EventForm" component={EventForm} />
         <Stack.Screen name="Login" component={Login} />

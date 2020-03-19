@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableHighlight} from 'react-native';
 import {Item, Label, Input } from 'native-base'
 import {TextField} from '@material-ui/core';
@@ -25,7 +25,6 @@ class LoginForm extends Component{
     this.setState({showPassword})
   }
   handleLogin=()=>{
-    console.warn(this.state.password);
     if(this.state.password !== "" && this.state.email !== ""){
       firebase
         .auth()

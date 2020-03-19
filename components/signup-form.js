@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import firebase from "firebase";
+import { db } from '../firebase'
 
 class SignUpForm extends Component{
   constructor(props){
@@ -18,6 +19,7 @@ class SignUpForm extends Component{
       password:"",
       confirm:"",
       email:"",
+      pseudo:"",
     }
   }
   handleVisibility=()=>{
@@ -30,11 +32,25 @@ class SignUpForm extends Component{
       .auth()
       .createUserWithEmailAndPassword(email,password)
       .then(user=>{
+         var user = firebase.auth().currentUser;
+         let uid = user.uid;
+         let name = this.state.pseudo;
+         db.collection('users').doc(uid).set({pseudo:name});
       })
   }
   render(){
     return(
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.container}>
+        <Item floatingLabel style={styles.itemContainer}>
+            <Label>Pseudonyme</Label>
+            <Input
+              style={styles.input}
+              onChangeText={(text) => this.setState({pseudo: text})}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="next"
+            />
+        </Item>
         <Item floatingLabel style={styles.itemContainer}>
             <Label>E-mail</Label>
             <Input

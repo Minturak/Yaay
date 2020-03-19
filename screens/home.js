@@ -5,8 +5,15 @@ import ActionButton from 'react-native-action-button';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-class Home extends Component{
+import { db } from '../firebase'
 
+class Home extends Component{
+  createInDataBase=()=>{
+    console.warn("clicked");
+    db.collection('cities').doc('BJ').set({
+    capital: true
+    }, { merge: true });
+  }
   render(){
     return(
       <View>
@@ -18,6 +25,10 @@ class Home extends Component{
         <Button
           title="To login"
           onPress={() => this.props.navigation.navigate('Login')}
+        />
+        <Button
+          title="Create in database"
+          onPress={this.createInDataBase}
         />
       </View>
     )
