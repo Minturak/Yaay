@@ -36,6 +36,8 @@ class SignUpForm extends Component{
          let uid = user.uid;
          let name = this.state.pseudo;
          db.collection('users').doc(uid).set({pseudo:name});
+         this.props.connectUser(user)
+         this.props.navigation.replace('Home');
       })
   }
   render(){

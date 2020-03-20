@@ -8,11 +8,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { db } from '../firebase'
 
 class Home extends Component{
-  createInDataBase=()=>{
-    console.warn("clicked");
-    db.collection('cities').doc('BJ').set({
-    capital: true
-    }, { merge: true });
+  componentDidMount(){
+    if(this.props.user == undefined){
+      this.props.navigation.replace('Login')
+    }
   }
   render(){
     return(
@@ -26,12 +25,11 @@ class Home extends Component{
           title="To login"
           onPress={() => this.props.navigation.navigate('Login')}
         />
-        <Button
-          title="Create in database"
-          onPress={this.createInDataBase}
-        />
       </View>
     )
   }
 }
+const mapStateToProps = state => ({
+  user: state.user,
+});
 export default Home;

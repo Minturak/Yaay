@@ -6,6 +6,10 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import { connect } from 'react-redux'
+import { connectUser } from '../redux/actions/connect';
+import { bindActionCreators } from 'redux';
+
 class Login extends Component{
   redirectte=()=>{
     console.warn("touched");
@@ -14,7 +18,7 @@ class Login extends Component{
   render(){
     return(
       <View>
-        <LoginForm/>
+        <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser}/>
         <View style={styles.container}>
           <Text> ou </Text>
           <TouchableHighlight onPress={this.redirectte}>
@@ -37,4 +41,13 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 });
-export default Login;
+const mapStateToProps = state => ({
+  user: state.user,
+});
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      connectUser
+    },
+    dispatch,
+)
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

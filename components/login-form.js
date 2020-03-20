@@ -30,7 +30,8 @@ class LoginForm extends Component{
         .auth()
         .signInWithEmailAndPassword(this.state.email,this.state.password)
         .then(user=>{
-
+          this.props.connectUser(user)
+          this.props.navigation.replace('Home');
         })
     }
   }

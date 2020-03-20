@@ -8,16 +8,12 @@ import EventForm from "./screens/event-form"
 import Login from "./screens/login"
 import SignUp from "./screens/signUp"
 
+import { Provider } from 'react-redux';
+import configureStore from './redux/configureStore'
+
 // The code below hides the message of Yellow box (on Android)
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
-
-import {decode, encode} from 'base-64'
-
-if (!global.btoa) {  global.btoa = encode }
-
-if (!global.atob) { global.atob = decode }
-
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
 console.warn = message => {
@@ -26,18 +22,26 @@ console.warn = message => {
   }
 };
 
+//The code bellow allow to write in firestore
+import {decode, encode} from 'base-64'
+if (!global.btoa) {  global.btoa = encode }
+if (!global.atob) { global.atob = decode }
+
 const Stack = createStackNavigator();
+const store = configureStore();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignUp">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="EventForm" component={EventForm} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="EventForm" component={EventForm} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
