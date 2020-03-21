@@ -1,10 +1,17 @@
-const initialState = {user: undefined}
+const initialState = {
+  user: undefined
+}
 
 const connectReducer = (state = initialState, action)=>{
+  let nextState
+  
   switch (action.type) {
     case "USER_CONNECT":
-        return {...state, user: action.payload.user}
-      break;
+        nextState = {
+          ...state,
+          user: action.payload
+        }
+        return nextState || state
     default:
       return state
   }

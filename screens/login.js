@@ -6,14 +6,20 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 import { connect } from 'react-redux'
 import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
 class Login extends Component{
   redirectte=()=>{
-    console.warn("touched");
+    console.log('redi');
     this.props.navigation.navigate('SignUp');
+  }
+  componentDidMount(){
+    console.log(this.props);
   }
   render(){
     return(
@@ -41,6 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 });
+
 const mapStateToProps = state => ({
   user: state.user,
 });

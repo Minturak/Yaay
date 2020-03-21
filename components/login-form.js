@@ -85,4 +85,5 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
 });
+
 export default LoginForm;

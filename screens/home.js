@@ -7,9 +7,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { db } from '../firebase'
 
+import { connect } from 'react-redux'
+
 class Home extends Component{
   componentDidMount(){
-    if(this.props.user == undefined){
+    console.log(this.props);
+    if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }
   }
@@ -32,4 +35,5 @@ class Home extends Component{
 const mapStateToProps = state => ({
   user: state.user,
 });
-export default Home;
+
+export default connect (mapStateToProps)(Home);
