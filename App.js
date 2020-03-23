@@ -7,6 +7,7 @@ import Home from "./screens/home"
 import EventForm from "./screens/event-form"
 import Login from "./screens/login"
 import SignUp from "./screens/signUp"
+import GroupScreen from "./screens/groupScreen"
 
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
@@ -22,7 +23,7 @@ console.warn = message => {
   }
 };
 
-//The code bellow allow to write in firestore
+//The code bellow allow to write to firestore
 import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
 if (!global.atob) { global.atob = decode }
@@ -34,11 +35,12 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Groups">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="EventForm" component={EventForm} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="Groups" component={GroupScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
