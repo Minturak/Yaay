@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
 import LoginForm from "../components/login-form"
 import {
   widthPercentageToDP as wp,
@@ -14,37 +14,40 @@ import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
 class Login extends Component{
-  redirectte=()=>{
-    console.log('redi');
-    this.props.navigation.navigate('SignUp');
-  }
-  componentDidMount(){
-    console.log(this.props);
+  toSignUp=()=>{
+    this.props.navigation.navigate('SignUp')
   }
   render(){
     return(
       <View>
         <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser}/>
-        <View style={styles.container}>
-          <Text> ou </Text>
-          <TouchableHighlight onPress={this.redirectte}>
-            <View>
-              <Text style={{textDecorationLine:'underline',color:'#343deb', fontSize:18}}>
-                Créer un compte
-              </Text>
-            </View>
-          </TouchableHighlight>
-        </View>
+        <Text style={styles.textContent}>ou</Text>
+        <TouchableHighlight onPress={this.toSignUp}>
+          <View style={styles.signUpButton}>
+            <Text style={{color:'#ffffff'}}>Créer un compte</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     )
   }
 }
 const styles = StyleSheet.create({
-  container: {
+  textContent: {
+    marginTop:hp('2%'),
+    textAlign:'center'
+  },
+  button:{
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
+  signUpButton: {
+    backgroundColor: '#3694cf',
+    alignItems: 'center',
+    padding: 10,
     marginTop: hp('2%'),
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
   },
 });
 

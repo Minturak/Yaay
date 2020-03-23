@@ -1,18 +1,19 @@
 import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import ActionButton from 'react-native-action-button';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import { db } from '../firebase'
-
 import { connect } from 'react-redux'
 
 class Home extends Component{
   componentDidMount(){
     console.log(this.props);
-    if(this.props.user === undefined){
+    if(this.props.user.user === undefined){
       this.props.navigation.replace('Login')
     }
   }
@@ -24,14 +25,21 @@ class Home extends Component{
           title="To event"
           onPress={() => this.props.navigation.navigate('EventForm')}
         />
-        <Button
-          title="To login"
-          onPress={() => this.props.navigation.navigate('Login')}
-        />
       </View>
     )
   }
 }
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    height:hp('100%')
+  },
+  floating:{
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  }
+});
 const mapStateToProps = state => ({
   user: state.user,
 });

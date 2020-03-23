@@ -35,7 +35,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Groups">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="EventForm" component={EventForm} />
           <Stack.Screen name="Login" component={Login} />
