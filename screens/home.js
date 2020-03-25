@@ -24,10 +24,7 @@ class Home extends Component{
           title="To event"
           onPress={() => this.props.navigation.navigate('EventForm')}
         />
-        <Button
-          title="Create group"
-          onPress={() => this.props.navigation.navigate('Groups')}
-        />
+        
       </View>
     )
   }

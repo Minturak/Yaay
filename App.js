@@ -39,8 +39,8 @@ const GroupsStack = createStackNavigator();
 function groupsScreens(){
   return(
     <GroupsStack.Navigator initialRouteName="ViewGroups">
-      <GroupsStack.Screen name="GroupForm" component={GroupScreen}/>
-      <GroupsStack.Screen name="ViewGroups" component={ViewGroups}/>
+      <GroupsStack.Screen name="GroupForm" component={GroupScreen} options={{ title: 'Nouveau groupe' }}/>
+      <GroupsStack.Screen name="ViewGroups" component={ViewGroups} options={{ title: 'Mes groupes' }}/>
     </GroupsStack.Navigator>
   )
 }
@@ -48,10 +48,10 @@ function groupsScreens(){
 function homeScreens(){
   return(
     <HomeStack.Navigator initialRouteName="Home">
-      <HomeStack.Screen name="Home" component={Home} />
-      <HomeStack.Screen name="EventForm" component={EventForm} />
-      <HomeStack.Screen name="Login" component={Login} />
-      <HomeStack.Screen name="SignUp" component={SignUp} />
+      <HomeStack.Screen name="Home" component={Home} options={{ title: 'Accueil' }}/>
+      <HomeStack.Screen name="EventForm" component={EventForm} options={{ title: 'Nouvel événement' }}/>
+      <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
+      <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
     </HomeStack.Navigator>
   )
 }
