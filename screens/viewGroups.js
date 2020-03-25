@@ -21,11 +21,11 @@ class ViewGroups extends Component{
         groupsIds = doc.data().groups;
         groupsIds.map(item=>{
           db.collection('groups').doc(item).get().then(doc=>{
-            groups.push(doc.data());
+            groups.push({id:item,data:doc.data()});
+            console.log(groups);
             this.setState({groups:groups})
           });
         })
-
     });
   }
   render(){
@@ -33,7 +33,7 @@ class ViewGroups extends Component{
       <View>
         <FlatList
           data={this.state.groups}
-          renderItem={({ item }) => <GroupCard groupData={item} />}
+          renderItem={({ item }) => <GroupCard groupData={item} navigation={this.props.navigation}/>}
         />
         <Button title="create group" onPress={()=>this.props.navigation.navigate('GroupForm')}/>
       </View>

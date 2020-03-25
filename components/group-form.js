@@ -29,14 +29,13 @@ class GroupForm extends Component{
         name:this.state.name,
         description:this.state.desc,
         category:this.state.categorie,
-        members:[idUser]
+        admins:[idUser]
       }).then(docRef=>{
         //ajout du groupe dans l'utilisateur
         let groupsOfUser = [];
         db.collection('users').doc(idUser).get().then(doc => {
           console.log(doc.data());
           groupsOfUser = doc.data().groups;
-
           if(groupsOfUser===[]){
             db.collection('users').doc(idUser).update({
               groups:[docRef.id]

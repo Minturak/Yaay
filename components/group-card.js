@@ -13,14 +13,13 @@ class GroupCard extends Component{
     }
   }
   componentDidMount(){
-    
+
   }
   render(){
-    console.log(this.props.groupData)
     return(
       <View style={styles.container}>
-        <TouchableOpacity onPress={()=>console.log(this.props.groupData.name)}>
-          <Text style={styles.title}>{this.props.groupData.name}</Text>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('GroupDetails',{groupData:this.props.groupData})}>
+          <Text style={styles.title}>{this.props.groupData.data.name}</Text>
         </TouchableOpacity>
       </View>
     )

@@ -11,6 +11,7 @@ import Login from "./screens/login"
 import SignUp from "./screens/signUp"
 import GroupScreen from "./screens/groupScreen"
 import ViewGroups from "./screens/viewGroups"
+import GroupDetails from "./screens/groupDetails"
 
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
@@ -41,6 +42,7 @@ function groupsScreens(){
     <GroupsStack.Navigator initialRouteName="ViewGroups">
       <GroupsStack.Screen name="GroupForm" component={GroupScreen} options={{ title: 'Nouveau groupe' }}/>
       <GroupsStack.Screen name="ViewGroups" component={ViewGroups} options={{ title: 'Mes groupes' }}/>
+      <GroupsStack.Screen name="GroupDetails" component={GroupDetails} options={{ title: 'Détails' }}/>
     </GroupsStack.Navigator>
   )
 }
