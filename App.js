@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from "./screens/home"
 import EventForm from "./screens/event-form"
 import Login from "./screens/login"
 import SignUp from "./screens/signUp"
 import GroupScreen from "./screens/groupScreen"
+import ViewGroups from "./screens/viewGroups"
 
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
@@ -28,20 +31,39 @@ import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
-const Stack = createStackNavigator();
 const store = configureStore();
+const Tabs = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+const GroupsStack = createStackNavigator();
 
-export default function App() {
+function groupsScreens(){
+  return(
+    <GroupsStack.Navigator initialRouteName="ViewGroups">
+      <GroupsStack.Screen name="GroupForm" component={GroupScreen}/>
+      <GroupsStack.Screen name="ViewGroups" component={ViewGroups}/>
+    </GroupsStack.Navigator>
+  )
+}
+
+function homeScreens(){
+  return(
+    <HomeStack.Navigator initialRouteName="Home">
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="EventForm" component={EventForm} />
+      <HomeStack.Screen name="Login" component={Login} />
+      <HomeStack.Screen name="SignUp" component={SignUp} />
+    </HomeStack.Navigator>
+  )
+}
+
+export default function App(){
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="EventForm" component={EventForm} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="Groups" component={GroupScreen} />
-        </Stack.Navigator>
+        <Tabs.Navigator>
+          <Tabs.Screen name="Home" component={homeScreens} />
+          <Tabs.Screen name="Groups" component={groupsScreens} />
+        </Tabs.Navigator>
       </NavigationContainer>
     </Provider>
   );

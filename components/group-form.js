@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import ModalSelector from 'react-native-modal-selector'
+import firebase from "firebase";
 import { db } from '../firebase'
 
 class GroupForm extends Component{
@@ -19,10 +20,43 @@ class GroupForm extends Component{
       categories:[]
     }
   }
-  handleSubmit(){
+  handleSubmit=()=>{
+    if(this.state.name !== ''){
+      var user = firebase.auth().currentUser;
+      var idUser = user.uid;
+      //création du groupe
+      db.collection('groups').add({
+        name:this.state.name,
+        description:this.state.desc,
+        category:this.state.categorie,
+        members:[idUser]
+      }).then(docRef=>{
+        //ajout du groupe dans l'utilisateur
+        let groupsOfUser = [];
+        db.collection('users').doc(idUser).get().then(doc => {
+          console.log(doc.data());
+          groupsOfUser = doc.data().groups;
+
+          if(groupsOfUser===[]){
+            db.collection('users').doc(idUser).update({
+              groups:[docRef.id]
+            })
+          }else{
+            console.log(groupsOfUser);
+            groupsOfUser.push(docRef.id);
+            db.collection('users').doc(idUser).update({
+              groups:groupsOfUser
+            })
+          }
+        })
+
+      });
+      //this.props.navigation.replace('ViewGroups');
+    }else{
+      //raise error
+    }
   }
   componentDidMount(){
-
     let categ = [];
     let cat = db.collection('constants').doc('categories')
     cat.get({source:'server'}).then(doc => {
@@ -30,7 +64,6 @@ class GroupForm extends Component{
         categ.push(label);
       })
       this.setState({categories: categ})
-      // console.log(categ);
     }).catch(function(error){
       console.log('error : '+error);
     })

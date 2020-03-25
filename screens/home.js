@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 
 class Home extends Component{
   componentDidMount(){
-    console.log(this.props);
     if(this.props.user.user === undefined){
       this.props.navigation.replace('Login')
     }
@@ -24,6 +23,10 @@ class Home extends Component{
         <Button
           title="To event"
           onPress={() => this.props.navigation.navigate('EventForm')}
+        />
+        <Button
+          title="Create group"
+          onPress={() => this.props.navigation.navigate('Groups')}
         />
       </View>
     )
