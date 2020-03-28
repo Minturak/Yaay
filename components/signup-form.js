@@ -7,8 +7,16 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { connect } from 'react-redux'
+import { connectUser } from '../redux/actions/connect';
+import { bindActionCreators } from 'redux';
+
 import firebase from "firebase";
 import { db } from '../firebase'
+import {dbo} from '../dataObjects/dbo';
 
 class SignUpForm extends Component{
   constructor(props){
@@ -28,15 +36,13 @@ class SignUpForm extends Component{
   }
   handleSignUp=()=>{
     const{email, password} = this.state
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email,password)
+    dbo.handleSignUp(email,password)
       .then(user=>{
          var user = firebase.auth().currentUser;
          let uid = user.uid;
          let name = this.state.pseudo;
-         db.collection('users').doc(uid).set({pseudo:name});
-         this.props.connectUser(user)
+         dbo.createUserDocument(uid,name);
+         this.props.connectUser(user);
          this.props.navigation.replace('Home');
       })
   }
@@ -109,4 +115,13 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
 });
-export default SignUpForm;
+const mapStateToProps = state => ({
+  user: state.user,
+});
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      connectUser
+    },
+    dispatch,
+)
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpForm);

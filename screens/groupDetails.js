@@ -25,13 +25,14 @@ class GroupDetails extends Component{
         members.push({id:id,data:doc.data()});
         this.setState({members:members})
       });
-
     })
   }
   render(){
-    console.log(this.props.route.params);
+    //console.log(this.props.route.params);
+    let data = this.props.route.params
     return(
       <View style={styles.container}>
+        <Button title="update" onPress={()=>this.props.navigation.navigate('GroupForm',{groupData:data})}/>
         <Text style={styles.title}>{this.props.route.params.groupData.data.name}</Text>
         <Text>Catégorie : {this.props.route.params.groupData.data.category}</Text>
         <Text>Description du groupe : {this.props.route.params.groupData.data.description}</Text>

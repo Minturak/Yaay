@@ -22,7 +22,7 @@ class ViewGroups extends Component{
         groupsIds.map(item=>{
           db.collection('groups').doc(item).get().then(doc=>{
             groups.push({id:item,data:doc.data()});
-            console.log(groups);
+            //console.log(groups);
             this.setState({groups:groups})
           });
         })

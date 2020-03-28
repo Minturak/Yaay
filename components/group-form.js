@@ -34,21 +34,20 @@ class GroupForm extends Component{
         //ajout du groupe dans l'utilisateur
         let groupsOfUser = [];
         db.collection('users').doc(idUser).get().then(doc => {
-          console.log(doc.data());
+          //console.log(doc.data());
           groupsOfUser = doc.data().groups;
           if(groupsOfUser===[]){
             db.collection('users').doc(idUser).update({
               groups:[docRef.id]
             })
           }else{
-            console.log(groupsOfUser);
+            //console.log(groupsOfUser);
             groupsOfUser.push(docRef.id);
             db.collection('users').doc(idUser).update({
               groups:groupsOfUser
             })
           }
         })
-
       });
       //this.props.navigation.replace('ViewGroups');
     }else{
@@ -66,9 +65,11 @@ class GroupForm extends Component{
     }).catch(function(error){
       console.log('error : '+error);
     })
-
+    console.log('===========');
+    console.log(this.props.route);
   }
   render(){
+    //console.log(this.props.route.params.groupData);
     let categ=[];
     let index = -1;
     categ.push({key:index,section:true,label:'Catégorie'});

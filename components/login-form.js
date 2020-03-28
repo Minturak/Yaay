@@ -7,6 +7,8 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import {dbo} from '../dataObjects/dbo';
+
 const firebase = require('firebase');
 
 class LoginForm extends Component{
@@ -26,9 +28,7 @@ class LoginForm extends Component{
   }
   handleLogin=()=>{
     if(this.state.password !== "" && this.state.email !== ""){
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.state.email,this.state.password)
+      dbo.handleLogin(this.state.email,this.state.password)
         .then(user=>{
           this.props.connectUser(user)
           this.props.navigation.replace('Home');
