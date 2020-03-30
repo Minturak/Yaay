@@ -6,8 +6,12 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import ModalSelector from 'react-native-modal-selector'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+
 import firebase from "firebase";
-import { db } from '../firebase'
+import {dbo} from '../dataObjects/dbo';
 
 class GroupForm extends Component{
   constructor(props){
@@ -25,28 +29,11 @@ class GroupForm extends Component{
       var user = firebase.auth().currentUser;
       var idUser = user.uid;
       //création du groupe
-      db.collection('groups').add({
-        name:this.state.name,
-        description:this.state.desc,
-        category:this.state.categorie,
-        admins:[idUser]
-      }).then(docRef=>{
+      dbo.createGroup(this.state.name,this.state.desc,this.state.categorie,idUser)
+        .then(docRef=>{
         //ajout du groupe dans l'utilisateur
-        let groupsOfUser = [];
-        db.collection('users').doc(idUser).get().then(doc => {
-          //console.log(doc.data());
-          groupsOfUser = doc.data().groups;
-          if(groupsOfUser===[]){
-            db.collection('users').doc(idUser).update({
-              groups:[docRef.id]
-            })
-          }else{
-            //console.log(groupsOfUser);
-            groupsOfUser.push(docRef.id);
-            db.collection('users').doc(idUser).update({
-              groups:groupsOfUser
-            })
-          }
+        dbo.getUserData(idUser).then(doc => {
+          dbo.addGroupToUser(idUser,doc,docRef.id);
         })
       });
       //this.props.navigation.replace('ViewGroups');
@@ -55,21 +42,10 @@ class GroupForm extends Component{
     }
   }
   componentDidMount(){
-    let categ = [];
-    let cat = db.collection('constants').doc('categories')
-    cat.get({source:'server'}).then(doc => {
-      doc.data().labels.map(label=>{
-        categ.push(label);
-      })
-      this.setState({categories: categ})
-    }).catch(function(error){
-      console.log('error : '+error);
-    })
-    console.log('===========');
-    console.log(this.props.route);
+    this.setState({categories:this.props.categories});
   }
   render(){
-    //console.log(this.props.route.params.groupData);
+    console.log(this.props);
     let categ=[];
     let index = -1;
     categ.push({key:index,section:true,label:'Catégorie'});
@@ -146,4 +122,8 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },
 });
-export default GroupForm;
+const mapStateToProps = state => ({
+  categories: state.categories,
+  group: state.group,
+});
+export default connect(mapStateToProps)(GroupForm);

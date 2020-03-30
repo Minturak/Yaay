@@ -5,6 +5,10 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
+import { connect } from 'react-redux'
+import {selectGroup} from '../redux/actions/selectGroup';
+import { bindActionCreators } from 'redux';
+
 class GroupCard extends Component{
   constructor(props){
     super(props)
@@ -12,13 +16,14 @@ class GroupCard extends Component{
       members:[]
     }
   }
-  componentDidMount(){
-
+  groupSelected(group){
+    this.props.selectGroup(group);
+    this.props.navigation.navigate('GroupDetails');
   }
   render(){
     return(
       <View style={styles.container}>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('GroupDetails',{groupData:this.props.groupData})}>
+        <TouchableOpacity onPress={()=>this.groupSelected(this.props.groupData)}>
           <Text style={styles.title}>{this.props.groupData.data.name}</Text>
         </TouchableOpacity>
       </View>
@@ -40,4 +45,10 @@ const styles = StyleSheet.create({
     fontSize:18
   },
 });
-export default GroupCard
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      selectGroup
+    },
+    dispatch,
+)
+export default connect(null,mapDispatchToProps)(GroupCard);

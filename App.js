@@ -9,8 +9,8 @@ import Home from "./screens/home"
 import EventForm from "./screens/event-form"
 import Login from "./screens/login"
 import SignUp from "./screens/signUp"
-import GroupScreen from "./screens/groupScreen"
-import ViewGroups from "./screens/viewGroups"
+import GroupFormScreen from "./screens/groupFormScreen"
+import ListGroups from "./screens/listGroups"
 import GroupDetails from "./screens/groupDetails"
 
 import { Provider } from 'react-redux';
@@ -39,9 +39,9 @@ const GroupsStack = createStackNavigator();
 
 function groupsScreens(){
   return(
-    <GroupsStack.Navigator initialRouteName="ViewGroups">
-      <GroupsStack.Screen name="GroupForm" component={GroupScreen} options={{ title: 'Nouveau groupe' }}/>
-      <GroupsStack.Screen name="ViewGroups" component={ViewGroups} options={{ title: 'Mes groupes' }}/>
+    <GroupsStack.Navigator initialRouteName="ListGroups">
+      <GroupsStack.Screen name="GroupFormScreen" component={GroupFormScreen} options={{ title: 'Nouveau groupe' }}/>
+      <GroupsStack.Screen name="ListGroups" component={ListGroups} options={{ title: 'Mes groupes' }}/>
       <GroupsStack.Screen name="GroupDetails" component={GroupDetails} options={{ title: 'Détails' }}/>
     </GroupsStack.Navigator>
   )

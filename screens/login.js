@@ -20,7 +20,7 @@ class Login extends Component{
   render(){
     return(
       <View>
-        <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser}/>
+        <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser} handleLogin={this.handleLogin}/>
         <Text style={styles.textContent}>ou</Text>
         <TouchableHighlight onPress={this.toSignUp}>
           <View style={styles.signUpButton}>

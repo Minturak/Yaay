@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import GroupForm from "../components/group-form"
 
-class GroupScreen extends Component{
+class GroupFormScreen extends Component{
   render(){
     return(
       <GroupForm/>
@@ -10,4 +10,4 @@ class GroupScreen extends Component{
   }
 }
 
-export default GroupScreen;
+export default GroupFormScreen;

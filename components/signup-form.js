@@ -37,8 +37,8 @@ class SignUpForm extends Component{
   handleSignUp=()=>{
     const{email, password} = this.state
     dbo.handleSignUp(email,password)
-      .then(user=>{
-         var user = firebase.auth().currentUser;
+      .then(_=>{
+         let user = firebase.auth().currentUser;
          let uid = user.uid;
          let name = this.state.pseudo;
          dbo.createUserDocument(uid,name);
