@@ -12,6 +12,7 @@ import SignUp from "./screens/signUp"
 import GroupFormScreen from "./screens/groupFormScreen"
 import ListGroups from "./screens/listGroups"
 import GroupDetails from "./screens/groupDetails"
+import Invitations from "./screens/invitations"
 
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
@@ -54,6 +55,7 @@ function homeScreens(){
       <HomeStack.Screen name="EventForm" component={EventForm} options={{ title: 'Nouvel événement' }}/>
       <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
       <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
+      <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
     </HomeStack.Navigator>
   )
 }
