@@ -36,7 +36,7 @@ class GroupForm extends Component{
           dbo.addGroupToUser(idUser,doc,docRef.id);
         })
       });
-      //this.props.navigation.replace('ViewGroups');
+      this.props.navigation.replace('ViewGroups');
     }else{
       //raise error
     }

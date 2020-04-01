@@ -15,11 +15,14 @@ class Dbo{
   async handleSignUp(email,password){
     return firebase.auth().createUserWithEmailAndPassword(email,password)
   }
-  createUserDocument(uid,name){
-    db.collection('users').doc(uid).set({pseudo:name});
+  createUserDocument(uid,name,email){
+    db.collection('users').doc(uid).set({pseudo:name,email:email});
   }
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
+  }
+  async getUserWithEmail(email){
+    return db.collection('users').where("email","==",email).get();
   }
   async getGroupData(id){
     return db.collection('groups').doc(id).get();
@@ -31,8 +34,8 @@ class Dbo{
     return db.collection('groups').add({name:name,description:description,category:category,admins:[admin]})
   }
   async addGroupToUser(uid,doc,groupId){
-    let groupsOfUser = [];
-    groupsOfUser = doc.data().groups;
+    // let groupsOfUser = [];
+    let groupsOfUser = doc.data().groups || [];
     //si il n'a aucun groupe, on crée le tableau groups dans le user
     if(groupsOfUser===[]){
       db.collection('users').doc(uid).update({
@@ -45,6 +48,16 @@ class Dbo{
         groups:groupsOfUser
       })
     }
+  }
+  async addInvitationToUser(userId,groupId,data){
+    let invitations = data.invitations || [];
+    if(!invitations.includes(groupId)){
+      invitations.push(groupId);
+      db.collection('users').doc(userId).update({
+        invitations:invitations
+      })
+    }
+
   }
 
 }
