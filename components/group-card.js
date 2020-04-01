@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import { connect } from 'react-redux'
-import {selectGroup} from '../redux/actions/selectGroup';
+import { selectGroup } from '../redux/actions/selectGroup';
 import { bindActionCreators } from 'redux';
 
 class GroupCard extends Component{

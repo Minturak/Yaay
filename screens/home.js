@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -10,18 +10,26 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { connect } from 'react-redux'
 import { setCategories } from '../redux/actions/setCategories';
+import { setInvitations } from '../redux/actions/setInvitations';
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../dataObjects/dbo';
 
 class Home extends Component{
+  constructor(props){
+    super(props)
+    this.state={
+      invitations:[],
+    }
+  }
   componentDidMount(){
-    console.log(this.props);
     if(this.props.categories===undefined){
       this.fetchCategories();
     }
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
+    }else{
+      this.fetchInvitations();
     }
   }
   fetchCategories(){
@@ -33,9 +41,23 @@ class Home extends Component{
       this.props.setCategories(categories);
     })
   }
+  fetchInvitations=()=>{
+    dbo.getUserData(this.props.user.user.uid).then(doc=>{
+      let invitations = doc.data().invitations || [];
+      this.setState({invitations:invitations})
+      this.props.setInvitations(invitations);
+    })
+  }
   render(){
     return(
       <View>
+        {this.state.invitations.length>0 &&
+          <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
+            <View>
+              <Text>Nouvels invitations</Text>
+            </View>
+          </TouchableHighlight>
+        }
         <Text>Ecran home</Text>
         <Button
           title="To event"
@@ -62,7 +84,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-      setCategories
+      setCategories,
+      setInvitations
     },
     dispatch,
 )

@@ -57,9 +57,24 @@ class Dbo{
         invitations:invitations
       })
     }
-
   }
-
+  async removeInvitation(userId,groupId){
+    let invitations=[];
+    db.collection('users').doc(userId).get().then(doc=>{
+      invitations=doc.data().invitations;
+    })
+    let index = invitations.indexOf(groupId);
+    if(index > -1){ invitations.splice(index,1); }
+    db.collection('users').doc(userId).update({invitations:invitations});
+  }
+  async addMemberToGroup(idUser,idGroup){
+    let members = [];
+    db.collection('groups').doc(idGroup).get().then(doc=>{
+      members = doc.data().members;
+    })
+    members.push(idUser);
+    db.collection('groups').doc(idGroup).update({members:members})
+  }
 }
 const dbo = new Dbo();
 export {dbo};

@@ -3,6 +3,7 @@ const initialState = {
   groups: undefined,
   categories: undefined,
   group:undefined,
+  invitations:undefined,
 }
 
 const connectReducer = (state = initialState, action)=>{
@@ -31,6 +32,12 @@ const connectReducer = (state = initialState, action)=>{
         nextState={
           ...state,
           group:action.payload
+        }
+        return nextState || state
+    case "SET_INVITATIONS":
+        nextState={
+          ...state,
+          invitations:action.payload
         }
         return nextState || state
     default:
