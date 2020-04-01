@@ -41,7 +41,7 @@ class SignUpForm extends Component{
          let user = firebase.auth().currentUser;
          let uid = user.uid;
          let name = this.state.pseudo;
-         dbo.createUserDocument(uid,name);
+         dbo.createUserDocument(uid,name,email);
          this.props.connectUser(user);
          this.props.navigation.replace('Home');
       })
