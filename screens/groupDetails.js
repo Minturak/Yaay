@@ -25,10 +25,6 @@ class GroupDetails extends Component{
       members:[],
       addingUser:false,
       addingEmail:"",
-      updated:false,
-      members:[],
-      group:{},
-      refresh:false,
     }
   }
   getAdmins(){
@@ -72,7 +68,6 @@ class GroupDetails extends Component{
   test_snapshot(){
     const doc = db.collection('groups').doc(this.props.group.id);
     const observer = doc.onSnapshot(docSnapshot=>{
-      console.log(docSnapshot.data());
       this.update(docSnapshot.data());
     })
   }
@@ -106,7 +101,6 @@ class GroupDetails extends Component{
     console.log(this.props.group);
     return(
       <View style={styles.container}>
-        <Button title="update" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
         {!this.state.addingUser &&
           <Button title="add user" onPress={()=>this.handleAdding()}/>
         }
