@@ -49,6 +49,9 @@ class Dbo{
       })
     }
   }
+  async editGroup(name,description,category,id){
+    db.collection('groups').doc(id).update({name:name,description:description,category:category})
+  }
   async addInvitationToUser(userId,groupId,data){
     let invitations = data.invitations || [];
     if(!invitations.includes(groupId)){

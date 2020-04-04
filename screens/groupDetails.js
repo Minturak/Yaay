@@ -26,6 +26,9 @@ class GroupDetails extends Component{
       addingUser:false,
       addingEmail:"",
       updated:false,
+      members:[],
+      group:{},
+      refresh:false,
     }
   }
   getAdmins(){
@@ -121,6 +124,7 @@ class GroupDetails extends Component{
               />
           </Item>
         }
+        <Button title="Modifier" onPress={()=>this.props.navigation.navigate('EditGroupScreen')}/>
         <Text style={styles.title}>{this.props.group.data.name}</Text>
         <Text>Catégorie : {this.props.group.data.category}</Text>
         <Text>Description du groupe : {this.props.group.data.description}</Text>
