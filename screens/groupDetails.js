@@ -7,9 +7,14 @@ import {
 } from 'react-native-responsive-screen';
 
 import { connect } from 'react-redux'
+import { selectGroup } from '../redux/actions/selectGroup'
 import { bindActionCreators } from 'redux';
 
 import { dbo } from '../dataObjects/dbo';
+import firebase from "firebase";
+import {db} from '../firebase';
+
+
 
 class GroupDetails extends Component{
   constructor(props){
@@ -20,6 +25,7 @@ class GroupDetails extends Component{
       members:[],
       addingUser:false,
       addingEmail:"",
+      updated:false,
     }
   }
   getAdmins(){
@@ -60,6 +66,17 @@ class GroupDetails extends Component{
     let addingUser=!this.state.addingUser;
     this.setState({addingUser:addingUser});
   }
+  test_snapshot(){
+    const doc = db.collection('groups').doc(this.props.group.id);
+    const observer = doc.onSnapshot(docSnapshot=>{
+      console.log(docSnapshot.data());
+      this.update(docSnapshot.data());
+    })
+  }
+  update=(data)=>{
+    //mettre à jour l'affichage
+    this.props.selectGroup({data:data,id:this.props.group.id});
+  }
   addUser=()=>{
     console.log(this.state.addingEmail);
     if(this.state.addingEmail!=="" && this.state.addingEmail!==undefined){
@@ -80,8 +97,10 @@ class GroupDetails extends Component{
     this.getAdmins();
     this.getOrganizers();
     this.getMembers();
+    this.test_snapshot();
   }
   render(){
+    console.log(this.props.group);
     return(
       <View style={styles.container}>
         <Button title="update" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
@@ -141,4 +160,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   group: state.group,
 });
-export default connect(mapStateToProps)(GroupDetails);
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      selectGroup,
+    },
+    dispatch,
+)
+export default connect(mapStateToProps,mapDispatchToProps)(GroupDetails);
