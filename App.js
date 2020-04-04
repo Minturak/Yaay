@@ -55,9 +55,9 @@ function homeScreens(){
     <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="Home" component={Home} options={{ title: 'Accueil' }}/>
       <HomeStack.Screen name="EventForm" component={EventForm} options={{ title: 'Nouvel événement' }}/>
+      <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
       <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
       <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
-      <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
     </HomeStack.Navigator>
   )
 }

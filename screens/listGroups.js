@@ -16,6 +16,9 @@ class ListGroups extends Component{
       groups:[]
     }
   }
+  listener(){
+    const doc = db.collection('')
+  }
   componentDidMount(){
     var uid = firebase.auth().currentUser.uid;
     if(this.props.groups===undefined){

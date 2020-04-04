@@ -14,8 +14,6 @@ import { dbo } from '../dataObjects/dbo';
 import firebase from "firebase";
 import {db} from '../firebase';
 
-
-
 class GroupDetails extends Component{
   constructor(props){
     super(props)
