@@ -12,6 +12,7 @@ import SignUp from "./screens/signUp"
 import GroupFormScreen from "./screens/groupFormScreen"
 import ListGroups from "./screens/listGroups"
 import GroupDetails from "./screens/groupDetails"
+import EditGroupScreen from "./screens/EditGroupScreen"
 import Invitations from "./screens/invitations"
 
 import { Provider } from 'react-redux';
@@ -44,6 +45,7 @@ function groupsScreens(){
       <GroupsStack.Screen name="GroupFormScreen" component={GroupFormScreen} options={{ title: 'Nouveau groupe' }}/>
       <GroupsStack.Screen name="ListGroups" component={ListGroups} options={{ title: 'Mes groupes' }}/>
       <GroupsStack.Screen name="GroupDetails" component={GroupDetails} options={{ title: 'Détails' }}/>
+      <GroupsStack.Screen name="EditGroupScreen" component={EditGroupScreen} options={{ title: 'Modifier' }}/>
     </GroupsStack.Navigator>
   )
 }
@@ -53,9 +55,9 @@ function homeScreens(){
     <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="Home" component={Home} options={{ title: 'Accueil' }}/>
       <HomeStack.Screen name="EventForm" component={EventForm} options={{ title: 'Nouvel événement' }}/>
+      <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
       <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
       <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
-      <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
     </HomeStack.Navigator>
   )
 }

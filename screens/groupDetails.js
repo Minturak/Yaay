@@ -7,9 +7,12 @@ import {
 } from 'react-native-responsive-screen';
 
 import { connect } from 'react-redux'
+import { selectGroup } from '../redux/actions/selectGroup'
 import { bindActionCreators } from 'redux';
 
 import { dbo } from '../dataObjects/dbo';
+import firebase from "firebase";
+import {db} from '../firebase';
 
 class GroupDetails extends Component{
   constructor(props){
@@ -60,6 +63,16 @@ class GroupDetails extends Component{
     let addingUser=!this.state.addingUser;
     this.setState({addingUser:addingUser});
   }
+  test_snapshot(){
+    const doc = db.collection('groups').doc(this.props.group.id);
+    const observer = doc.onSnapshot(docSnapshot=>{
+      this.update(docSnapshot.data());
+    })
+  }
+  update=(data)=>{
+    //mettre à jour l'affichage
+    this.props.selectGroup({data:data,id:this.props.group.id});
+  }
   addUser=()=>{
     console.log(this.state.addingEmail);
     if(this.state.addingEmail!=="" && this.state.addingEmail!==undefined){
@@ -80,11 +93,12 @@ class GroupDetails extends Component{
     this.getAdmins();
     this.getOrganizers();
     this.getMembers();
+    this.test_snapshot();
   }
   render(){
+    console.log(this.props.group);
     return(
       <View style={styles.container}>
-        <Button title="update" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
         {!this.state.addingUser &&
           <Button title="add user" onPress={()=>this.handleAdding()}/>
         }
@@ -102,6 +116,7 @@ class GroupDetails extends Component{
               />
           </Item>
         }
+        <Button title="Modifier" onPress={()=>this.props.navigation.navigate('EditGroupScreen')}/>
         <Text style={styles.title}>{this.props.group.data.name}</Text>
         <Text>Catégorie : {this.props.group.data.category}</Text>
         <Text>Description du groupe : {this.props.group.data.description}</Text>
@@ -141,4 +156,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   group: state.group,
 });
-export default connect(mapStateToProps)(GroupDetails);
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      selectGroup,
+    },
+    dispatch,
+)
+export default connect(mapStateToProps,mapDispatchToProps)(GroupDetails);

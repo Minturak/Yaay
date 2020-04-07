@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 
 import firebase from "firebase";
 import {dbo} from '../dataObjects/dbo';
+import {db} from '../firebase';
 
 class ListGroups extends Component{
   constructor(props){
@@ -16,6 +17,22 @@ class ListGroups extends Component{
       groups:[]
     }
   }
+  listener(uid){
+    const doc = db.collection('users').doc(uid).onSnapshot(doc=>{
+      console.log('listen');
+      let groupsIds = doc.data().groups;
+      if(!groupsIds.length>0){this.setState({groups:[]})}
+      console.log(doc.data());
+      let groups = [];
+      groupsIds.map(item=>{
+        dbo.getGroupData(item).then(group=>{
+          groups.push({id:item,data:group.data()});
+          this.setState({groups:groups});
+          this.props.setGroups(groups);
+        })
+      })
+    })
+  }
   componentDidMount(){
     var uid = firebase.auth().currentUser.uid;
     if(this.props.groups===undefined){
@@ -23,6 +40,7 @@ class ListGroups extends Component{
     }else{
       this.setState({groups:this.props.groups})
     }
+    this.listener(uid);
   }
   fetchGroups=(uid)=>{
     let groupsIds=[];

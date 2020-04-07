@@ -14,6 +14,7 @@ import { setInvitations } from '../redux/actions/setInvitations';
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../dataObjects/dbo';
+import {db} from '../firebase';
 
 class Home extends Component{
   constructor(props){
@@ -23,14 +24,29 @@ class Home extends Component{
     }
   }
   componentDidMount(){
+
     if(this.props.categories===undefined){
       this.fetchCategories();
     }
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
+      console.log('fetching');
       this.fetchInvitations();
+      this.snapshot();
     }
+  }
+  snapshot(){
+    const doc = db.collection('users').doc(this.props.user.user.uid);
+    const observer = doc.onSnapshot(doc=>{
+      this.updateInvites(doc);
+    })
+  }
+  updateInvites=(doc)=>{
+    let invites = doc.data().invitations||[];
+    console.log('update');
+    console.log(invites);
+    this.setState({invitations:invites});
   }
   fetchCategories(){
     let categories=[];

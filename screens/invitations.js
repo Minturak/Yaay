@@ -16,6 +16,7 @@ import { setInvitations } from '../redux/actions/setInvitations';
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../dataObjects/dbo';
+import {db} from '../firebase';
 
 class Invitations extends Component{
   constructor(props){
@@ -24,19 +25,39 @@ class Invitations extends Component{
       groups:[]
     }
   }
-  componentDidMount(){
-    let groups = this.state.groups;
-    this.props.invitations.map(idGroup=>{
-      dbo.getGroupData(idGroup).then(doc=>{
-        groups.push({id:doc.id,data:doc.data()});
-        this.setState({groups:groups})
-      })
+  snapshot(){
+    const doc = db.collection('users').doc(this.props.user.user.uid);
+    const observer = doc.onSnapshot(doc=>{
+        this.updateList(doc.data());
     })
   }
+  updateList=(data)=>{
+    this.fetchGroups(data.invitations);
+  }
+  fetchGroups=(groupsIds)=>{
+    let groups = [];
+    if(groupsIds.length>0){
+      groupsIds.map(idGroup=>{
+        dbo.getGroupData(idGroup).then(doc=>{
+          groups.push({id:doc.id,data:doc.data()});
+          this.setState({groups:groups})
+        })
+      })
+    }else{
+      this.props.navigation.navigate('Home');
+    }
+
+  }
+  componentDidMount(){
+    this.fetchGroups(this.props.invitations);
+    this.snapshot();
+  }
   acceptInvitation=(id)=>{
-    console.log('accepter pour '+id);
     dbo.addMemberToGroup(this.props.user.user.uid,id);
     dbo.removeInvitation(this.props.user.user.uid,id);
+    dbo.getUserData(this.props.user.user.uid).then(doc=>{
+      dbo.addGroupToUser(this.props.user.user.uid,doc,id);
+    })
   }
   refuseInvitation=(id)=>{
     dbo.removeInvitation(this.props.user.user.uid,id);
