@@ -74,7 +74,6 @@ class GroupDetails extends Component{
     this.props.selectGroup({data:data,id:this.props.group.id});
   }
   addUser=()=>{
-    console.log(this.state.addingEmail);
     if(this.state.addingEmail!=="" && this.state.addingEmail!==undefined){
       dbo.getUserWithEmail(this.state.addingEmail).then(doc=>{
         if(doc.empty){
@@ -96,11 +95,10 @@ class GroupDetails extends Component{
     this.test_snapshot();
   }
   render(){
-    console.log(this.props.group);
     return(
       <View style={styles.container}>
         {!this.state.addingUser &&
-          <Button title="add user" onPress={()=>this.handleAdding()}/>
+          <Button color="#249E6B" title="add user" onPress={()=>this.handleAdding()}/>
         }
         {this.state.addingUser &&
           <Item floatingLabel style={styles.itemContainer}>
@@ -111,12 +109,12 @@ class GroupDetails extends Component{
                 autoCapitalize="none"
                 keyboardType="email-address"
                 autoCorrect={false}
-                returnKeyType="next"
+                returnKeyType="done"
                 onSubmitEditing={()=>this.addUser()}
               />
           </Item>
         }
-        <Button title="Modifier" onPress={()=>this.props.navigation.navigate('EditGroupScreen')}/>
+        <Button color="#249E6B" title="Modifier" onPress={()=>this.props.navigation.navigate('EditGroupScreen')}/>
         <Text style={styles.title}>{this.props.group.data.name}</Text>
         <Text>Catégorie : {this.props.group.data.category}</Text>
         <Text>Description du groupe : {this.props.group.data.description}</Text>
@@ -147,6 +145,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding:wp('4%'),
+  },
+  button:{
+    color:'#249E6B'
   },
   title:{
     fontSize:22,

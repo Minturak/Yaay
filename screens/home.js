@@ -31,7 +31,6 @@ class Home extends Component{
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
-      console.log('fetching');
       this.fetchInvitations();
       this.snapshot();
     }
@@ -44,8 +43,6 @@ class Home extends Component{
   }
   updateInvites=(doc)=>{
     let invites = doc.data().invitations||[];
-    console.log('update');
-    console.log(invites);
     this.setState({invitations:invites});
   }
   fetchCategories(){
@@ -66,33 +63,31 @@ class Home extends Component{
   }
   render(){
     return(
-      <View>
+      <View style={styles.container}>
+        <Text>Bienvenue sur Yaay !</Text>
         {this.state.invitations.length>0 &&
           <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
-            <View>
-              <Text>Nouvels invitations</Text>
+            <View style={styles.invitations}>
+              <Text>Nouvels invitations !</Text>
             </View>
           </TouchableHighlight>
         }
-        <Text>Ecran home</Text>
-        <Button
-          title="To event"
-          onPress={() => this.props.navigation.navigate('EventForm')}
-        />
       </View>
     )
   }
 }
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    height:hp('100%')
+  container:{
+    alignItems:'center',
   },
-  floating:{
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-  }
+  invitations:{
+    alignItems:'center',
+    marginRight:wp('3%'),
+    marginLeft:wp('3%'),
+    width:wp('50%'),
+    backgroundColor:'#249E6B',
+    borderRadius:16,
+  },
 });
 const mapStateToProps = state => ({
   user: state.user,

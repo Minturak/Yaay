@@ -66,7 +66,7 @@ export default function App(){
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Tabs.Navigator>
+        <Tabs.Navigator tabBarOptions={{activeTintColor:'#249E6B'}}>
           <Tabs.Screen name="Home" component={homeScreens} />
           <Tabs.Screen name="Groups" component={groupsScreens} />
         </Tabs.Navigator>

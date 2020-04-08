@@ -45,7 +45,6 @@ class EditGroup extends Component{
             groups.push({id:item,data:doc.data()});
             this.setState({groups:groups})
             this.props.setGroups(groups)
-            console.log(groups);
           })
         })
       })
@@ -53,7 +52,6 @@ class EditGroup extends Component{
       for(let i in this.props.groups){
         if(this.props.groups[i].id===this.props.group.id){
           this.props.selectGroup(this.props.groups[i]);
-          console.log('selected');
         }
       }
       this.props.navigation.goBack();
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
   signUpButton: {
-    backgroundColor: '#3694cf',
+    backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
     marginTop: hp('4%'),

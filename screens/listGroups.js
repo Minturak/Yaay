@@ -19,10 +19,8 @@ class ListGroups extends Component{
   }
   listener(uid){
     const doc = db.collection('users').doc(uid).onSnapshot(doc=>{
-      console.log('listen');
       let groupsIds = doc.data().groups;
       if(!groupsIds.length>0){this.setState({groups:[]})}
-      console.log(doc.data());
       let groups = [];
       groupsIds.map(item=>{
         dbo.getGroupData(item).then(group=>{
@@ -34,6 +32,9 @@ class ListGroups extends Component{
     })
   }
   componentDidMount(){
+    if(this.props.user===undefined){
+      this.props.navigation.navigate('Home')
+    }
     var uid = firebase.auth().currentUser.uid;
     if(this.props.groups===undefined){
       this.fetchGroups(uid);
@@ -59,17 +60,23 @@ class ListGroups extends Component{
   render(){
     return(
       <View>
+        <Button color="#249E6B" title="create group" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
         <FlatList
           data={this.state.groups}
           renderItem={({ item }) => <GroupCard groupData={item} navigation={this.props.navigation}/>}
         />
-        <Button title="create group" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
       </View>
     )
   }
 }
+const styles = StyleSheet.create({
+  buttonStyle:{
+    backgroundColor: '#249E6B',
+  },
+});
 const mapStateToProps = state => ({
   groups: state.groups,
+  user: state.user,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {

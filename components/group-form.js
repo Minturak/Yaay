@@ -45,7 +45,6 @@ class GroupForm extends Component{
     this.setState({categories:this.props.categories});
   }
   render(){
-    console.log(this.props);
     let categ=[];
     let index = -1;
     categ.push({key:index,section:true,label:'Catégorie'});
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
   signUpButton: {
-    backgroundColor: '#3694cf',
+    backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
     marginTop: hp('4%'),

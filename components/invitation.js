@@ -29,10 +29,10 @@ class Invitation extends Component{
         <Text style={styles.title}>{this.state.group.data.name}</Text>
         <View style={styles.align}>
           <TouchableHighlight onPress={()=>this.acceptInvitation()}>
-            <View style={styles.button}><Text>Accepter</Text></View>
+            <View style={styles.buttonAccept}><Text>Accepter</Text></View>
           </TouchableHighlight>
           <TouchableHighlight onPress={()=>this.refuseInvitation()}>
-            <View style={styles.button}><Text>Refuser</Text></View>
+            <View style={styles.buttonRefuse}><Text>Refuser</Text></View>
           </TouchableHighlight>
         </View>
 
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   title:{
     fontSize:18,
   },
-  button:{
+  buttonRefuse:{
     alignItems:'center',
     marginRight:wp('3%'),
     marginLeft:wp('3%'),
@@ -68,5 +68,14 @@ const styles = StyleSheet.create({
     borderRadius:16,
     flex:1,
   },
+  buttonAccept:{
+    alignItems:'center',
+    marginRight:wp('3%'),
+    marginLeft:wp('3%'),
+    width:wp('30%'),
+    backgroundColor:'#249E6B',
+    borderRadius:16,
+    flex:1,
+  }
 });
 export default Invitation;
