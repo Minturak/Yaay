@@ -17,9 +17,8 @@ import {dbo} from '../dataObjects/dbo';
 class SignUp extends Component{
   handleSignUp=(email,password,pseudo)=>{
     dbo.handleSignUp(email,password)
-      .then(_=>{
-         let user = firebase.auth().currentUser;
-         let uid = user.uid;
+      .then(user=>{
+         let uid = user.user.uid;
          dbo.createUserDocument(uid,pseudo,email);
          this.props.connectUser(user);
          this.props.navigation.replace('Home');

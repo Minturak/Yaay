@@ -30,12 +30,13 @@ class Home extends Component{
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
+      console.log(this.props.user);
       this.snapshot();
       this.fetchInvitations();
     }
   }
   snapshot(){
-    const doc = db.collection('users').doc(this.props.user.uid);
+    const doc = db.collection('users').doc(this.props.user.user.uid);
     const observer = doc.onSnapshot(doc=>{
       this.updateInvites(doc);
     })
@@ -54,7 +55,7 @@ class Home extends Component{
     })
   }
   fetchInvitations=()=>{
-    dbo.getUserData(this.props.user.uid).then(doc=>{
+    dbo.getUserData(this.props.user.user.uid).then(doc=>{
       let invitations = doc.data().invitations || [];
       this.setState({invitations:invitations})
       this.props.setInvitations(invitations);
