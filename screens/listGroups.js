@@ -22,9 +22,21 @@ class ListGroups extends Component{
       this.props.navigation.navigate('Home')
     }
     var uid = firebase.auth().currentUser.uid;
-    this.listener(uid);
+    this.listenerUser(uid);
   }
-  listener(uid){
+  listenerGroups(groupId){
+    const doc = db.collection('groups').doc(groupId).onSnapshot(doc=>{
+      let groups = this.state.groups;
+      let index = -1;
+      if(groups.length>0){
+        index = groups.findIndex(group=>group.id===groupId);
+        if(index>-1){
+            groups[index] = {id:groupId,data:doc.data()};
+        }
+      }
+    })
+  }
+  listenerUser(uid){
     const doc = db.collection('users').doc(uid).onSnapshot(doc=>{
 
       let groupsIds = doc.data().groups;
@@ -34,6 +46,7 @@ class ListGroups extends Component{
           }
           let groups = [];
           groupsIds.map(item=>{
+            this.listenerGroups(item)
             dbo.getGroupData(item).then(group=>{
               groups.push({id:item,data:group.data()});
               this.setState({groups:groups});
@@ -41,6 +54,7 @@ class ListGroups extends Component{
             })
           })
       }
+      console.log(this.props.groups);
     })
   }
   render(){
