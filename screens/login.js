@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
   signUpButton: {
-    backgroundColor: '#3694cf',
+    backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
     marginTop: hp('2%'),

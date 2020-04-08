@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
 import {Item, Label, Input } from 'native-base'
 import {
   widthPercentageToDP as wp,
@@ -97,24 +97,6 @@ class GroupDetails extends Component{
   render(){
     return(
       <View style={styles.container}>
-        {!this.state.addingUser &&
-          <Button color="#249E6B" title="add user" onPress={()=>this.handleAdding()}/>
-        }
-        {this.state.addingUser &&
-          <Item floatingLabel style={styles.itemContainer}>
-              <Label>Email de l'utilisateur</Label>
-              <Input
-                style={styles.input}
-                onChangeText={(text) => this.setState({addingEmail: text})}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoCorrect={false}
-                returnKeyType="done"
-                onSubmitEditing={()=>this.addUser()}
-              />
-          </Item>
-        }
-        <Button color="#249E6B" title="Modifier" onPress={()=>this.props.navigation.navigate('EditGroupScreen')}/>
         <Text style={styles.title}>{this.props.group.data.name}</Text>
         <Text>Catégorie : {this.props.group.data.category}</Text>
         <Text>Description du groupe : {this.props.group.data.description}</Text>
@@ -136,6 +118,39 @@ class GroupDetails extends Component{
               <Text key={key}>{user.data.pseudo}</Text>
           )
         })}
+        {!this.state.addingUser &&
+          <TouchableHighlight onPress={()=>this.handleAdding()}>
+            <View style={styles.AddButton}>
+              <Text style={{color:'#ffffff'}}>Ajouter un utilisateur</Text>
+            </View>
+          </TouchableHighlight>
+        }
+        {this.state.addingUser &&
+          <View>
+            <Item floatingLabel style={styles.itemContainer}>
+                <Label>Email de l'utilisateur</Label>
+                <Input
+                  style={styles.input}
+                  onChangeText={(text) => this.setState({addingEmail: text})}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  autoCorrect={false}
+                  returnKeyType="done"
+                  onSubmitEditing={()=>this.addUser()}
+                />
+            </Item>
+            <TouchableHighlight onPress={()=>this.addUser()}>
+              <View style={styles.AddButton}>
+                <Text style={{color:'#ffffff'}}>Valider</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        }
+        <TouchableHighlight onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
+          <View style={styles.AddButton}>
+            <Text style={{color:'#ffffff'}}>Modifier</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     )
   }
@@ -146,8 +161,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding:wp('4%'),
   },
-  button:{
-    color:'#249E6B'
+  AddButton: {
+    backgroundColor: '#249E6B',
+    alignItems: 'center',
+    padding: 10,
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
   },
   title:{
     fontSize:22,
