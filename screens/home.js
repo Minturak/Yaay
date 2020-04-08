@@ -30,7 +30,6 @@ class Home extends Component{
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
-      console.log(this.props.user);
       this.snapshot();
       this.fetchInvitations();
     }

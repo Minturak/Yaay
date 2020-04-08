@@ -21,7 +21,6 @@ class GroupCard extends Component{
     this.props.navigation.navigate('GroupDetails');
   }
   render(){
-    console.log(this.props.groupData);
     return(
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>this.groupSelected(this.props.groupData)}>
