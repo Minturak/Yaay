@@ -13,9 +13,18 @@ import { connect } from 'react-redux'
 import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
+import {dbo} from '../dataObjects/dbo';
+const firebase = require('firebase');
+
 class Login extends Component{
   toSignUp=()=>{
     this.props.navigation.navigate('SignUp')
+  }
+  handleLogin=(email,password)=>{
+    dbo.handleLogin(email,password).then(user=>{
+      this.props.connectUser(user);
+      this.props.navigation.replace('Home');
+    })
   }
   render(){
     return(

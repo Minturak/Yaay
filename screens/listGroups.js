@@ -17,44 +17,30 @@ class ListGroups extends Component{
       groups:[]
     }
   }
-  listener(uid){
-    const doc = db.collection('users').doc(uid).onSnapshot(doc=>{
-      let groupsIds = doc.data().groups;
-      if(!groupsIds.length>0){this.setState({groups:[]})}
-      let groups = [];
-      groupsIds.map(item=>{
-        dbo.getGroupData(item).then(group=>{
-          groups.push({id:item,data:group.data()});
-          this.setState({groups:groups});
-          this.props.setGroups(groups);
-        })
-      })
-    })
-  }
   componentDidMount(){
     if(this.props.user===undefined){
       this.props.navigation.navigate('Home')
     }
     var uid = firebase.auth().currentUser.uid;
-    if(this.props.groups===undefined){
-      this.fetchGroups(uid);
-    }else{
-      this.setState({groups:this.props.groups})
-    }
     this.listener(uid);
   }
-  fetchGroups=(uid)=>{
-    let groupsIds=[];
-    let groups=[];
-    dbo.getUserData(uid).then(doc=>{
-      groupsIds=doc.data().groups;
-      groupsIds.map(item=>{
-        dbo.getGroupData(item).then(doc=>{
-          groups.push({id:item,data:doc.data()});
-          this.setState({groups:groups})
-          this.props.setGroups(groups)
-        })
-      })
+  listener(uid){
+    const doc = db.collection('users').doc(uid).onSnapshot(doc=>{
+
+      let groupsIds = doc.data().groups;
+      if(groupsIds!==undefined){
+          if(!groupsIds.length>0){
+            this.setState({groups:[]})
+          }
+          let groups = [];
+          groupsIds.map(item=>{
+            dbo.getGroupData(item).then(group=>{
+              groups.push({id:item,data:group.data()});
+              this.setState({groups:groups});
+              this.props.setGroups(groups);
+            })
+          })
+      }
     })
   }
   render(){

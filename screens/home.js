@@ -24,15 +24,14 @@ class Home extends Component{
     }
   }
   componentDidMount(){
-
     if(this.props.categories===undefined){
       this.fetchCategories();
     }
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
-      this.fetchInvitations();
       this.snapshot();
+      this.fetchInvitations();
     }
   }
   snapshot(){

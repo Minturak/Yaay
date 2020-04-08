@@ -10,14 +10,6 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { connect } from 'react-redux'
-import { connectUser } from '../redux/actions/connect';
-import { bindActionCreators } from 'redux';
-
-import firebase from "firebase";
-import { db } from '../firebase'
-import {dbo} from '../dataObjects/dbo';
-
 class SignUpForm extends Component{
   constructor(props){
     super(props)
@@ -35,16 +27,9 @@ class SignUpForm extends Component{
     this.setState({showPassword})
   }
   handleSignUp=()=>{
-    const{email, password} = this.state
-    dbo.handleSignUp(email,password)
-      .then(_=>{
-         let user = firebase.auth().currentUser;
-         let uid = user.uid;
-         let name = this.state.pseudo;
-         dbo.createUserDocument(uid,name,email);
-         this.props.connectUser(user);
-         this.props.navigation.replace('Home');
-      })
+    if(this.state.email!=="" && this.state.password===this.state.confirm){
+      this.props.handleSignUp(this.state.email,this.state.password,this.state.pseudo);
+    }
   }
   render(){
     return(
@@ -115,13 +100,5 @@ const styles = StyleSheet.create({
     marginRight: wp('9%'),
   },
 });
-const mapStateToProps = state => ({
-  user: state.user,
-});
-const mapDispatchToProps = dispatch => bindActionCreators(
-    {
-      connectUser
-    },
-    dispatch,
-)
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpForm);
+
+export default SignUpForm;

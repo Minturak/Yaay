@@ -7,12 +7,6 @@ import {
 } from 'react-native-responsive-screen';
 import ModalSelector from 'react-native-modal-selector'
 
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
-
-import firebase from "firebase";
-import {dbo} from '../dataObjects/dbo';
-
 class GroupForm extends Component{
   constructor(props){
     super(props)
@@ -25,18 +19,8 @@ class GroupForm extends Component{
     }
   }
   handleSubmit=()=>{
-    if(this.state.name !== ''){
-      var user = firebase.auth().currentUser;
-      var idUser = user.uid;
-      //création du groupe
-      dbo.createGroup(this.state.name,this.state.desc,this.state.categorie,idUser)
-        .then(docRef=>{
-        //ajout du groupe dans l'utilisateur
-        dbo.getUserData(idUser).then(doc => {
-          dbo.addGroupToUser(idUser,doc,docRef.id);
-        })
-      });
-      this.props.navigation.replace('ViewGroups');
+    if(this.state.name !== '' && this.state.categorie !== ""){
+      this.props.handleSubmit(this.state.name,this.state.desc,this.state.categorie)
     }else{
       //raise error
     }
@@ -45,12 +29,6 @@ class GroupForm extends Component{
     this.setState({categories:this.props.categories});
   }
   render(){
-    let categ=[];
-    let index = -1;
-    categ.push({key:index,section:true,label:'Catégorie'});
-    this.state.categories.forEach(function(categorie, i){
-      categ.push({key:i, label:categorie});
-    })
     return(
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.container}>
         <Text style={styles.title}>Nouveau groupe</Text>
@@ -81,7 +59,7 @@ class GroupForm extends Component{
           onValueChange={(itemValue, itemIndex) =>this.setState({categorie: itemValue})}
         >
           {this.state.categories.map(label =>{
-            return (<Picker.Item label={label} value={label}/>)
+            return (<Picker.Item key={label} label={label} value={label}/>)
           })}
         </Picker>
         <TouchableHighlight onPress={this.handleSubmit}>
@@ -121,8 +99,5 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },
 });
-const mapStateToProps = state => ({
-  categories: state.categories,
-  group: state.group,
-});
-export default connect(mapStateToProps)(GroupForm);
+
+export default GroupForm;
