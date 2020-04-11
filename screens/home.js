@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux'
 import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
+import { setGroups } from '../redux/actions/setGroups'
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../dataObjects/dbo';
@@ -21,6 +22,7 @@ class Home extends Component{
     super(props)
     this.state={
       invitations:[],
+      groups:[],
     }
   }
   componentDidMount(){
@@ -31,18 +33,30 @@ class Home extends Component{
       this.props.navigation.replace('Login')
     }else{
       this.snapshot();
-      this.fetchInvitations();
     }
   }
   snapshot(){
     const doc = db.collection('users').doc(this.props.user.user.uid);
     const observer = doc.onSnapshot(doc=>{
       this.updateInvites(doc);
+      this.updateGroups(doc);
     })
   }
   updateInvites=(doc)=>{
     let invites = doc.data().invitations||[];
     this.setState({invitations:invites});
+  }
+  updateGroups=(doc)=>{
+    let groupsIds = doc.data().groups||[];
+    if(groupsIds.length>0){
+      let groups=[];
+      groupsIds.map(id=>{
+        dbo.getGroupData(id).then(data=>{
+          groups.push({data:data.data(),id:id})
+          this.props.setGroups(groups);
+        })
+      })
+    }
   }
   fetchCategories(){
     let categories=[];
@@ -63,6 +77,11 @@ class Home extends Component{
   render(){
     return(
       <View style={styles.container}>
+        <TouchableHighlight onPress={()=>this.props.navigation.navigate('CreateEvent')}>
+          <View style={styles.button}>
+            <Text>Créer un événement</Text>
+          </View>
+        </TouchableHighlight>
         <Text>Bienvenue sur Yaay !</Text>
         {this.state.invitations.length>0 &&
           <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
@@ -87,6 +106,14 @@ const styles = StyleSheet.create({
     backgroundColor:'#249E6B',
     borderRadius:16,
   },
+  button: {
+    backgroundColor: '#249E6B',
+    alignItems: 'center',
+    padding: 10,
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
 });
 const mapStateToProps = state => ({
   user: state.user,
@@ -95,7 +122,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
       setCategories,
-      setInvitations
+      setInvitations,
+      setGroups
     },
     dispatch,
 )
