@@ -5,7 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from "../screens/home"
-import EventForm from "../screens/event-form"
 import Login from "../screens/login"
 import SignUp from "../screens/signUp"
 import GroupFormScreen from "../screens/groupFormScreen"
@@ -13,6 +12,7 @@ import ListGroups from "../screens/listGroups"
 import GroupDetails from "../screens/groupDetails"
 import EditGroupScreen from "../screens/EditGroupScreen"
 import Invitations from "../screens/invitations"
+import CreateEvent from "../screens/createEvent"
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -39,10 +39,10 @@ class TabNavigator extends Component{
     return(
       <HomeStack.Navigator initialRouteName="Home">
         <HomeStack.Screen name="Home" component={Home} options={{ title: 'Accueil' }}/>
-        <HomeStack.Screen name="EventForm" component={EventForm} options={{ title: 'Nouvel événement' }}/>
         <HomeStack.Screen name="Invitations" component={Invitations} options={{ title: 'Invitations' }}/>
         <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
         <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
+        <HomeStack.Screen name="CreateEvent" component={CreateEvent} options={{ title: 'Créer un événement' }}/>
       </HomeStack.Navigator>
     )
   }
