@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableHighlight, FlatList } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+
+import EventCard from "../components/event-card";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -22,7 +24,7 @@ class Home extends Component{
     super(props)
     this.state={
       invitations:[],
-      groups:[],
+      events:[],
     }
   }
   componentDidMount(){
@@ -42,6 +44,22 @@ class Home extends Component{
       this.updateGroups(doc);
     })
   }
+  groupSnapshot=(id)=>{
+    const group = db.collection('groups').doc(id);
+    const groupObserv = group.onSnapshot(doc=>{
+      this.updateEvents(doc);
+    })
+  }
+  updateEvents=(doc)=>{
+    let newEvents = doc.data().events||[];
+    let events = this.state.events;
+    newEvents.map(id=>{
+      dbo.getEventData(id).then(data=>{
+        events.push(data.data())
+        this.setState({events:events});
+      })
+    })
+  }
   updateInvites=(doc)=>{
     let invites = doc.data().invitations||[];
     this.setState({invitations:invites});
@@ -49,9 +67,10 @@ class Home extends Component{
   }
   updateGroups=(doc)=>{
     let groupsIds = doc.data().groups||[];
+    let groups=[];
     if(groupsIds.length>0){
-      let groups=[];
       groupsIds.map(id=>{
+        this.groupSnapshot(id);
         dbo.getGroupData(id).then(data=>{
           groups.push({data:data.data(),id:id})
           this.props.setGroups(groups);
@@ -84,6 +103,10 @@ class Home extends Component{
             </View>
           </TouchableHighlight>
         }
+        <FlatList
+          data={this.state.events}
+          renderItem={({item})=><EventCard data={item}/>}
+        />
       </View>
     )
   }
@@ -112,6 +135,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   user: state.user,
   categories: state.categories,
+  groups: state.groups,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
