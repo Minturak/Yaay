@@ -49,6 +49,7 @@ class Invitations extends Component{
 
   }
   componentDidMount(){
+    console.log(this.props);
     this.fetchGroups(this.props.invitations);
     this.snapshot();
   }

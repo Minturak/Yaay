@@ -15,9 +15,9 @@ class CreateEvent extends Component{
   handleSubmit=(state)=>{
     console.log(state);
     dbo.createEvent(state).then(docRef=>{
-      dbo.addEventToGroup(docRef,state.group);
+      dbo.addEventToGroup(docRef.id,state.group);
     })
-    //this.props.navigation.navigate('Home');
+    this.props.navigation.navigate('Home');
   }
   render(){
     return(

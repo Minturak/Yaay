@@ -45,6 +45,7 @@ class Home extends Component{
   updateInvites=(doc)=>{
     let invites = doc.data().invitations||[];
     this.setState({invitations:invites});
+    this.props.setInvitations(invites);
   }
   updateGroups=(doc)=>{
     let groupsIds = doc.data().groups||[];
@@ -65,13 +66,6 @@ class Home extends Component{
         categories.push(label);
       })
       this.props.setCategories(categories);
-    })
-  }
-  fetchInvitations=()=>{
-    dbo.getUserData(this.props.user.user.uid).then(doc=>{
-      let invitations = doc.data().invitations || [];
-      this.setState({invitations:invitations})
-      this.props.setInvitations(invitations);
     })
   }
   render(){
