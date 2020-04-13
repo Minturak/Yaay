@@ -78,6 +78,28 @@ class Dbo{
     members.push(idUser);
     db.collection('groups').doc(idGroup).update({members:members})
   }
+  async createEvent(data){
+    return db.collection('events').add({
+      name:data.name,
+      desc:data.desc,
+      group:data.group,
+      date:new Date(data.date),
+      startTime:new Date(data.startTime),
+      endTime:new Date(data.endTime),
+      allDay:data.allDay,
+      minUser:data.minUser,
+      maxUser:data.maxUser,
+      allowComments:data.allowComments
+    })
+  }
+  async addEventToGroup(eventId,groupId){
+    let events=[]
+    db.collection('groups').doc(groupId).get().then(doc=>{
+      events = doc.data().events||[];
+    })
+    events.push(eventId);
+    db.collection('groups').doc(groupId).update({events:events})
+  }
 }
 const dbo = new Dbo();
 export {dbo};
