@@ -78,7 +78,8 @@ class EventForm extends Component{
         <Text style={styles.title}>Nouvel événement</Text>
         <Picker
           style={styles.picker}
-          onValueChange={(itemValue)=>console.log(itemValue)}
+          selectedValue={this.state.group}
+          onValueChange={(itemValue)=>this.setState({group:itemValue})}
         >
           {this.props.groups.map(group=>{
             return(<Picker.Item key={group.id} label={group.data.name} value={group.id}/>)

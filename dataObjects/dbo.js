@@ -100,6 +100,9 @@ class Dbo{
     events.push(eventId);
     db.collection('groups').doc(groupId).update({events:events})
   }
+  async getEventData(id){
+    return db.collection('events').doc(id).get();
+  }
 }
 const dbo = new Dbo();
 export {dbo};
