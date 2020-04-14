@@ -6,14 +6,22 @@ import {
 } from 'react-native-responsive-screen';
 import moment from "moment";
 
+import { connect } from 'react-redux'
+import { selectEvent } from '../redux/actions/selectEvent';
+import { bindActionCreators } from 'redux';
+
 class EventCard extends Component{
   constructor(props){
     super(props)
   }
+  eventSelected(event){
+    this.props.selectEvent(event);
+    this.props.navigation.navigate('EventDetailsScreen');
+  }
   render(){
     return(
       <View style={styles.container}>
-        <TouchableOpacity onPress={()=>this.groupSelected(this.props.groupData)}>
+        <TouchableOpacity onPress={()=>this.eventSelected(this.props.data)}>
           <Text style={styles.title}>{this.props.data.name}</Text>
           <Text>Le {moment(new Date(this.props.data.date.seconds*1000)).format("D.MM.YYYY")}</Text>
         </TouchableOpacity>
@@ -36,4 +44,10 @@ const styles = StyleSheet.create({
     fontSize:18
   },
 });
-export default EventCard;
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      selectEvent
+    },
+    dispatch,
+)
+export default connect(null,mapDispatchToProps)(EventCard);

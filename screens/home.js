@@ -105,7 +105,7 @@ class Home extends Component{
         }
         <FlatList
           data={this.state.events}
-          renderItem={({item})=><EventCard data={item}/>}
+          renderItem={({item})=><EventCard data={item} navigation={this.props.navigation}/>}
         />
       </View>
     )
