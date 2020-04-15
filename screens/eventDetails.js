@@ -4,7 +4,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-import moment from "moment";
 import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'
@@ -13,7 +12,6 @@ import { bindActionCreators } from 'redux';
 class EventDetailsScreen extends Component{
   constructor(props){
     super(props)
-
   }
   render(){
     return(
