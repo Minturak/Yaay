@@ -87,6 +87,15 @@ class Home extends Component{
       this.props.setCategories(categories);
     })
   }
+  isPresent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'presents');
+  }
+  isAbsent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'absents');
+  }
+  mayBePresent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'maybe');
+  }
   render(){
     return(
       <View style={styles.container}>
@@ -105,7 +114,12 @@ class Home extends Component{
         }
         <FlatList
           data={this.state.events}
-          renderItem={({item})=><EventCard data={item} navigation={this.props.navigation}/>}
+          renderItem={({item})=><EventCard data={item}
+            navigation={this.props.navigation}
+            isPresent={this.isPresent}
+            isAbsent={this.isAbsent}
+            mayBePresent={this.mayBePresent}
+          />}
         />
       </View>
     )

@@ -18,6 +18,15 @@ class EventCard extends Component{
     this.props.selectEvent(event);
     this.props.navigation.navigate('EventDetailsScreen');
   }
+  isPresent=_=>{
+    this.props.isPresent(this.props.user.user.uid,this.props.data.id);
+  }
+  isAbsent=_=>{
+    this.props.isAbsent(this.props.user.user.uid,this.props.data.id);
+  }
+  mayBePresent=_=>{
+    this.props.mayBePresent(this.props.user.user.uid,this.props.data.id);
+  }
   render(){
     return(
       <View style={styles.container}>
@@ -25,6 +34,17 @@ class EventCard extends Component{
           <Text style={styles.title}>{this.props.data.name}</Text>
           <Text>Le {moment(new Date(this.props.data.date.seconds*1000)).format("D.MM.YYYY")}</Text>
         </TouchableOpacity>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity onPress={this.isPresent} style={[styles.present, styles.buttons]}>
+            <Text>Présent</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.mayBePresent} style={[styles.maybe, styles.buttons]}>
+            <Text>Peut-être</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.isAbsent} style={[styles.absent, styles.buttons]}>
+            <Text>Absent</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -39,10 +59,34 @@ const styles = StyleSheet.create({
     borderColor:'#ccc',
     borderRadius:16,
     padding:hp('2%'),
+    width:wp('90%'),
   },
   title:{
     fontSize:18
   },
+  buttonsContainer:{
+    flexDirection:'row',
+  },
+  buttons:{
+    alignItems: 'center',
+    padding: 10,
+    marginTop: hp('2%'),
+    marginLeft: wp('2%'),
+    marginRight: wp('2%'),
+    flex:1
+  },
+  present:{
+    backgroundColor: '#249E6B',
+  },
+  absent:{
+    backgroundColor: '#ff4f4f',
+  },
+  maybe:{
+    backgroundColor: '#bfbfbf',
+  }
+});
+const mapStateToProps = state => ({
+  user: state.user,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
@@ -50,4 +94,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     },
     dispatch,
 )
-export default connect(null,mapDispatchToProps)(EventCard);
+export default connect(mapStateToProps,mapDispatchToProps)(EventCard);
