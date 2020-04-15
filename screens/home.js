@@ -55,7 +55,7 @@ class Home extends Component{
     let events = this.state.events;
     newEvents.map(id=>{
       dbo.getEventData(id).then(data=>{
-        events.push(data.data())
+        events.push({...data.data(),id:id})
         this.setState({events:events});
       })
     })

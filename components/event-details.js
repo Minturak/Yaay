@@ -18,6 +18,18 @@ class EventDetails extends Component{
   toggleButtons=_=>{
     this.setState({showButtons:!this.state.showButtons})
   }
+  isPresent=_=>{
+    this.props.isPresent(this.props.user.user.uid);
+    this.toggleButtons();
+  }
+  isAbsent=_=>{
+    this.props.isAbsent(this.props.user.user.uid);
+    this.toggleButtons();
+  }
+  mayBePresent=_=>{
+    this.props.mayBePresent(this.props.user.user.uid);
+    this.toggleButtons();
+  }
   render(){
     let event = this.props.event;
     return(
@@ -41,13 +53,13 @@ class EventDetails extends Component{
           {this.state.showButtons ?
             (
               <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={this.toggleButtons} style={[styles.present, styles.buttons]}>
+                <TouchableOpacity onPress={this.isPresent} style={[styles.present, styles.buttons]}>
                   <Text>Présent</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.toggleButtons} style={[styles.maybe, styles.buttons]}>
+                <TouchableOpacity onPress={this.mayBePresent} style={[styles.maybe, styles.buttons]}>
                   <Text>Peut-être</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.toggleButtons} style={[styles.absent, styles.buttons]}>
+                <TouchableOpacity onPress={this.isAbsent} style={[styles.absent, styles.buttons]}>
                   <Text>Absent</Text>
                 </TouchableOpacity>
               </View>

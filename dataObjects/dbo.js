@@ -79,6 +79,7 @@ class Dbo{
     db.collection('groups').doc(idGroup).update({members:members})
   }
   async createEvent(data){
+    let result = null
     let users=[]
     let event = {
       name:data.name,
@@ -91,14 +92,20 @@ class Dbo{
       minUser:data.minUser,
       maxUser:data.maxUser,
       allowComments:data.allowComments,
+      presents:[],
+      absents:[],
+      maybe:[],
     }
     this.getGroupData(data.group).then(doc=>{
       users.push(...doc.data().admins||[]);
       users.push(...doc.data().members||[]);
       users.push(...doc.data().organizers||[]);
       event.users=users
+    }).then(_=>{
+      result = db.collection('events').add(event).then(docRef=>{
+        this.addEventToGroup(docRef.id,data.group)
+      })
     })
-    return db.collection('events').add(event)
   }
   async addEventToGroup(eventId,groupId){
     let events=[]
@@ -111,6 +118,38 @@ class Dbo{
   async getEventData(id){
     return db.collection('events').doc(id).get();
   }
+  async setUserDisponibilityForEvent(uid,eventId,dispo){
+    db.collection('events').doc(eventId).get().then(doc=>{
+      let inUsers = doc.data().users.includes(uid)||false;
+      let inPresents = doc.data().presents.includes(uid)||false;
+      let inAbsents = doc.data().absents.includes(uid)||false;
+      let inMayBe = doc.data().maybe.includes(uid)||false;
+      if(inUsers){
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'users');
+      }else if(inPresents){
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'presents');
+      }else if(inAbsents){
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'absents');
+      }else if(inMayBe){
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'maybe');
+      }
+    })
+  }
+  updateDisponibilitiesForEvent(uid,eventId,doc,dispo,inCollection){
+    let inColl = doc.data()[inCollection];
+    let index = inColl.indexOf(uid);
+    inColl.splice(index,1);
+    let updateCol = doc.data()[dispo];
+    if(!updateCol.includes(uid)){
+      if(dispo==="presents" && updateCol.length<doc.data().maxUser){
+          updateCol.push(uid);
+      }else if(dispo!=="presents"){
+          updateCol.push(uid);
+      }
+    }
+    db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
+  }
 }
+
 const dbo = new Dbo();
 export {dbo};
