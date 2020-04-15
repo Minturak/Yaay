@@ -13,8 +13,8 @@ import {dbo} from '../dataObjects/dbo';
 
 class CreateEvent extends Component{
   handleSubmit=(state)=>{
-    console.log(state);
     dbo.createEvent(state).then(docRef=>{
+      console.log(docRef);
       dbo.addEventToGroup(docRef.id,state.group);
     })
     this.props.navigation.navigate('Home');

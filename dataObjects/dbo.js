@@ -79,7 +79,8 @@ class Dbo{
     db.collection('groups').doc(idGroup).update({members:members})
   }
   async createEvent(data){
-    return db.collection('events').add({
+    let users=[]
+    let event = {
       name:data.name,
       desc:data.desc,
       group:data.group,
@@ -89,8 +90,15 @@ class Dbo{
       allDay:data.allDay,
       minUser:data.minUser,
       maxUser:data.maxUser,
-      allowComments:data.allowComments
+      allowComments:data.allowComments,
+    }
+    this.getGroupData(data.group).then(doc=>{
+      users.push(...doc.data().admins||[]);
+      users.push(...doc.data().members||[]);
+      users.push(...doc.data().organizers||[]);
+      event.users=users
     })
+    return db.collection('events').add(event)
   }
   async addEventToGroup(eventId,groupId){
     let events=[]
