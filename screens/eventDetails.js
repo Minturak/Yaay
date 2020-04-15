@@ -5,6 +5,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import moment from "moment";
+import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -15,41 +16,12 @@ class EventDetailsScreen extends Component{
 
   }
   render(){
-    let event = this.props.event;
     return(
-      <View style={styles.container}>
-        <Text style={styles.title}>{event.name}</Text>
-        <Text>{event.desc}</Text>
-        <View style={styles.date}>
-          <Text>Le {moment(new Date(event.date.seconds*1000)).format("D.MM.YYYY ")}</Text>
-          {event.allDay ?(
-              <Text>toute la journée</Text>
-            ):(
-              <Text>de {moment(new Date(event.startTime.seconds*1000)).format("HH:mm")} à
-                {moment(new Date(event.endTime.seconds*1000)).format(" HH:mm")}</Text>
-            )
-          }
-        </View>
-        <Text>Entre {event.minUser} et {event.maxUser} participants</Text>
-      </View>
+      <EventDetails event={this.props.event}/>
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    marginTop:hp('2%'),
-    marginLeft:wp('3%'),
-    marginRight:wp('3%'),
-    padding:hp('2%'),
-  },
-  title:{
-    fontSize:18
-  },
-  date:{
-    flexDirection:'row',
-  }
-});
+
 const mapStateToProps = state => ({
   event: state.event,
 });
