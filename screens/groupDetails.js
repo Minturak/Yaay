@@ -10,19 +10,19 @@ import { connect } from 'react-redux'
 import { selectGroup } from '../redux/actions/selectGroup'
 import { bindActionCreators } from 'redux';
 
+import GroupDetails from "../components/group-details";
+
 import { dbo } from '../dataObjects/dbo';
 import firebase from "firebase";
 import {db} from '../firebase';
 
-class GroupDetails extends Component{
+class GroupDetailsScreen extends Component{
   constructor(props){
     super(props)
     this.state={
       admins:[],
       organizers:[],
       members:[],
-      addingUser:false,
-      addingEmail:"",
     }
   }
   getAdmins(){
@@ -59,10 +59,6 @@ class GroupDetails extends Component{
       })
     }
   }
-  handleAdding(){
-    let addingUser=!this.state.addingUser;
-    this.setState({addingUser:addingUser});
-  }
   test_snapshot(){
     const doc = db.collection('groups').doc(this.props.group.id);
     const observer = doc.onSnapshot(docSnapshot=>{
@@ -73,9 +69,9 @@ class GroupDetails extends Component{
     //mettre à jour l'affichage
     this.props.selectGroup({data:data,id:this.props.group.id});
   }
-  addUser=()=>{
-    if(this.state.addingEmail!=="" && this.state.addingEmail!==undefined){
-      dbo.getUserWithEmail(this.state.addingEmail).then(doc=>{
+  addUser=(email)=>{
+    if(email!=="" && email!==undefined){
+      dbo.getUserWithEmail(email).then(doc=>{
         if(doc.empty){
           console.log('Aucun utilisateur inscrit avec cet email!');
         }else{
@@ -96,84 +92,17 @@ class GroupDetails extends Component{
   }
   render(){
     return(
-      <View style={styles.container}>
-        <Text style={styles.title}>{this.props.group.data.name}</Text>
-        <Text>Catégorie : {this.props.group.data.category}</Text>
-        <Text>Description du groupe : {this.props.group.data.description}</Text>
-        <Text>Administrateurs : </Text>
-        {this.state.admins.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        <Text>Organisateurs : </Text>
-        {this.state.organizers.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        <Text>Membres : </Text>
-        {this.state.members.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        {!this.state.addingUser &&
-          <TouchableOpacity onPress={()=>this.handleAdding()}>
-            <View style={styles.AddButton}>
-              <Text style={{color:'#ffffff'}}>Ajouter un utilisateur</Text>
-            </View>
-          </TouchableOpacity>
-        }
-        {this.state.addingUser &&
-          <View>
-            <Item floatingLabel style={styles.itemContainer}>
-                <Label>Email de l'utilisateur</Label>
-                <Input
-                  style={styles.input}
-                  onChangeText={(text) => this.setState({addingEmail: text})}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoCorrect={false}
-                  returnKeyType="done"
-                  onSubmitEditing={()=>this.addUser()}
-                />
-            </Item>
-            <TouchableOpacity onPress={()=>this.addUser()}>
-              <View style={styles.AddButton}>
-                <Text style={{color:'#ffffff'}}>Valider</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        }
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
-          <View style={styles.AddButton}>
-            <Text style={{color:'#ffffff'}}>Modifier</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <GroupDetails
+        group={this.props.group}
+        admins={this.state.admins}
+        organizers={this.state.organizers}
+        members={this.state.members}
+        addUser={this.addUser}
+        navigation={this.props.navigation}
+      />
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding:wp('4%'),
-  },
-  AddButton: {
-    backgroundColor: '#249E6B',
-    alignItems: 'center',
-    padding: 10,
-    marginTop: hp('4%'),
-    marginLeft: wp('9%'),
-    marginRight: wp('9%'),
-  },
-  title:{
-    fontSize:22,
-    marginBottom:hp('2%')
-  },
-});
 const mapStateToProps = state => ({
   group: state.group,
 });
@@ -183,4 +112,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     },
     dispatch,
 )
-export default connect(mapStateToProps,mapDispatchToProps)(GroupDetails);
+export default connect(mapStateToProps,mapDispatchToProps)(GroupDetailsScreen);

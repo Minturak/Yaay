@@ -9,7 +9,7 @@ import Login from "../screens/login"
 import SignUp from "../screens/signUp"
 import GroupFormScreen from "../screens/groupFormScreen"
 import ListGroups from "../screens/listGroups"
-import GroupDetails from "../screens/groupDetails"
+import GroupDetailsScreen from "../screens/groupDetails"
 import EditGroupScreen from "../screens/EditGroupScreen"
 import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
@@ -31,7 +31,7 @@ class TabNavigator extends Component{
       <GroupsStack.Navigator initialRouteName="ListGroups">
         <GroupsStack.Screen name="GroupFormScreen" component={GroupFormScreen} options={{ title: 'Nouveau groupe' }}/>
         <GroupsStack.Screen name="ListGroups" component={ListGroups} options={{ title: 'Mes groupes' }}/>
-        <GroupsStack.Screen name="GroupDetails" component={GroupDetails} options={{ title: 'Détails' }}/>
+        <GroupsStack.Screen name="GroupDetails" component={GroupDetailsScreen} options={{ title: 'Détails' }}/>
         <GroupsStack.Screen name="EditGroupScreen" component={EditGroupScreen} options={{ title: 'Modifier' }}/>
       </GroupsStack.Navigator>
     )

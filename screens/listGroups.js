@@ -54,7 +54,6 @@ class ListGroups extends Component{
             })
           })
       }
-      console.log(this.props.groups);
     })
   }
   render(){
