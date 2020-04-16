@@ -6,9 +6,6 @@ import {db} from '../firebase';
 class Dbo{
   constructor(){
   }
-  fetchData(){
-
-  }
   async handleLogin(email,password){
     return firebase.auth().signInWithEmailAndPassword(email,password)
   }
@@ -72,11 +69,26 @@ class Dbo{
   }
   async addMemberToGroup(idUser,idGroup){
     let members = [];
+    let events = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
+      events = doc.data().events;
+      members.push(idUser);
+    }).then(_=>{
+      db.collection('groups').doc(idGroup).update({members:members})
+      events.map(eventId=>{
+        this.addUserToEvent(eventId,idUser);
+      })
     })
-    members.push(idUser);
-    db.collection('groups').doc(idGroup).update({members:members})
+  }
+  async addUserToEvent(eventId,uid){
+    let users = [];
+    db.collection('events').doc(eventId).get().then(doc=>{
+      users = doc.data().users;
+      users.push(uid);
+    }).then(_=>{
+      db.collection('events').doc(eventId).update({users:users})
+    })
   }
   async createEvent(data){
     let result = null
