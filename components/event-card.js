@@ -28,20 +28,21 @@ class EventCard extends Component{
     this.props.mayBePresent(this.props.user.user.uid,this.props.data.id);
   }
   render(){
+    let event = this.props.data
     return(
       <View style={styles.container}>
-        <TouchableOpacity onPress={()=>this.eventSelected(this.props.data)}>
-          <Text style={styles.title}>{this.props.data.name}</Text>
-          <Text>Le {moment(new Date(this.props.data.date.seconds*1000)).format("D.MM.YYYY")}</Text>
+        <TouchableOpacity onPress={()=>this.eventSelected(event)}>
+          <Text style={styles.title}>{event.name}</Text>
+          <Text>Le {moment(new Date(event.date.seconds*1000)).format("D.MM.YYYY")}</Text>
         </TouchableOpacity>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={this.isPresent} style={[styles.present, styles.buttons]}>
+          <TouchableOpacity onPress={this.isPresent} style={[styles.present, styles.buttons, event.presents.includes(this.props.user.user.uid)&&styles.selected]}>
             <Text>Présent</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.mayBePresent} style={[styles.maybe, styles.buttons]}>
+          <TouchableOpacity onPress={this.mayBePresent} style={[styles.maybe, styles.buttons, event.maybe.includes(this.props.user.user.uid)&&styles.selected]}>
             <Text>Peut-être</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.isAbsent} style={[styles.absent, styles.buttons]}>
+          <TouchableOpacity onPress={this.isAbsent} style={[styles.absent, styles.buttons, event.absents.includes(this.props.user.user.uid)&&styles.selected]}>
             <Text>Absent</Text>
           </TouchableOpacity>
         </View>
@@ -73,7 +74,9 @@ const styles = StyleSheet.create({
     marginTop: hp('2%'),
     marginLeft: wp('2%'),
     marginRight: wp('2%'),
-    flex:1
+    flex:1,
+    borderWidth:1,
+    borderColor:'#ffffff'
   },
   present:{
     backgroundColor: '#249E6B',
@@ -83,6 +86,10 @@ const styles = StyleSheet.create({
   },
   maybe:{
     backgroundColor: '#bfbfbf',
+  },
+  selected:{
+    borderWidth:1,
+    borderColor:"#000000"
   }
 });
 const mapStateToProps = state => ({

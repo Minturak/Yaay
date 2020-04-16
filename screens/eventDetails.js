@@ -20,9 +20,6 @@ class EventDetailsScreen extends Component{
   }
   componentDidMount=_=>{
     this.snapshotEvent(this.props.event.id);
-    //listener sur l'event
-    //update le state avec le lsitenet
-    //fournis l'event du state a EventDetails
   }
   snapshotEvent=(id)=>{
     let eventListener = db.collection('events').doc(id).onSnapshot(doc=>{

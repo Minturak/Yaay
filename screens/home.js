@@ -125,7 +125,6 @@ class Home extends Component{
             <Text>Créer un événement</Text>
           </View>
         </TouchableHighlight>
-        <Text>Bienvenue sur Yaay !</Text>
         {this.state.invitations.length>0 &&
           <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
             <View style={styles.invitations}>
