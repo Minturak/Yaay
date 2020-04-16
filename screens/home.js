@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TouchableHighlight, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, FlatList } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -134,17 +134,17 @@ class Home extends Component{
   render(){
     return(
       <View style={styles.container}>
-        <TouchableHighlight onPress={()=>this.props.navigation.navigate('CreateEvent')}>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
           <View style={styles.button}>
             <Text>Créer un événement</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         {this.state.invitations.length>0 &&
-          <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
             <View style={styles.invitations}>
               <Text>Nouvels invitations !</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         }
         <FlatList
           data={this.state.events}

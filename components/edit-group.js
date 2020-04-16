@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableHighlight, Picker} from 'react-native';
+import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -64,11 +64,11 @@ class EditGroup extends Component{
             return (<Picker.Item key={label} label={label} value={label}/>)
           })}
         </Picker>
-        <TouchableHighlight onPress={this.handleEdit}>
+        <TouchableOpacity onPress={this.handleEdit}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Enregistrer</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     )
   }

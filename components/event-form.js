@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableHighlight, Picker, Button,
+import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Picker, Button,
   Switch} from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -106,9 +106,9 @@ class EventForm extends Component{
               returnKeyType="next"
             />
         </Item>
-        <TouchableHighlight onPress={this.showDatePicker}>
+        <TouchableOpacity onPress={this.showDatePicker}>
           <View><Text>{this.state.date.format("D - MM - YYYY")}</Text></View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         {this.state.showDate && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -129,9 +129,9 @@ class EventForm extends Component{
         />
         {!this.state.allDay && (
           <View>
-            <TouchableHighlight onPress={this.showStartTime}>
+            <TouchableOpacity onPress={this.showStartTime}>
               <View><Text>{this.state.startTime.format("HH:mm")}</Text></View>
-            </TouchableHighlight>
+            </TouchableOpacity>
               {this.state.showStartTime && (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -141,9 +141,9 @@ class EventForm extends Component{
                   onChange={this.changeStartTime}
                 />
               )}
-              <TouchableHighlight onPress={this.showEndTime}>
+              <TouchableOpacity onPress={this.showEndTime}>
                 <View><Text>{this.state.endTime.format("HH:mm")}</Text></View>
-              </TouchableHighlight>
+              </TouchableOpacity>
               {this.state.showEndTime && (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -177,11 +177,11 @@ class EventForm extends Component{
           onValueChange={()=>this.setState({allowComments:!this.state.allowComments})}
           value={this.state.allowComments}
         />
-      <TouchableHighlight onPress={this.handleSubmit}>
+      <TouchableOpacity onPress={this.handleSubmit}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Créer</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     )
   }

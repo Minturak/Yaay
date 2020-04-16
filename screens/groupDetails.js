@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import {Item, Label, Input } from 'native-base'
 import {
   widthPercentageToDP as wp,
@@ -119,11 +119,11 @@ class GroupDetails extends Component{
           )
         })}
         {!this.state.addingUser &&
-          <TouchableHighlight onPress={()=>this.handleAdding()}>
+          <TouchableOpacity onPress={()=>this.handleAdding()}>
             <View style={styles.AddButton}>
               <Text style={{color:'#ffffff'}}>Ajouter un utilisateur</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         }
         {this.state.addingUser &&
           <View>
@@ -139,18 +139,18 @@ class GroupDetails extends Component{
                   onSubmitEditing={()=>this.addUser()}
                 />
             </Item>
-            <TouchableHighlight onPress={()=>this.addUser()}>
+            <TouchableOpacity onPress={()=>this.addUser()}>
               <View style={styles.AddButton}>
                 <Text style={{color:'#ffffff'}}>Valider</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
         }
-        <TouchableHighlight onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
           <View style={styles.AddButton}>
             <Text style={{color:'#ffffff'}}>Modifier</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     )
   }

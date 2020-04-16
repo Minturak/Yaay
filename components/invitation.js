@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -28,12 +28,12 @@ class Invitation extends Component{
       <View style={styles.container}>
         <Text style={styles.title}>{this.state.group.data.name}</Text>
         <View style={styles.align}>
-          <TouchableHighlight onPress={()=>this.acceptInvitation()}>
+          <TouchableOpacity onPress={()=>this.acceptInvitation()}>
             <View style={styles.buttonAccept}><Text>Accepter</Text></View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={()=>this.refuseInvitation()}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this.refuseInvitation()}>
             <View style={styles.buttonRefuse}><Text>Refuser</Text></View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
 
       </View>

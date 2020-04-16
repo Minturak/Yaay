@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import LoginForm from "../components/login-form"
 import {
   widthPercentageToDP as wp,
@@ -31,11 +31,11 @@ class Login extends Component{
       <View>
         <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser} handleLogin={this.handleLogin}/>
         <Text style={styles.textContent}>ou</Text>
-        <TouchableHighlight onPress={this.toSignUp}>
+        <TouchableOpacity onPress={this.toSignUp}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Créer un compte</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     )
   }

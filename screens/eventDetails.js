@@ -27,8 +27,6 @@ class EventDetailsScreen extends Component{
     })
   }
   updateEvent=(doc,id)=>{
-    console.log(id);
-    console.log(doc.data());
     this.setState({event:{...doc.data(),id:id}})
   }
   isPresent=(uid)=>{

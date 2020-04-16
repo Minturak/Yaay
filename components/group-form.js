@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableHighlight, Picker} from 'react-native';
+import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -62,11 +62,11 @@ class GroupForm extends Component{
             return (<Picker.Item key={label} label={label} value={label}/>)
           })}
         </Picker>
-        <TouchableHighlight onPress={this.handleSubmit}>
+        <TouchableOpacity onPress={this.handleSubmit}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Créer</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     )
   }

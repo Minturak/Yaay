@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import {Item, Label, Input } from 'native-base'
 import {TextField} from '@material-ui/core';
 import {
@@ -73,11 +73,11 @@ class SignUpForm extends Component{
               autoCapitalize="none"
             />
         </Item>
-        <TouchableHighlight onPress={this.handleSignUp}>
+        <TouchableOpacity onPress={this.handleSignUp}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Inscription</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     )
   }
