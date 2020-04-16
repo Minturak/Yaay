@@ -56,19 +56,30 @@ class Home extends Component{
       this.updateEvent(doc,id);
     })
   }
+  orderByDate=(a,b)=>{
+    if ( a.date.seconds < b.date.seconds ){
+      return -1;
+    }
+    if ( a.date.seconds > b.date.seconds ){
+      return 1;
+    }
+    return 0;
+  }
   updateEvent=(doc,id)=>{
     let events = this.state.events;
-    let index = events.indexOf(el=>el.id===id)
-    events.splice(index,1);
-    events.push({...doc.data(),id:id})
-    this.setState({events:events})
+    let index = events.indexOf(events.filter(el=>(el.id===id))[0])
+    if(index>=0){
+      events.splice(index,1);
+      events.push({...doc.data(),id:id})
+      events.sort(this.orderByDate);
+      this.setState({events:events})
+    }
   }
   updateEvents=(doc)=>{
     let update = doc.data().events;
     let events = this.state.events;
     update.map(id=>{
       dbo.getEventData(id).then(event=>{
-        this.eventSnapshot(id);
         let objEvent = {...event.data(),id:id}
         if(events.filter(el=>(el.id===id)).length>=1){
           let index = events.indexOf(events.filter(el=>(el.id===id)))
@@ -77,7 +88,10 @@ class Home extends Component{
         }else{
           events.push(objEvent)
         }
+        events.sort(this.orderByDate)
         this.setState({events:events})
+      }).then(_=>{
+        this.eventSnapshot(id);
       })
     })
   }
