@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
+import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-import ModalSelector from 'react-native-modal-selector'
 
 class GroupForm extends Component{
   constructor(props){

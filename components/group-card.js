@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import { StyleSheet, View, Button, FlatList } from 'react-native';
 import GroupCard from '../components/group-card'
 
 import { connect } from 'react-redux'

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import EventForm from '../components/event-form';
 
 import { connect } from 'react-redux'

@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, Text, StyleSheet } from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
 import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'

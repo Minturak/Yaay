@@ -5,8 +5,6 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import {dbo} from '../dataObjects/dbo';
-
 class Invitation extends Component{
   constructor(props){
     super(props)

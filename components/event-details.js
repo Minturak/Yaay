@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Picker, Button,
-  Switch} from 'react-native';
+import {Item, Input } from 'native-base'
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp

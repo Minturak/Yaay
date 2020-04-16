@@ -1,5 +1,4 @@
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
 import GroupForm from "../components/group-form"
 
 import { connect } from 'react-redux'

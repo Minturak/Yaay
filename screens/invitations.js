@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -11,8 +11,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { connect } from 'react-redux'
-import { setCategories } from '../redux/actions/setCategories';
-import { setInvitations } from '../redux/actions/setInvitations';
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../dataObjects/dbo';

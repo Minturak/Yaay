@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import {Item, Label, Input } from 'native-base'
-import {TextField} from '@material-ui/core';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 class SignUpForm extends Component{
   constructor(props){
