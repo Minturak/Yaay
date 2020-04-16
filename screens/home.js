@@ -50,13 +50,34 @@ class Home extends Component{
       this.updateEvents(doc);
     })
   }
-  updateEvents=(doc)=>{
-    let newEvents = doc.data().events||[];
+  eventSnapshot=(id)=>{
+    const event = db.collection('events').doc(id);
+    const eventObserver = event.onSnapshot(doc=>{
+      this.updateEvent(doc,id);
+    })
+  }
+  updateEvent=(doc,id)=>{
     let events = this.state.events;
-    newEvents.map(id=>{
-      dbo.getEventData(id).then(data=>{
-        events.push({...data.data(),id:id})
-        this.setState({events:events});
+    let index = events.indexOf(el=>el.id===id)
+    events.splice(index,1);
+    events.push({...doc.data(),id:id})
+    this.setState({events:events})
+  }
+  updateEvents=(doc)=>{
+    let update = doc.data().events;
+    let events = this.state.events;
+    update.map(id=>{
+      dbo.getEventData(id).then(event=>{
+        this.eventSnapshot(id);
+        let objEvent = {...event.data(),id:id}
+        if(events.filter(el=>(el.id===id)).length>=1){
+          let index = events.indexOf(events.filter(el=>(el.id===id)))
+          events.splice(index,1)
+          events.push(objEvent)
+        }else{
+          events.push(objEvent)
+        }
+        this.setState({events:events})
       })
     })
   }

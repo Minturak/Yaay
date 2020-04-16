@@ -110,10 +110,16 @@ class Dbo{
   async addEventToGroup(eventId,groupId){
     let events=[]
     db.collection('groups').doc(groupId).get().then(doc=>{
-      events = doc.data().events||[];
+      events = doc.data().events;
+    }).then(_=>{
+      if(events!==undefined){
+        events.push(eventId);
+      }else{
+        events=[eventId]
+      }
+    }).then(_=>{
+      db.collection('groups').doc(groupId).update({events:events})
     })
-    events.push(eventId);
-    db.collection('groups').doc(groupId).update({events:events})
   }
   async getEventData(id){
     return db.collection('events').doc(id).get();
