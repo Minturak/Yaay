@@ -50,13 +50,20 @@ class Dbo{
     db.collection('groups').doc(id).update({name:name,description:description,category:category})
   }
   async addInvitationToUser(userId,groupId,data){
-    let invitations = data.invitations || [];
-    if(!invitations.includes(groupId)){
-      invitations.push(groupId);
-      db.collection('users').doc(userId).update({
-        invitations:invitations
-      })
-    }
+    let groups
+    db.collection('users').doc(userId).get().then(doc=>{
+      groups = doc.data().groups;
+      console.log(groups.includes(groupId));
+      if(!groups.includes(groupId)){
+        let invitations = data.invitations || [];
+        if(!invitations.includes(groupId)){
+          invitations.push(groupId);
+          db.collection('users').doc(userId).update({
+            invitations:invitations
+          })
+        }
+      }
+    })
   }
   async removeInvitation(userId,groupId){
     let invitations=[];
