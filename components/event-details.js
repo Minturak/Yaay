@@ -31,6 +31,7 @@ class EventDetails extends Component{
     this.toggleButtons();
   }
   render(){
+    console.log(this.props);
     let event = this.props.event;
     return(
       <View style={styles.container}>
