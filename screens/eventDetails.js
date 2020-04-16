@@ -1,56 +1,60 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, Text, StyleSheet } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
-import moment from "moment";
+import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
+import {dbo} from '../dataObjects/dbo';
+import {db} from '../firebase';
 
 class EventDetailsScreen extends Component{
   constructor(props){
     super(props)
-
+    this.state={
+      event:this.props.event,
+    }
+  }
+  componentDidMount=_=>{
+    this.snapshotEvent(this.props.event.id);
+  }
+  snapshotEvent=(id)=>{
+    let eventListener = db.collection('events').doc(id).onSnapshot(doc=>{
+      this.updateEvent(doc,id);
+    })
+  }
+  updateEvent=(doc,id)=>{
+    console.log(id);
+    console.log(doc.data());
+    this.setState({event:{...doc.data(),id:id}})
+  }
+  isPresent=(uid)=>{
+    dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'presents');
+  }
+  isAbsent=(uid)=>{
+    dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'absents');
+  }
+  mayBePresent=(uid)=>{
+    dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'maybe');
   }
   render(){
-    let event = this.props.event;
     return(
-      <View style={styles.container}>
-        <Text style={styles.title}>{event.name}</Text>
-        <Text>{event.desc}</Text>
-        <View style={styles.date}>
-          <Text>Le {moment(new Date(event.date.seconds*1000)).format("D.MM.YYYY ")}</Text>
-          {event.allDay ?(
-              <Text>toute la journée</Text>
-            ):(
-              <Text>de {moment(new Date(event.startTime.seconds*1000)).format("HH:mm")} à
-                {moment(new Date(event.endTime.seconds*1000)).format(" HH:mm")}</Text>
-            )
-          }
-        </View>
-        <Text>Entre {event.minUser} et {event.maxUser} participants</Text>
-      </View>
+      <EventDetails
+        event={this.state.event}
+        user={this.props.user}
+        isPresent={this.isPresent}
+        isAbsent={this.isAbsent}
+        mayBePresent={this.mayBePresent}
+      />
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    marginTop:hp('2%'),
-    marginLeft:wp('3%'),
-    marginRight:wp('3%'),
-    padding:hp('2%'),
-  },
-  title:{
-    fontSize:18
-  },
-  date:{
-    flexDirection:'row',
-  }
-});
+
 const mapStateToProps = state => ({
   event: state.event,
+  user: state.user,
 });
 export default connect(mapStateToProps)(EventDetailsScreen);

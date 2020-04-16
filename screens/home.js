@@ -50,13 +50,48 @@ class Home extends Component{
       this.updateEvents(doc);
     })
   }
-  updateEvents=(doc)=>{
-    let newEvents = doc.data().events||[];
+  eventSnapshot=(id)=>{
+    const event = db.collection('events').doc(id);
+    const eventObserver = event.onSnapshot(doc=>{
+      this.updateEvent(doc,id);
+    })
+  }
+  orderByDate=(a,b)=>{
+    if ( a.date.seconds < b.date.seconds ){
+      return -1;
+    }
+    if ( a.date.seconds > b.date.seconds ){
+      return 1;
+    }
+    return 0;
+  }
+  updateEvent=(doc,id)=>{
     let events = this.state.events;
-    newEvents.map(id=>{
-      dbo.getEventData(id).then(data=>{
-        events.push(data.data())
-        this.setState({events:events});
+    let index = events.indexOf(events.filter(el=>(el.id===id))[0])
+    if(index>=0){
+      events.splice(index,1);
+      events.push({...doc.data(),id:id})
+      events.sort(this.orderByDate);
+      this.setState({events:events})
+    }
+  }
+  updateEvents=(doc)=>{
+    let update = doc.data().events;
+    let events = this.state.events;
+    update.map(id=>{
+      dbo.getEventData(id).then(event=>{
+        let objEvent = {...event.data(),id:id}
+        if(events.filter(el=>(el.id===id)).length>=1){
+          let index = events.indexOf(events.filter(el=>(el.id===id)))
+          events.splice(index,1)
+          events.push(objEvent)
+        }else{
+          events.push(objEvent)
+        }
+        events.sort(this.orderByDate)
+        this.setState({events:events})
+      }).then(_=>{
+        this.eventSnapshot(id);
       })
     })
   }
@@ -87,6 +122,15 @@ class Home extends Component{
       this.props.setCategories(categories);
     })
   }
+  isPresent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'presents');
+  }
+  isAbsent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'absents');
+  }
+  mayBePresent=(uid,eventId)=>{
+    dbo.setUserDisponibilityForEvent(uid,eventId,'maybe');
+  }
   render(){
     return(
       <View style={styles.container}>
@@ -95,7 +139,6 @@ class Home extends Component{
             <Text>Créer un événement</Text>
           </View>
         </TouchableHighlight>
-        <Text>Bienvenue sur Yaay !</Text>
         {this.state.invitations.length>0 &&
           <TouchableHighlight onPress={()=>this.props.navigation.navigate('Invitations')}>
             <View style={styles.invitations}>
@@ -105,7 +148,12 @@ class Home extends Component{
         }
         <FlatList
           data={this.state.events}
-          renderItem={({item})=><EventCard data={item} navigation={this.props.navigation}/>}
+          renderItem={({item})=><EventCard data={item}
+            navigation={this.props.navigation}
+            isPresent={this.isPresent}
+            isAbsent={this.isAbsent}
+            mayBePresent={this.mayBePresent}
+          />}
         />
       </View>
     )
