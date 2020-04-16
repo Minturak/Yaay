@@ -11,10 +11,24 @@ class EventDetailsScreen extends Component{
     super(props)
     this.state={
       event:this.props.event,
+      users:[],
+      presents:[],
+      maybe:[],
+      absents:[],
     }
   }
   componentDidMount=_=>{
     this.snapshotEvent(this.props.event.id);
+  }
+  getUsers=(presence)=>{
+    let ids = this.state.event[presence];
+    let users = [];
+    ids.map(id=>{
+      dbo.getUserData(id).then(doc=>{
+        users.push({...doc.data(),id:id})
+        this.setState({[presence]:users})
+      })
+    })
   }
   snapshotEvent=(id)=>{
     let eventListener = db.collection('events').doc(id).onSnapshot(doc=>{
@@ -23,6 +37,10 @@ class EventDetailsScreen extends Component{
   }
   updateEvent=(doc,id)=>{
     this.setState({event:{...doc.data(),id:id}})
+    this.getUsers("users");
+    this.getUsers("presents");
+    this.getUsers("maybe");
+    this.getUsers("absents");
   }
   isPresent=(uid)=>{
     dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'presents');
@@ -41,6 +59,10 @@ class EventDetailsScreen extends Component{
         isPresent={this.isPresent}
         isAbsent={this.isAbsent}
         mayBePresent={this.mayBePresent}
+        users={this.state.users}
+        presents={this.state.presents}
+        maybe={this.state.maybe}
+        absents={this.state.absents}
       />
     )
   }

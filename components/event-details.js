@@ -30,7 +30,6 @@ class EventDetails extends Component{
     this.toggleButtons();
   }
   render(){
-    console.log(this.props);
     let event = this.props.event;
     return(
       <View style={styles.container}>
@@ -68,6 +67,28 @@ class EventDetails extends Component{
                 <Text>Modifier ma présence</Text>
               </TouchableOpacity>
             )}
+        </View>
+        <View>
+          <Text>Présents : </Text>{
+            this.props.presents.map((user,key)=>{
+              return(<Text key={key}>{user.pseudo}</Text>)
+            })
+          }
+          <Text>Absents : </Text>{
+            this.props.absents.map((user,key)=>{
+              return(<Text key={key}>{user.pseudo}</Text>)
+            })
+          }
+          <Text>Peut-être : </Text>{
+            this.props.maybe.map((user,key)=>{
+              return(<Text key={key}>{user.pseudo}</Text>)
+            })
+          }
+          <Text>Pas répondu : </Text>{
+            this.props.users.map((user,key)=>{
+              return(<Text key={key}>{user.pseudo}</Text>)
+            })
+          }
         </View>
       </View>
     )

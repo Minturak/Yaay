@@ -70,9 +70,7 @@ class GroupDetailsScreen extends Component{
           console.log('Aucun utilisateur inscrit avec cet email!');
         }else{
           doc.forEach(user=>{
-            dbo.addInvitationToUser(user.id,this.props.group.id,user.data()).then(_=>{
-              this.handleAdding();
-            })
+            dbo.addInvitationToUser(user.id,this.props.group.id,user.data())
           })
         }
       })
