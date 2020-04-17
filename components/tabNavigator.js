@@ -14,6 +14,7 @@ import EditGroupScreen from "../screens/EditGroupScreen"
 import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";
+import Disposition from "../screens/disposition"
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -44,7 +45,8 @@ class TabNavigator extends Component{
         <HomeStack.Screen name="Login" component={Login} options={{ title: 'Connexion' }}/>
         <HomeStack.Screen name="SignUp" component={SignUp} options={{ title: 'Créer un compte' }}/>
         <HomeStack.Screen name="CreateEvent" component={CreateEvent} options={{ title: 'Créer un événement' }}/>
-        <GroupsStack.Screen name="EventDetailsScreen" component={EventDetailsScreen} options={{ title: 'Détails' }}/>
+        <HomeStack.Screen name="EventDetailsScreen" component={EventDetailsScreen} options={{ title: 'Détails' }}/>
+        <HomeStack.Screen name="Disposition" component={Disposition} options={{ title: 'Indiquer ses dispositions' }}/>
       </HomeStack.Navigator>
     )
   }

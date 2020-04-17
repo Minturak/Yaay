@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { useFonts } from '@use-expo/font';
+import { AppLoading } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
-
 import TabNavigator from "./components/tabNavigator";
-
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
 
@@ -27,11 +25,19 @@ if (!global.atob) { global.atob = decode }
 const store = configureStore();
 
 export default function App(){
-  return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <TabNavigator/>
-      </NavigationContainer>
-    </Provider>
-  );
+  let [fontsLoaded] = useFonts({
+    'FontAwesome': require('./node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }else{
+    return (
+      <Provider store={store}>
+        <NavigationContainer>
+          <TabNavigator/>
+        </NavigationContainer>
+      </Provider>
+    );
+  }
 }

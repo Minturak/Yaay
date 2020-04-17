@@ -139,6 +139,11 @@ class Home extends Component{
             <Text>Créer un événement</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
+          <View style={styles.button}>
+            <Text>Indiquer mes dispositions</Text>
+          </View>
+        </TouchableOpacity>
         {this.state.invitations.length>0 &&
           <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
             <View style={styles.invitations}>

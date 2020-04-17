@@ -1,0 +1,100 @@
+import React, { Component } from 'react';
+import {Item, Label, Input } from 'native-base'
+import { CheckBox } from 'react-native-elements'
+import { StyleSheet, Text, View, TouchableOpacity, Picker} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
+
+class DispositionForm extends Component{
+  constructor(props){
+    super(props)
+    this.state={
+      group:this.props.groups[0].id,
+      name:'',
+      desc:'',
+      checked:false,
+    }
+  }
+  render(){
+    return(
+      <View style={styles.container}>
+        <Text style={styles.title}>Nouvel disposition</Text>
+        <Picker
+          style={styles.picker}
+          selectedValue={this.state.group}
+          onValueChange={(itemValue)=>this.setState({group:itemValue})}
+        >
+          {this.props.groups.map(group=>{
+            return(<Picker.Item key={group.id} label={group.data.name} value={group.id}/>)
+          })}
+        </Picker>
+        <Item floatingLabel style={styles.itemContainer}>
+            <Label>Nom</Label>
+            <Input
+              style={styles.input}
+              onChangeText={(text) => this.setState({name: text})}
+              autoCapitalize="sentences"
+              autoCorrect={false}
+              returnKeyType="next"
+            />
+        </Item>
+        <Item floatingLabel style={styles.itemContainer}>
+            <Label>Description</Label>
+            <Input
+              style={styles.input}
+              onChangeText={(text) => this.setState({desc: text})}
+              autoCapitalize="sentences"
+              multiline={true}
+              autoCorrect={false}
+              returnKeyType="next"
+            />
+        </Item>
+        <View>
+          <CheckBox
+            title='Click Here'
+            checked={this.state.checked}
+          />
+          <CheckBox
+            title='Click Here'
+            checked={this.state.checked}
+          />
+          <CheckBox
+            title='Click Here'
+            checked={this.state.checked}
+          />
+        </View>
+      </View>
+    )
+  }
+}
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+  },
+  itemContainer: {
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
+  signUpButton: {
+    backgroundColor: '#249E6B',
+    alignItems: 'center',
+    padding: 10,
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
+  picker:{
+    marginTop: hp('4%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
+  title:{
+    marginTop:hp('4%'),
+    fontSize: 32,
+    textAlign:'center'
+  },
+});
+export default DispositionForm;
