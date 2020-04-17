@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import firebase from "firebase";
 import {db} from '../firebase';
+import { DatePicker } from 'native-base';
 
 class Dbo{
   constructor(){
@@ -173,6 +174,38 @@ class Dbo{
       }
     }
     db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
+  }
+  async addDispo(name,desc,groupId,dates){
+    let members = []
+    this.getGroupData(groupId).then(doc=>{
+      members.push(...doc.data().admins||[]);
+      members.push(...doc.data().members||[]);
+      members.push(...doc.data().organizers||[]);
+    }).then(_=>{
+      db.collection('dispos').add({
+        name:name,
+        desc:desc,
+        group:groupId,
+        dates:dates,
+        members:members,
+      }).then(docRef=>{
+        this.addDispoToGroup(groupId,docRef.id)
+      })
+    })
+  }
+  async addDispoToGroup(groupId,dispoId){
+    let dispos = [];
+    this.getGroupData(groupId).then(doc=>{
+      dispos=doc.data().dispos;
+    }).then(_=>{
+      if(dispos!==undefined){
+        dispos.push(dispoId)
+      }else{
+        dispos=[dispoId]
+      }
+    }).then(_=>{
+      db.collection('groups').doc(groupId).update({dispos:dispos})
+    })
   }
 }
 

@@ -6,6 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import moment from "moment"
 
 class DispositionForm extends Component{
   constructor(props){
@@ -14,10 +15,31 @@ class DispositionForm extends Component{
       group:this.props.groups[0].id,
       name:'',
       desc:'',
-      checked:false,
+      dates:[],
     }
   }
+  componentDidMount(){
+    this.setDates();
+  }
+  setDates(){
+    let today = new Date();
+    let dates = [];
+    for(let i = 0;i<=5;i++){
+      dates[i] = {date:today.setDate(today.getDate()+1),selected:false,id:i};
+    }
+    this.setState({dates:dates});
+  }
+  handleCheck=(evt)=>{
+    let dates = this.state.dates;
+    dates[evt.id]={date:evt.date,selected:!evt.selected,id:evt.id};
+    this.setState({dates:dates})
+  }
+  handleSave=_=>{
+    this.props.handleSave(this.state);
+  }
   render(){
+    console.log(this.props);
+    
     return(
       <View style={styles.container}>
         <Text style={styles.title}>Nouvel disposition</Text>
@@ -51,20 +73,24 @@ class DispositionForm extends Component{
               returnKeyType="next"
             />
         </Item>
-        <View>
-          <CheckBox
-            title='Click Here'
-            checked={this.state.checked}
-          />
-          <CheckBox
-            title='Click Here'
-            checked={this.state.checked}
-          />
-          <CheckBox
-            title='Click Here'
-            checked={this.state.checked}
-          />
+        <View style={styles.checkBoxContainer}>
+          {this.state.dates.map((date,i)=>{
+            return(
+              <CheckBox
+                key={i-1}
+                title={moment(date.date).format("dddd DD.MM")}
+                checked={date.selected}
+                containerStyle={styles.checkBox}
+                onPress={()=>{this.handleCheck(date)}}
+              />
+            )
+          })}
         </View>
+        <TouchableOpacity onPress={this.handleSave}>
+          <View style={styles.saveButton}>
+            <Text style={{color:'#ffffff'}}>Créer</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -78,7 +104,7 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
   },
-  signUpButton: {
+  saveButton: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
@@ -96,5 +122,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign:'center'
   },
+  checkBoxContainer:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    justifyContent: 'center',
+  },
+  checkBox:{
+    width:wp('30%'),
+  }
 });
 export default DispositionForm;
