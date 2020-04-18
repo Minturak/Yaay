@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from "firebase";
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 
 class CreateEvent extends Component{
   handleSubmit=(state)=>{

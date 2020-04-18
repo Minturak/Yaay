@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import DispositionForm from '../components/disposition-form';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import {dbo} from "../dataObjects/dbo"
+import {dbo} from "../api/dbo"
 
 class Disposition extends Component{
   handleSave=(data)=>{
-    console.log('received');
-    
     dbo.addDispo(data.name,data.desc,data.group,data.dates).then(_=>{
       this.props.navigation.navigate('Home');
     });

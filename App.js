@@ -27,6 +27,8 @@ const store = configureStore();
 export default function App(){
   let [fontsLoaded] = useFonts({
     'FontAwesome': require('./node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf'),
+    'Ionicons': require('./node_modules/react-native-vector-icons/Fonts/Ionicons.ttf'),
+    'MaterialIcons': require('./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
   });
 
   if (!fontsLoaded) {

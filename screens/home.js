@@ -16,7 +16,7 @@ import { setInvitations } from '../redux/actions/setInvitations';
 import { setGroups } from '../redux/actions/setGroups'
 import { bindActionCreators } from 'redux';
 
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
 class Home extends Component{
@@ -25,6 +25,7 @@ class Home extends Component{
     this.state={
       invitations:[],
       events:[],
+      dispos:[],
     }
   }
   componentDidMount(){
@@ -48,6 +49,7 @@ class Home extends Component{
     const group = db.collection('groups').doc(id);
     const groupObserv = group.onSnapshot(doc=>{
       this.updateEvents(doc);
+      this.updateDispos(doc);
     })
   }
   eventSnapshot=(id)=>{
@@ -64,6 +66,10 @@ class Home extends Component{
       return 1;
     }
     return 0;
+  }
+  updateDispos=(doc)=>{
+    let dispos = doc.data().dispos||[];
+    this.setState({dispos:dispos})
   }
   updateEvent=(doc,id)=>{
     let events = this.state.events;
@@ -134,6 +140,7 @@ class Home extends Component{
   render(){
     return(
       <View style={styles.container}>
+        <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
           <View style={styles.button}>
             <Text>Créer un événement</Text>
@@ -146,11 +153,20 @@ class Home extends Component{
         </TouchableOpacity>
         {this.state.invitations.length>0 &&
           <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
-            <View style={styles.invitations}>
+            <View style={styles.button}>
               <Text>Nouvels invitations !</Text>
             </View>
           </TouchableOpacity>
         }
+        {this.state.dispos.length>0 &&
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
+            <View style={styles.button}>
+              <Text>Nouvels dispositions</Text>
+            </View>
+          </TouchableOpacity>
+        }
+        </View>
+        <View>
         <FlatList
           data={this.state.events}
           renderItem={({item})=><EventCard data={item}
@@ -160,6 +176,7 @@ class Home extends Component{
             mayBePresent={this.mayBePresent}
           />}
         />
+        </View>
       </View>
     )
   }
@@ -179,10 +196,15 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
-    padding: 10,
-    marginTop: hp('4%'),
-    marginLeft: wp('9%'),
-    marginRight: wp('9%'),
+    padding: wp('2%'),
+    marginTop: hp('2%'),
+    marginLeft: wp('2%'),
+    marginRight: wp('2%'),
+  },
+  buttonsContainer:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    justifyContent:'center'
   },
 });
 const mapStateToProps = state => ({

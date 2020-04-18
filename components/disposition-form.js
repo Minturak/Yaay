@@ -38,8 +38,6 @@ class DispositionForm extends Component{
     this.props.handleSave(this.state);
   }
   render(){
-    console.log(this.props);
-    
     return(
       <View style={styles.container}>
         <Text style={styles.title}>Nouvel disposition</Text>

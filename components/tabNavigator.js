@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import Ionicons from "react-native-vector-icons/Ionicons"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Home from "../screens/home"
 import Login from "../screens/login"
 import SignUp from "../screens/signUp"
@@ -15,6 +17,8 @@ import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";
 import Disposition from "../screens/disposition"
+import DispositionsList from "../screens/dispositions";
+import DispositionDetails from "../screens/dispositionDetails";
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -47,15 +51,27 @@ class TabNavigator extends Component{
         <HomeStack.Screen name="CreateEvent" component={CreateEvent} options={{ title: 'Créer un événement' }}/>
         <HomeStack.Screen name="EventDetailsScreen" component={EventDetailsScreen} options={{ title: 'Détails' }}/>
         <HomeStack.Screen name="Disposition" component={Disposition} options={{ title: 'Indiquer ses dispositions' }}/>
+        <HomeStack.Screen name="Dispositions" component={DispositionsList} options={{ title: 'Liste des dispositions' }}/>
+        <HomeStack.Screen name="DispositionDetails" component={DispositionDetails} options={{ title: 'Détails' }}/>
       </HomeStack.Navigator>
     )
   }
   render(){
     return(
-      <Tabs.Navigator tabBarOptions={{activeTintColor:'#249E6B'}}>
-        <Tabs.Screen name="Home" component={this.homeScreens} />
+      <Tabs.Navigator 
+        tabBarOptions={{activeTintColor:'#249E6B',showIcon: true}}
+        screenOptions={({route})=>({
+          tabBarIcon:()=>{
+            let iconName;
+            if(route.name==="Accueil"){return <Ionicons name={"md-home"} size={30} color={"#444444"}/>}
+            else if(route.name==="Groupes"){return <MaterialIcons name={"group"} size={30} />}
+            return <Ionicons name={iconName} size={30} color={"#444444"}/>
+          }}
+        )}
+      >
+        <Tabs.Screen name="Accueil" component={this.homeScreens}/>
         {this.props.user!==undefined &&
-          <Tabs.Screen name="Groups" component={this.groupsScreens} />
+          <Tabs.Screen name="Groupes" component={this.groupsScreens}/>
         }
       </Tabs.Navigator>
     )

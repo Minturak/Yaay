@@ -7,7 +7,7 @@ import { setGroups } from '../redux/actions/setGroups';
 import { bindActionCreators } from 'redux';
 
 import firebase from "firebase";
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
 class ListGroups extends Component{
