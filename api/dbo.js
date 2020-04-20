@@ -84,16 +84,21 @@ class Dbo{
     let members = [];
     let users = [];
     let events = [];
+    let dispos = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
       users = doc.data().users;
       events = doc.data().events;
+      dispos = doc.data().dispos;
       members.push(idUser);
       users.push(idUser);
     }).then(_=>{
       db.collection('groups').doc(idGroup).update({members:members,users:users})
       events.map(eventId=>{
         this.addUserToEvent(eventId,idUser);
+      })
+      dispos.map(dispoId=>{
+        this.addUserToDispo(dispoId,idUser);
       })
     })
   }
@@ -104,6 +109,15 @@ class Dbo{
       users.push(uid);
     }).then(_=>{
       db.collection('events').doc(eventId).update({users:users})
+    })
+  }
+  async addUserToDispo(dispoId,uid){
+    let users = []
+    db.collection('dispos').doc(dispoId).get().then(doc=>{
+      user=doc.data().members;
+      users.push(uid)
+    }).then(_=>{
+      db.collection('dispos').doc(dispoId).update({users:users})
     })
   }
   async createEvent(data){
