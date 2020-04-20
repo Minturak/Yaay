@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { connect } from 'react-redux'
+import DispositionDetails from "../components/disposition-details"
 
-class DispositionDetails extends Component {
+class DispositionDetailsScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
 
   render() {
     return (
-      <View>
-        <Text> dispositionDetails </Text>
-      </View>
+      <DispositionDetails dispo={this.props.dispo} user={this.props.user}/>
     );
   }
 }
-
-export default DispositionDetails;
+const mapStateToProps = state => ({
+  dispo:state.dispo,
+  user:state.user
+});
+export default connect (mapStateToProps)(DispositionDetailsScreen);
