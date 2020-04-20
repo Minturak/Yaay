@@ -69,6 +69,8 @@ class Home extends Component{
   }
   updateDispos=(doc)=>{
     let dispos = doc.data().dispos||[];
+    console.log(dispos);
+    
     this.setState({dispos:dispos})
   }
   updateEvent=(doc,id)=>{
@@ -81,25 +83,30 @@ class Home extends Component{
       this.setState({events:events})
     }
   }
-  updateEvents=(doc)=>{
+  updateEvents=(doc)=>{    
     let update = doc.data().events;
     let events = this.state.events;
-    update.map(id=>{
-      dbo.getEventData(id).then(event=>{
-        let objEvent = {...event.data(),id:id}
-        if(events.filter(el=>(el.id===id)).length>=1){
-          let index = events.indexOf(events.filter(el=>(el.id===id)))
-          events.splice(index,1)
+    if(update!==undefined){
+      update.map(id=>{
+        dbo.getEventData(id).then(event=>{
+          let objEvent = {...event.data(),id:id}
+          let index =-1;
+          if(events.length>0){
+            for(let i=0;i<=events.length-1;i++){
+              if(events[i].id===id){index=i}
+            }
+            if(index>=0){
+              events.splice(index,1);
+            }
+          }
           events.push(objEvent)
-        }else{
-          events.push(objEvent)
-        }
-        events.sort(this.orderByDate)
-        this.setState({events:events})
-      }).then(_=>{
-        this.eventSnapshot(id);
+          events.sort(this.orderByDate)
+          this.setState({events:events})
+        }).then(_=>{
+          this.eventSnapshot(id);
+        })
       })
-    })
+    }
   }
   updateInvites=(doc)=>{
     let invites = doc.data().invitations||[];
@@ -166,16 +173,16 @@ class Home extends Component{
           </TouchableOpacity>
         }
         </View>
-        <View>
-        <FlatList
-          data={this.state.events}
-          renderItem={({item})=><EventCard data={item}
-            navigation={this.props.navigation}
-            isPresent={this.isPresent}
-            isAbsent={this.isAbsent}
-            mayBePresent={this.mayBePresent}
-          />}
-        />
+        <View style={styles.listContainer}>
+          <FlatList
+            data={this.state.events}
+            renderItem={({item})=><EventCard data={item}
+              navigation={this.props.navigation}
+              isPresent={this.isPresent}
+              isAbsent={this.isAbsent}
+              mayBePresent={this.mayBePresent}
+            />}
+          />
         </View>
       </View>
     )
@@ -184,6 +191,9 @@ class Home extends Component{
 const styles = StyleSheet.create({
   container:{
     alignItems:'center',
+  },
+  listContainer:{
+    marginBottom:hp('27%'),
   },
   invitations:{
     alignItems:'center',

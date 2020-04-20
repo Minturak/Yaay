@@ -21,7 +21,7 @@ class GroupFormScreen extends Component{
         dbo.addGroupToUser(idUser,doc,docRef.id);
       })
     });
-    this.props.navigation.navigate('ViewGroups');
+    this.props.navigation.navigate('ListGroups');
   }
   render(){
     return(
