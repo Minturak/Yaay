@@ -124,12 +124,14 @@ class Dbo{
       presents:[],
       absents:[],
       maybe:[],
+      noresponse:[],
     }
     this.getGroupData(data.group).then(doc=>{
       users.push(...doc.data().admins||[]);
       users.push(...doc.data().members||[]);
       users.push(...doc.data().organizers||[]);
       event.users=users
+      event.noresponse=users
     }).then(_=>{
       result = db.collection('events').add(event).then(docRef=>{
         this.addEventToGroup(docRef.id,data.group)
@@ -154,18 +156,25 @@ class Dbo{
     return db.collection('events').doc(id).get();
   }
   async setUserDisponibilityForEvent(uid,eventId,dispo){
+    console.log('a');
     db.collection('events').doc(eventId).get().then(doc=>{
-      let inUsers = doc.data().users.includes(uid)||false;
+      console.log(doc.data().noresponse);
+      console.log(uid);      
+      let inNoResponse = doc.data().noresponse.includes(uid)||false;
       let inPresents = doc.data().presents.includes(uid)||false;
       let inAbsents = doc.data().absents.includes(uid)||false;
       let inMayBe = doc.data().maybe.includes(uid)||false;
-      if(inUsers){
-        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'users');
+      if(inNoResponse){
+        console.log('1');
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'noresponse');
       }else if(inPresents){
+        console.log('2');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'presents');
       }else if(inAbsents){
+        console.log('3');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'absents');
       }else if(inMayBe){
+        console.log('4');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'maybe');
       }
     })
@@ -176,12 +185,21 @@ class Dbo{
     inColl.splice(index,1);
     let updateCol = doc.data()[dispo];
     if(!updateCol.includes(uid)){
-      if(dispo==="presents" && updateCol.length<doc.data().maxUser){
+      if(dispo==="presents"){
+        if(updateCol.length<doc.data().maxUser && doc.data.maxUser>0){
+          console.log('?');
           updateCol.push(uid);
+        }else{
+          console.log('$');
+          updateCol.push(uid);
+        }
       }else if(dispo!=="presents"){
-          updateCol.push(uid);
+        console.log('!');
+        updateCol.push(uid);
       }
     }
+    console.log(updateCol);
+    
     db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
   }
   async addDispo(name,desc,groupId,dates){

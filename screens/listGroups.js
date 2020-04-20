@@ -6,8 +6,6 @@ import { connect } from 'react-redux'
 import { setGroups } from '../redux/actions/setGroups';
 import { bindActionCreators } from 'redux';
 
-import firebase from "firebase";
-import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
 class ListGroups extends Component{
@@ -20,9 +18,10 @@ class ListGroups extends Component{
   componentDidMount(){
     if(this.props.user===undefined){
       this.props.navigation.navigate('Home')
+    }else{
+      var uid = this.props.user.user.uid;
+      this.listenerGroups(uid);
     }
-    var uid = firebase.auth().currentUser.uid;
-    this.listenerGroups(uid);
   }
   listenerGroups(uid){
     db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
