@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-
 import firebase from "firebase";
 import {db} from '../firebase';
-import { DatePicker } from 'native-base';
 
 class Dbo{
   constructor(){
@@ -29,10 +26,19 @@ class Dbo{
     return db.collection('constants').doc('categories').get();
   }
   async createGroup(name,description,category,admin){
-    return db.collection('groups').add({name:name,description:description,category:category,admins:[admin]})
+    return db.collection('groups').add({
+      name:name,
+      description:description,
+      category:category,
+      admins:[admin],
+      users:[admin],
+      members:[],
+      organizers:[],
+      events:[],
+      dispos:[]
+    })
   }
   async addGroupToUser(uid,doc,groupId){
-    // let groupsOfUser = [];
     let groupsOfUser = doc.data().groups || [];
     //si il n'a aucun groupe, on crée le tableau groups dans le user
     if(groupsOfUser===[]){
@@ -77,13 +83,16 @@ class Dbo{
   }
   async addMemberToGroup(idUser,idGroup){
     let members = [];
+    let users = [];
     let events = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
+      users = doc.data().users;
       events = doc.data().events;
       members.push(idUser);
+      users.push(idUser);
     }).then(_=>{
-      db.collection('groups').doc(idGroup).update({members:members})
+      db.collection('groups').doc(idGroup).update({members:members,users:users})
       events.map(eventId=>{
         this.addUserToEvent(eventId,idUser);
       })
