@@ -35,9 +35,11 @@ class Home extends Component{
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
-      this.listenerInvites();
-      this.listenerEvents();
-      this.listenerGroups(this.props.user.user.uid)
+      let uid = this.props.user.user.uid;
+      this.listenerInvites(uid);
+      this.listenerEvents(uid);
+      this.listenerGroups(uid)
+      this.listenerDispos(uid)
     }
   }
   listenerGroups(uid){
@@ -49,15 +51,24 @@ class Home extends Component{
       this.props.setGroups(groups);
     })
   }
-  listenerInvites(){
-    db.collection('users').doc(this.props.user.user.uid).onSnapshot(doc=>{
+  listenerDispos(uid){
+    db.collection('dispos').where("members","array-contains",uid).onSnapshot(doc=>{
+      let dispos = [];
+      doc.forEach(dispo=>{
+        dispos.push({id:dispo.id,...dispo.data()})
+      })
+      this.setState({dispos:dispos})
+    })
+  }
+  listenerInvites(uid){
+    db.collection('users').doc(uid).onSnapshot(doc=>{
       let invites = doc.data().invitations||[];
     this.setState({invitations:invites});
     this.props.setInvitations(invites);
     });
   }
-  listenerEvents(){
-    db.collection('events').where("users","array-contains",this.props.user.user.uid).onSnapshot(doc=>{
+  listenerEvents(uid){
+    db.collection('events').where("users","array-contains",uid).onSnapshot(doc=>{
       let events = [];
       doc.forEach(event=>{
         events.push({id:event.id,...event.data()})
@@ -74,10 +85,6 @@ class Home extends Component{
       return 1;
     }
     return 0;
-  }
-  updateDispos=(doc)=>{
-    let dispos = doc.data().dispos||[];
-    this.setState({dispos:dispos})
   }
   fetchCategories(){
     let categories=[];

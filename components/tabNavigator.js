@@ -18,7 +18,7 @@ import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";
 import Disposition from "../screens/disposition"
 import DispositionsList from "../screens/dispositions";
-import DispositionDetails from "../screens/dispositionDetails";
+import DispositionDetailsScreen from "../screens/dispositionDetails";
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -52,7 +52,7 @@ class TabNavigator extends Component{
         <HomeStack.Screen name="EventDetailsScreen" component={EventDetailsScreen} options={{ title: 'Détails' }}/>
         <HomeStack.Screen name="Disposition" component={Disposition} options={{ title: 'Indiquer ses dispositions' }}/>
         <HomeStack.Screen name="Dispositions" component={DispositionsList} options={{ title: 'Liste des dispositions' }}/>
-        <HomeStack.Screen name="DispositionDetails" component={DispositionDetails} options={{ title: 'Détails' }}/>
+        <HomeStack.Screen name="DispositionDetails" component={DispositionDetailsScreen} options={{ title: 'Détails' }}/>
       </HomeStack.Navigator>
     )
   }

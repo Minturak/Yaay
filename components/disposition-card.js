@@ -15,28 +15,28 @@ class DispositionCard extends Component {
   render() {
     let dispo = this.props.dispo      
     return (
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('DispositionDetails')}>
-            <View style={styles.container}>
-                <Text style={styles.title}>{dispo.name}</Text>
-            </View>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={()=>this.props.selectDispo(dispo.id)}>
+        <View style={styles.container}>
+          <Text style={styles.title}>{dispo.name}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 }
 const styles = StyleSheet.create({
-    container: {
-      justifyContent: 'center',
-      marginTop:hp('2%'),
-      marginLeft:wp('3%'),
-      marginRight:wp('3%'),
-      borderWidth:1,
-      borderColor:'#ccc',
-      borderRadius:16,
-      padding:hp('2%'),
-      width:wp('90%'),
-    },
-    title:{
-      fontSize:18
-    },
+  container: {
+    justifyContent: 'center',
+    marginTop:hp('2%'),
+    marginLeft:wp('3%'),
+    marginRight:wp('3%'),
+    borderWidth:1,
+    borderColor:'#ccc',
+    borderRadius:16,
+    padding:hp('2%'),
+    width:wp('90%'),
+  },
+  title:{
+    fontSize:18
+  },
 })
 export default DispositionCard;
