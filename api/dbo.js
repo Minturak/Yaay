@@ -60,7 +60,6 @@ class Dbo{
     let groups
     db.collection('users').doc(userId).get().then(doc=>{
       groups = doc.data().groups;
-      console.log(groups.includes(groupId));
       if(!groups.includes(groupId)){
         let invitations = data.invitations || [];
         if(!invitations.includes(groupId)){
@@ -156,25 +155,18 @@ class Dbo{
     return db.collection('events').doc(id).get();
   }
   async setUserDisponibilityForEvent(uid,eventId,dispo){
-    console.log('a');
     db.collection('events').doc(eventId).get().then(doc=>{
-      console.log(doc.data().noresponse);
-      console.log(uid);      
       let inNoResponse = doc.data().noresponse.includes(uid)||false;
       let inPresents = doc.data().presents.includes(uid)||false;
       let inAbsents = doc.data().absents.includes(uid)||false;
       let inMayBe = doc.data().maybe.includes(uid)||false;
       if(inNoResponse){
-        console.log('1');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'noresponse');
       }else if(inPresents){
-        console.log('2');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'presents');
       }else if(inAbsents){
-        console.log('3');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'absents');
       }else if(inMayBe){
-        console.log('4');
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'maybe');
       }
     })
@@ -187,19 +179,14 @@ class Dbo{
     if(!updateCol.includes(uid)){
       if(dispo==="presents"){
         if(updateCol.length<doc.data().maxUser && doc.data.maxUser>0){
-          console.log('?');
           updateCol.push(uid);
         }else{
-          console.log('$');
           updateCol.push(uid);
         }
       }else if(dispo!=="presents"){
-        console.log('!');
         updateCol.push(uid);
       }
     }
-    console.log(updateCol);
-    
     db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
   }
   async addDispo(name,desc,groupId,dates){

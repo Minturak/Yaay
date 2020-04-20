@@ -35,27 +35,35 @@ class Home extends Component{
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
-      this.snapshot();
+      this.listenerInvites();
+      this.listenerEvents();
+      this.listenerGroups(this.props.user.user.uid)
     }
   }
-  snapshot(){
-    const doc = db.collection('users').doc(this.props.user.user.uid);
-    const observer = doc.onSnapshot(doc=>{
-      this.updateInvites(doc);
-      this.updateGroups(doc);
+  listenerGroups(uid){
+    db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
+      let groups=[];
+      doc.forEach(group=>{
+        groups.push({id:group.id,data:group.data()})
+      })
+      this.props.setGroups(groups);
     })
   }
-  groupSnapshot=(id)=>{
-    const group = db.collection('groups').doc(id);
-    const groupObserv = group.onSnapshot(doc=>{
-      this.updateEvents(doc);
-      this.updateDispos(doc);
-    })
+  listenerInvites(){
+    db.collection('users').doc(this.props.user.user.uid).onSnapshot(doc=>{
+      let invites = doc.data().invitations||[];
+    this.setState({invitations:invites});
+    this.props.setInvitations(invites);
+    });
   }
-  eventSnapshot=(id)=>{
-    const event = db.collection('events').doc(id);
-    const eventObserver = event.onSnapshot(doc=>{
-      this.updateEvent(doc,id);
+  listenerEvents(){
+    db.collection('events').where("users","array-contains",this.props.user.user.uid).onSnapshot(doc=>{
+      let events = [];
+      doc.forEach(event=>{
+        events.push({id:event.id,...event.data()})
+      })
+      events.sort(this.orderByDate);
+      this.setState({events:events})
     })
   }
   orderByDate=(a,b)=>{
@@ -69,62 +77,7 @@ class Home extends Component{
   }
   updateDispos=(doc)=>{
     let dispos = doc.data().dispos||[];
-    console.log(dispos);
-    
     this.setState({dispos:dispos})
-  }
-  updateEvent=(doc,id)=>{
-    let events = this.state.events;
-    let index = events.indexOf(events.filter(el=>(el.id===id))[0])
-    if(index>=0){
-      events.splice(index,1);
-      events.push({...doc.data(),id:id})
-      events.sort(this.orderByDate);
-      this.setState({events:events})
-    }
-  }
-  updateEvents=(doc)=>{    
-    let update = doc.data().events;
-    let events = this.state.events;
-    if(update!==undefined){
-      update.map(id=>{
-        dbo.getEventData(id).then(event=>{
-          let objEvent = {...event.data(),id:id}
-          let index =-1;
-          if(events.length>0){
-            for(let i=0;i<=events.length-1;i++){
-              if(events[i].id===id){index=i}
-            }
-            if(index>=0){
-              events.splice(index,1);
-            }
-          }
-          events.push(objEvent)
-          events.sort(this.orderByDate)
-          this.setState({events:events})
-        }).then(_=>{
-          this.eventSnapshot(id);
-        })
-      })
-    }
-  }
-  updateInvites=(doc)=>{
-    let invites = doc.data().invitations||[];
-    this.setState({invitations:invites});
-    this.props.setInvitations(invites);
-  }
-  updateGroups=(doc)=>{
-    let groupsIds = doc.data().groups||[];
-    let groups=[];
-    if(groupsIds.length>0){
-      groupsIds.map(id=>{
-        this.groupSnapshot(id);
-        dbo.getGroupData(id).then(data=>{
-          groups.push({data:data.data(),id:id})
-          this.props.setGroups(groups);
-        })
-      })
-    }
   }
   fetchCategories(){
     let categories=[];
