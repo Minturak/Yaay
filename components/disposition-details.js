@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity  } from 'react-native';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import {
   widthPercentageToDP as wp,
@@ -17,6 +17,7 @@ class DispositionDetails extends Component {
     };
   }
   toggleEdit=_=>{
+    this.setState({newDispos:this.props.userDispos})
     this.setState({edit:!this.state.edit})
   }
   saveChange=_=>{
@@ -37,7 +38,9 @@ class DispositionDetails extends Component {
   }
   render() {
     let dispo = this.props.dispo
-    let user = this.props.user    
+    let user = this.props.user
+    console.log(this.state.newDispos);
+    
     return (
       <View style={styles.root}>
         <Text style={styles.title}>Titre : {dispo.name}</Text>
@@ -72,7 +75,7 @@ class DispositionDetails extends Component {
                         <View style={styles.cell}>
                           {this.state.edit?(
                             <CheckBox
-                              checked={this.props.userDispos[date.id]}
+                              checked={this.state.newDispos[date.id]}
                               onPress={()=>{this.changeDispo(date.id)}}
                             />
                           ):(

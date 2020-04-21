@@ -38,8 +38,11 @@ class DispositionDetailsScreen extends Component {
         dbo.setDispos(uid,dispoId,id,available)
       }
     })
+    this.setState({userDispos:dates})
   }
   render() {
+    console.log(this.state.userDispos);
+    
     return (
       <DispositionDetails 
         dispo={this.props.dispo} 
