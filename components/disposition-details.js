@@ -1,47 +1,52 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity  } from 'react-native';
+import { CheckBox } from 'react-native-elements'
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import moment from "moment"
-import { dbo } from '../api/dbo';
 
 class DispositionDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      members:[],
+      edit:false,
+      newDispos:[],
     };
   }
-  componentDidMount=_=>{
-    let members=[];
-    this.props.dispo.members.map(uid=>{
-      dbo.getUserData(uid).then(doc=>{
-        members.push({id:uid,pseudo:doc.data().pseudo})
-      }).then(_=>{
-        this.setState({members:members})
-      })
-    })
+  toggleEdit=_=>{
+    this.setState({edit:!this.state.edit})
+  }
+  saveChange=_=>{
+    this.props.changeDispo(this.state.newDispos)
+    this.toggleEdit();
   }
   getName=(uid)=>{
     let userName='';
-    this.state.members.map(user=>{
+    this.props.members.map(user=>{
       if(uid===user.id){userName=user.pseudo}
     })
     return (<Text>{userName}</Text>);
   }
   changeDispo=(dateId)=>{
-    console.log(dateId);
-    this.props.changeDispo(dateId)
+    let dispos = this.state.newDispos;
+    dispos[dateId]=!dispos[dateId]
+    this.setState({newDispos:dispos})
   }
   render() {
     let dispo = this.props.dispo
-    let user = this.props.user
+    let user = this.props.user    
     return (
       <View style={styles.root}>
         <Text style={styles.title}>Titre : {dispo.name}</Text>
         <Text>Description : {dispo.desc}</Text>
+        {this.state.edit?(
+          <MaterialIcons name={"save"} size={30} style={styles.icon} onPress={this.saveChange}/>
+        ):(
+          <MaterialIcons name={"edit"} size={30} style={styles.icon} onPress={this.toggleEdit}/>
+        )}
         <View style={styles.tableContainer}>
           <View>
             <View style={styles.firstCell}></View>
@@ -65,15 +70,29 @@ class DispositionDetails extends Component {
                       if(uid===user.user.uid){
                         return(
                         <View style={styles.cell}>
-                          <TouchableOpacity onPress={()=>{this.changeDispo(date.id)}}>
-                            <Text>Hello</Text>
-                          </TouchableOpacity>
+                          {this.state.edit?(
+                            <CheckBox
+                              checked={this.props.userDispos[date.id]}
+                              onPress={()=>{this.changeDispo(date.id)}}
+                            />
+                          ):(
+                            date.available.includes(uid)?(
+                                <Text>Oui</Text>
+                              ):(
+                                <Text>Non</Text>
+                              )
+                          )}
                         </View>
                         )
                       }else{
                         return(
                           <View style={styles.cell}>
-                            <Text>{uid}</Text>
+                            {date.available.includes(uid)?(
+                                <Text>Oui</Text>
+                              ):(
+                                <Text>Non</Text>
+                              )
+                            }
                           </View>
                         )
                       }
@@ -95,37 +114,52 @@ const styles = StyleSheet.create({
   title:{
     fontSize:18
   },
+  icon:{
+    alignSelf:'flex-end'
+  },
   tableContainer:{
     flexDirection:'row',
     marginTop:hp('2%')
   },
   table:{
     flexDirection:'row',
-    borderWidth:1,
-    borderColor:'#ff0000',
   },
   thead:{
     borderWidth:1,
-    borderColor:'#000000',
+    borderLeftWidth:0,
     height:hp('5%'),
     paddingRight:wp('3%'),
     paddingLeft:wp('3%'),
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    maxHeight:hp('5%'),
+    minHeight:hp('5%'),
   },
   cell:{
-    borderWidth:1,
-    borderColor:'#0000ff',
+    borderBottomWidth:1,
+    borderRightWidth:1,
+    paddingHorizontal:wp('1%'),
+    paddingVertical:hp('1%'),
+    minHeight:hp('5%'),
+    maxHeight:hp('5%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex:1,
   },
   firstCell:{
-    borderWidth:1,
-    borderColor:'#00ffff',
-    height:hp('5%')
+    height:hp('5%'),
+    borderBottomWidth:1,
+    borderRightWidth:1,
   },
   cellFixed:{
     borderWidth:1,
-    borderColor:'#00ff00',
+    borderRightWidth:1,
+    borderTopWidth:0,
+    paddingHorizontal:wp('1%'),
+    paddingVertical:hp('1%'),
+    minHeight:hp('5%'),
+    maxHeight:hp('5%'),
   }
 });
 export default DispositionDetails;

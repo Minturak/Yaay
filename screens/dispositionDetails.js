@@ -6,11 +6,38 @@ import { dbo } from '../api/dbo';
 class DispositionDetailsScreen extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      members:[],
+      userDispos:[],
+    }
   }
-  changeDispo=(dateId)=>{
-    let dispoId = this.props.dispo.id;
-    let uid = this.props.user.user.uid;
-    dbo.changeDispo(uid,dateId,dispoId);
+  componentDidMount=_=>{
+    let members=[];
+    this.props.dispo.members.map(uid=>{
+      dbo.getUserData(uid).then(doc=>{
+        members.push({id:uid,pseudo:doc.data().pseudo})
+      }).then(_=>{
+        this.setState({members:members})
+      })
+    })
+    let userDispos = [];
+    this.props.dispo.dates.map(date=>{
+      if(date.available.includes(this.props.user.user.uid)){
+        userDispos.push(true)
+      }else{
+        userDispos.push(false)
+      }
+    })
+    this.setState({userDispos:userDispos})
+  }
+  changeDispo=(dates)=>{
+    let uid = this.props.user.user.uid
+    let dispoId = this.props.dispo.id
+    dates.map((available,id)=>{
+      if(available!==undefined){
+        dbo.setDispos(uid,dispoId,id,available)
+      }
+    })
   }
   render() {
     return (
@@ -18,6 +45,8 @@ class DispositionDetailsScreen extends Component {
         dispo={this.props.dispo} 
         user={this.props.user}
         changeDispo={this.changeDispo}
+        members={this.state.members}
+        userDispos={this.state.userDispos}
       />
     );
   }
