@@ -25,7 +25,7 @@ class DispositionForm extends Component{
     let today = new Date();
     let dates = [];
     for(let i = 0;i<=5;i++){
-      dates[i] = {date:today.setDate(today.getDate()+1),selected:false,id:i};
+      dates[i] = {date:today.setDate(today.getDate()+1),selected:false,id:i,available:[]};
     }
     this.setState({dates:dates});
   }

@@ -235,6 +235,20 @@ class Dbo{
       db.collection('groups').doc(groupId).update({dispos:dispos})
     })
   }
+  async changeDispo(uid,dateId,dispoId){
+    let dates = [];
+    db.collection('dispos').doc(dispoId).get().then(doc=>{
+      dates = doc.data().dates;
+      let index = dates[dateId].available.indexOf(uid);
+      if(index>=0){
+        dates[dateId].available.splice(index,1);
+      }else{
+        dates[dateId].available.push(uid);
+      }
+    }).then(_=>{
+      db.collection('dispos').doc(dispoId).update({dates:dates})
+    })
+  }
 }
 
 const dbo = new Dbo();

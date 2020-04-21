@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView  } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity  } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -23,7 +23,6 @@ class DispositionDetails extends Component {
         this.setState({members:members})
       })
     })
-    
   }
   getName=(uid)=>{
     let userName='';
@@ -32,15 +31,17 @@ class DispositionDetails extends Component {
     })
     return (<Text>{userName}</Text>);
   }
+  changeDispo=(dateId)=>{
+    console.log(dateId);
+    this.props.changeDispo(dateId)
+  }
   render() {
-    console.log(this.props.user);
-    
     let dispo = this.props.dispo
     let user = this.props.user
     return (
-      <View>
-        <Text>{dispo.name}</Text>
-        <Text>{dispo.desc}</Text>
+      <View style={styles.root}>
+        <Text style={styles.title}>Titre : {dispo.name}</Text>
+        <Text>Description : {dispo.desc}</Text>
         <View style={styles.tableContainer}>
           <View>
             <View style={styles.firstCell}></View>
@@ -64,7 +65,9 @@ class DispositionDetails extends Component {
                       if(uid===user.user.uid){
                         return(
                         <View style={styles.cell}>
-                          <Text>Hello</Text>
+                          <TouchableOpacity onPress={()=>{this.changeDispo(date.id)}}>
+                            <Text>Hello</Text>
+                          </TouchableOpacity>
                         </View>
                         )
                       }else{
@@ -86,11 +89,15 @@ class DispositionDetails extends Component {
   }
 }
 const styles = StyleSheet.create({
-  container:{
-    alignItems:'center',
+  root:{
+    padding:hp('2%')
+  },
+  title:{
+    fontSize:18
   },
   tableContainer:{
     flexDirection:'row',
+    marginTop:hp('2%')
   },
   table:{
     flexDirection:'row',
