@@ -112,12 +112,12 @@ class Dbo{
     })
   }
   async addUserToDispo(dispoId,uid){
-    let users = []
+    let members = []
     db.collection('dispos').doc(dispoId).get().then(doc=>{
-      user=doc.data().members;
-      users.push(uid)
+      members=doc.data().members;
+      members.push(uid)
     }).then(_=>{
-      db.collection('dispos').doc(dispoId).update({users:users})
+      db.collection('dispos').doc(dispoId).update({members:members})
     })
   }
   async createEvent(data){

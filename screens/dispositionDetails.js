@@ -41,15 +41,19 @@ class DispositionDetailsScreen extends Component {
     this.setState({userDispos:dates})
   }
   render() {
-    return (
-      <DispositionDetails 
-        dispo={this.props.dispo} 
-        user={this.props.user}
-        changeDispo={this.changeDispo}
-        members={this.state.members}
-        userDispos={this.state.userDispos}
-      />
-    );
+    if(this.state.userDispos.length>0 && this.state.members.length>0){
+      return (
+        <DispositionDetails 
+          dispo={this.props.dispo} 
+          user={this.props.user}
+          changeDispo={this.changeDispo}
+          members={this.state.members}
+          userDispos={this.state.userDispos}
+        />
+      );
+    }else{
+      return null
+    }
   }
 }
 const mapStateToProps = state => ({

@@ -16,6 +16,9 @@ class DispositionDetails extends Component {
       newDispos:[],
     };
   }
+  componentDidMount=_=>{
+    this.setState({newDispos:this.props.userDispos})
+  }
   toggleEdit=_=>{
     this.setState({newDispos:this.props.userDispos})
     this.setState({edit:!this.state.edit})
@@ -77,10 +80,10 @@ class DispositionDetails extends Component {
                               onPress={()=>{this.changeDispo(date.id)}}
                             />
                           ):(
-                            date.available.includes(uid)?(
-                                <Text>Oui</Text>
+                            this.state.newDispos[date.id]?(
+                                <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
                               ):(
-                                <Text>Non</Text>
+                                <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
                               )
                           )}
                         </View>
@@ -89,9 +92,9 @@ class DispositionDetails extends Component {
                         return(
                           <View style={styles.cell}>
                             {date.available.includes(uid)?(
-                                <Text>Oui</Text>
+                                <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
                               ):(
-                                <Text>Non</Text>
+                                <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
                               )
                             }
                           </View>
@@ -117,6 +120,12 @@ const styles = StyleSheet.create({
   },
   icon:{
     alignSelf:'flex-end'
+  },
+  iconCheck:{
+    color:"#249E6B",
+  },
+  iconCross:{
+    color:"#d93030"
   },
   tableContainer:{
     flexDirection:'row',
