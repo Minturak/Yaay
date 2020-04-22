@@ -170,38 +170,43 @@ class Dbo{
   }
   async setUserDisponibilityForEvent(uid,eventId,dispo){
     db.collection('events').doc(eventId).get().then(doc=>{
-      let inNoResponse = doc.data().noresponse.includes(uid)||false;
       let inPresents = doc.data().presents.includes(uid)||false;
       let inAbsents = doc.data().absents.includes(uid)||false;
       let inMayBe = doc.data().maybe.includes(uid)||false;
-      if(inNoResponse){
-        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'noresponse');
-      }else if(inPresents){
+      if(inPresents){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'presents');
       }else if(inAbsents){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'absents');
       }else if(inMayBe){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'maybe');
+      }else{
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,"null");
       }
     })
   }
   updateDisponibilitiesForEvent(uid,eventId,doc,dispo,inCollection){
-    let inColl = doc.data()[inCollection];
-    let index = inColl.indexOf(uid);
-    inColl.splice(index,1);
-    let updateCol = doc.data()[dispo];
-    if(!updateCol.includes(uid)){
-      if(dispo==="presents"){
-        if(updateCol.length<doc.data().maxUser && doc.data.maxUser>0){
-          updateCol.push(uid);
-        }else{
+    if(inCollection==="null"){
+      let updateCol = doc.data()[dispo]
+      updateCol.push(uid)
+      db.collection('events').doc(eventId).update({[dispo]:updateCol})
+    }else{
+      let inColl = doc.data()[inCollection];
+      let index = inColl.indexOf(uid);
+      inColl.splice(index,1);
+      let updateCol = doc.data()[dispo];
+      if(!updateCol.includes(uid)){
+        if(dispo==="presents"){
+          if(updateCol.length<doc.data().maxUser && doc.data.maxUser>0){
+            updateCol.push(uid);
+          }else{
+            updateCol.push(uid);
+          }
+        }else if(dispo!=="presents"){
           updateCol.push(uid);
         }
-      }else if(dispo!=="presents"){
-        updateCol.push(uid);
       }
+      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
     }
-    db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
   }
   async addDispo(name,desc,groupId,dates){
     let members = []

@@ -39,8 +39,6 @@ class DispositionDetails extends Component {
   render() {
     let dispo = this.props.dispo
     let user = this.props.user
-    console.log(this.state.newDispos);
-    
     return (
       <View style={styles.root}>
         <Text style={styles.title}>Titre : {dispo.name}</Text>

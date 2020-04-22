@@ -41,8 +41,6 @@ class DispositionDetailsScreen extends Component {
     this.setState({userDispos:dates})
   }
   render() {
-    console.log(this.state.userDispos);
-    
     return (
       <DispositionDetails 
         dispo={this.props.dispo} 
