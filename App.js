@@ -29,6 +29,7 @@ export default function App(){
     'FontAwesome': require('./node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf'),
     'Ionicons': require('./node_modules/react-native-vector-icons/Fonts/Ionicons.ttf'),
     'MaterialIcons': require('./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
+    'MaterialCommunityIcons': require('./node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
   });
 
   if (!fontsLoaded) {
