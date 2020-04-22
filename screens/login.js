@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 const firebase = require('firebase');
 
 class Login extends Component{

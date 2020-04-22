@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 
 import firebase from "firebase";
 import { db } from '../firebase'
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 
 class SignUp extends Component{
   handleSignUp=(email,password,pseudo)=>{

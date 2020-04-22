@@ -5,6 +5,7 @@ const initialState = {
   group:undefined,
   invitations:undefined,
   event:undefined,
+  dispo:undefined,
 }
 
 const connectReducer = (state = initialState, action)=>{
@@ -47,6 +48,12 @@ const connectReducer = (state = initialState, action)=>{
           event:action.payload
         }
         return nextState || state
+    case "SELECT_DISPO":
+      nextState={
+        ...state,
+        dispo:action.payload
+      }
+      return nextState || state
     default:
       return state
   }

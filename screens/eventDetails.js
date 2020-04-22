@@ -3,7 +3,7 @@ import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
 class EventDetailsScreen extends Component{

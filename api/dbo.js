@@ -1,5 +1,3 @@
-import React, { Component } from 'react';
-
 import firebase from "firebase";
 import {db} from '../firebase';
 
@@ -28,10 +26,19 @@ class Dbo{
     return db.collection('constants').doc('categories').get();
   }
   async createGroup(name,description,category,admin){
-    return db.collection('groups').add({name:name,description:description,category:category,admins:[admin]})
+    return db.collection('groups').add({
+      name:name,
+      description:description,
+      category:category,
+      admins:[admin],
+      users:[admin],
+      members:[],
+      organizers:[],
+      events:[],
+      dispos:[]
+    })
   }
   async addGroupToUser(uid,doc,groupId){
-    // let groupsOfUser = [];
     let groupsOfUser = doc.data().groups || [];
     //si il n'a aucun groupe, on crée le tableau groups dans le user
     if(groupsOfUser===[]){
@@ -53,7 +60,6 @@ class Dbo{
     let groups
     db.collection('users').doc(userId).get().then(doc=>{
       groups = doc.data().groups;
-      console.log(groups.includes(groupId));
       if(!groups.includes(groupId)){
         let invitations = data.invitations || [];
         if(!invitations.includes(groupId)){
@@ -76,15 +82,23 @@ class Dbo{
   }
   async addMemberToGroup(idUser,idGroup){
     let members = [];
+    let users = [];
     let events = [];
+    let dispos = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
+      users = doc.data().users;
       events = doc.data().events;
+      dispos = doc.data().dispos;
       members.push(idUser);
+      users.push(idUser);
     }).then(_=>{
-      db.collection('groups').doc(idGroup).update({members:members})
+      db.collection('groups').doc(idGroup).update({members:members,users:users})
       events.map(eventId=>{
         this.addUserToEvent(eventId,idUser);
+      })
+      dispos.map(dispoId=>{
+        this.addUserToDispo(dispoId,idUser);
       })
     })
   }
@@ -95,6 +109,15 @@ class Dbo{
       users.push(uid);
     }).then(_=>{
       db.collection('events').doc(eventId).update({users:users})
+    })
+  }
+  async addUserToDispo(dispoId,uid){
+    let members = []
+    db.collection('dispos').doc(dispoId).get().then(doc=>{
+      members=doc.data().members;
+      members.push(uid)
+    }).then(_=>{
+      db.collection('dispos').doc(dispoId).update({members:members})
     })
   }
   async createEvent(data){
@@ -114,12 +137,14 @@ class Dbo{
       presents:[],
       absents:[],
       maybe:[],
+      noresponse:[],
     }
     this.getGroupData(data.group).then(doc=>{
       users.push(...doc.data().admins||[]);
       users.push(...doc.data().members||[]);
       users.push(...doc.data().organizers||[]);
       event.users=users
+      event.noresponse=users
     }).then(_=>{
       result = db.collection('events').add(event).then(docRef=>{
         this.addEventToGroup(docRef.id,data.group)
@@ -145,34 +170,91 @@ class Dbo{
   }
   async setUserDisponibilityForEvent(uid,eventId,dispo){
     db.collection('events').doc(eventId).get().then(doc=>{
-      let inUsers = doc.data().users.includes(uid)||false;
       let inPresents = doc.data().presents.includes(uid)||false;
       let inAbsents = doc.data().absents.includes(uid)||false;
       let inMayBe = doc.data().maybe.includes(uid)||false;
-      if(inUsers){
-        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'users');
-      }else if(inPresents){
+      if(inPresents){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'presents');
       }else if(inAbsents){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'absents');
       }else if(inMayBe){
         this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,'maybe');
+      }else{
+        this.updateDisponibilitiesForEvent(uid,eventId,doc,dispo,"null");
       }
     })
   }
   updateDisponibilitiesForEvent(uid,eventId,doc,dispo,inCollection){
-    let inColl = doc.data()[inCollection];
-    let index = inColl.indexOf(uid);
-    inColl.splice(index,1);
-    let updateCol = doc.data()[dispo];
-    if(!updateCol.includes(uid)){
-      if(dispo==="presents" && updateCol.length<doc.data().maxUser){
+    if(inCollection==="null"){
+      let updateCol = doc.data()[dispo]
+      updateCol.push(uid)
+      db.collection('events').doc(eventId).update({[dispo]:updateCol})
+    }else{
+      let inColl = doc.data()[inCollection];
+      let index = inColl.indexOf(uid);
+      inColl.splice(index,1);
+      let updateCol = doc.data()[dispo];
+      if(!updateCol.includes(uid)){
+        if(dispo==="presents"){
+          if(updateCol.length<doc.data().maxUser && doc.data.maxUser>0){
+            updateCol.push(uid);
+          }else{
+            updateCol.push(uid);
+          }
+        }else if(dispo!=="presents"){
           updateCol.push(uid);
-      }else if(dispo!=="presents"){
-          updateCol.push(uid);
+        }
       }
+      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
     }
-    db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
+  }
+  async addDispo(name,desc,groupId,dates){
+    let members = []
+    this.getGroupData(groupId).then(doc=>{
+      members.push(...doc.data().admins||[]);
+      members.push(...doc.data().members||[]);
+      members.push(...doc.data().organizers||[]);
+    }).then(_=>{
+      db.collection('dispos').add({
+        name:name,
+        desc:desc,
+        group:groupId,
+        dates:dates,
+        members:members,
+      }).then(docRef=>{
+        this.addDispoToGroup(groupId,docRef.id)
+      })
+    })
+  }
+  async addDispoToGroup(groupId,dispoId){
+    let dispos = [];
+    this.getGroupData(groupId).then(doc=>{
+      dispos=doc.data().dispos;
+    }).then(_=>{
+      if(dispos!==undefined){
+        dispos.push(dispoId)
+      }else{
+        dispos=[dispoId]
+      }
+    }).then(_=>{
+      db.collection('groups').doc(groupId).update({dispos:dispos})
+    })
+  }
+  async setDispos(uid,dispoId,dateId,available){
+    let availables = []
+    db.collection('dispos').doc(dispoId).get().then(doc=>{
+      availables=doc.data().dates
+      if(available){
+        if(!availables[dateId].available.includes(uid)){availables[dateId].available.push(uid)}
+      }else{
+        if(availables[dateId].available.includes(uid)){
+          let index = availables[dateId].available.indexOf(uid)
+          availables[dateId].available.splice(index,1)
+        }
+      }
+    }).then(_=>{
+      db.collection('dispos').doc(dispoId).update({dates:availables})
+    })
   }
 }
 

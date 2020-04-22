@@ -7,7 +7,7 @@ import { selectGroup } from '../redux/actions/selectGroup';
 import { bindActionCreators } from 'redux';
 
 import firebase from "firebase";
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 
 class EditGroupScreen extends Component{
   handleEdit=(name,desc,cat,id)=>{

@@ -13,7 +13,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
 class Invitations extends Component{

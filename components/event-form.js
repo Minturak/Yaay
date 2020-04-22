@@ -23,16 +23,12 @@ class EventForm extends Component{
       maxUser:0,
       allowComments:false,
 
-      maxDate:undefined,
       showDate:false,
       showStartTime:false,
       showEndTime:false,
     }
   }
   componentDidMount(){
-    let maxDate = new Date(Date.now())
-    maxDate = maxDate.setDate(maxDate.getDate()+5);
-    this.setState({maxDate:maxDate});
   }
   showDatePicker=_=>{
     this.setState({showDate:true})
@@ -113,7 +109,6 @@ class EventForm extends Component{
             testID="dateTimePicker"
             timeZoneOffsetInMinutes={0}
             minimumDate={Date.now()}
-            maximumDate={this.state.maxDate}
             value={new Date(this.state.date)}
             mode={'date'}
             is24Hour={true}

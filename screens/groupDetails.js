@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import GroupDetails from "../components/group-details";
 
-import { dbo } from '../dataObjects/dbo';
+import { dbo } from '../api/dbo';
 import firebase from "firebase";
 import {db} from '../firebase';
 

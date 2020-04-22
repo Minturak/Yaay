@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from "firebase";
-import {dbo} from '../dataObjects/dbo';
+import {dbo} from '../api/dbo';
 
 class GroupFormScreen extends Component{
   handleSubmit=(name,desc,cat)=>{
@@ -21,7 +21,7 @@ class GroupFormScreen extends Component{
         dbo.addGroupToUser(idUser,doc,docRef.id);
       })
     });
-    this.props.navigation.navigate('ViewGroups');
+    this.props.navigation.navigate('ListGroups');
   }
   render(){
     return(
