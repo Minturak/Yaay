@@ -83,41 +83,33 @@ class Dbo{
   async addMemberToGroup(idUser,idGroup){
     let members = [];
     let users = [];
-    let events = [];
-    let dispos = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
       users = doc.data().users;
-      events = doc.data().events;
-      dispos = doc.data().dispos;
       members.push(idUser);
       users.push(idUser);
     }).then(_=>{
       db.collection('groups').doc(idGroup).update({members:members,users:users})
-      events.map(eventId=>{
-        this.addUserToEvent(eventId,idUser);
-      })
-      dispos.map(dispoId=>{
-        this.addUserToDispo(dispoId,idUser);
+      this.addUserToDispos(idGroup,idUser);
+      this.addUserToEvents(idGroup,idUser);
+    })
+  }
+  async addUserToEvents(grpId,uid){
+    db.collection('events').where('group','==',grpId).get().then(doc=>{
+      doc.forEach(event=>{
+        let users = event.data().users;
+        users.push(uid)
+        db.collection('events').doc(event.id).update({users:users})
       })
     })
   }
-  async addUserToEvent(eventId,uid){
-    let users = [];
-    db.collection('events').doc(eventId).get().then(doc=>{
-      users = doc.data().users;
-      users.push(uid);
-    }).then(_=>{
-      db.collection('events').doc(eventId).update({users:users})
-    })
-  }
-  async addUserToDispo(dispoId,uid){
-    let members = []
-    db.collection('dispos').doc(dispoId).get().then(doc=>{
-      members=doc.data().members;
-      members.push(uid)
-    }).then(_=>{
-      db.collection('dispos').doc(dispoId).update({members:members})
+  async addUserToDispos(grpId,uid){
+    db.collection('dispos').where('group','==',grpId).get().then(doc=>{
+      doc.forEach(dispo=>{
+        let members = dispo.data().members;
+        members.push(uid)
+        db.collection('dispos').doc(dispo.id).update({members:members})
+      })
     })
   }
   async createEvent(data){
