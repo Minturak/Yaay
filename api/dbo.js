@@ -115,7 +115,7 @@ class Dbo{
   }
   async createEvent(data){
     //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
-    data.frequency = 1;
+    data.frequency = data.frequency || 1;
     data.reccurent=true;
     let users=[]
     let event = {
@@ -251,6 +251,28 @@ class Dbo{
     }).then(_=>{
       return res
     })
+  }
+  async getLinkedEvents(link){
+    return db.collection('events').where('link','==',link).get()
+  }
+  deleteOneEvent(eventId,uid){
+    db.collection('events').doc(eventId).update({users:[]}).then(_=>{
+      console.log('1');
+      let i = 0
+      while(i<100000000){i++}
+      db.collection('events').doc(eventId).delete().then(_=>{
+        console.log('2');
+      })
+    })
+  }
+  deleteMutipleEvents(link){
+    db.collection('events').where('link','==',link).get().then(events=>{
+      events.forEach(event=>{
+        db.collection('events').doc(event.id).delete();
+        let i = 0
+        while(i<100000000){i++}
+      })
+    });
   }
 }
 

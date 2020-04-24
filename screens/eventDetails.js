@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import EventDetails from "../components/event-details"
+import { Alert } from "react-native";
 
 import { connect } from 'react-redux'
+import { selectEvent } from '../redux/actions/selectEvent';
+import { bindActionCreators } from 'redux';
+
 import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
@@ -32,7 +36,7 @@ class EventDetailsScreen extends Component{
     })
   }
   snapshotEvent=(id)=>{
-    let eventListener = db.collection('events').doc(id).onSnapshot(doc=>{
+    db.collection('events').doc(id).onSnapshot(doc=>{
       this.updateEvent(doc,id);
     })
   }
@@ -60,6 +64,32 @@ class EventDetailsScreen extends Component{
   toEdit(){
 
   }
+  delete=()=>{
+    dbo.getLinkedEvents(this.props.event.link).then(events=>{
+      if(events.size>1){
+        Alert.alert(
+          "Suppresion",
+          "Voulez-vous supprimer cet événement ou tous les événements similaires ?",
+          [
+            { text: "Annuler"},
+            { text: "Tous", onPress: () => {dbo.deleteMutipleEvents(this.props.event.link);this.props.navigation.navigate('Home')} },
+            { text: "Cet événement", onPress: () => {dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid);this.props.navigation.navigate('Home')}}
+          ],
+          { cancelable: true }
+        );
+      }else{
+        Alert.alert(
+          "Suppresion",
+          "Êtes-vous sûr de vouloir supprimer cet événement ?",
+          [
+            { text: "Annuler"},
+            { text: "Oui", onPress: () => {dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid);this.props.navigation.navigate('Home')} },
+          ],
+          { cancelable: true }
+        );
+      }
+    })
+  }
   render(){
     return(
       <EventDetails
@@ -69,6 +99,7 @@ class EventDetailsScreen extends Component{
         isAbsent={this.isAbsent}
         mayBePresent={this.mayBePresent}
         toEdit={this.toEdit}
+        delete={this.delete}
         users={this.state.users}
         presents={this.state.presents}
         maybe={this.state.maybe}
@@ -83,4 +114,10 @@ const mapStateToProps = state => ({
   event: state.event,
   user: state.user,
 });
-export default connect(mapStateToProps)(EventDetailsScreen);
+const mapDispatchToProps = dispatch => bindActionCreators(
+  {
+    selectEvent
+  },
+  dispatch,
+)
+export default connect(mapStateToProps,mapDispatchToProps)(EventDetailsScreen);

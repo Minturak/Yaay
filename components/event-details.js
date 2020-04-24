@@ -32,9 +32,10 @@ class EventDetails extends Component{
   toEdit=_=>{
     this.props.toEdit();
   }
+  delete=_=>{
+    this.props.delete()
+  }
   render(){
-    // console.log(this.props.event);
-    
     let event = this.props.event;
     return(
       <View style={styles.container}>
@@ -42,7 +43,10 @@ class EventDetails extends Component{
           <View style={styles.titleAndIcon}>
             <Text style={styles.title}>{event.name}</Text>
             {this.props.canUpdate && 
-              <MaterialIcons name={"edit"} size={20} style={styles.icon} onPress={this.toEdit}/>
+              <View style={styles.icons}>
+                <MaterialIcons name={"edit"} size={20} onPress={this.toEdit}/>
+                <MaterialIcons name={"delete"} size={20} onPress={this.delete}/>
+              </View>
             }
           </View>
           <Text>{event.desc}</Text>
@@ -115,8 +119,9 @@ const styles = StyleSheet.create({
   titleAndIcon:{
     flexDirection:'row',
   },  
-  icon:{
+  icons:{
     alignSelf:'flex-end',
+    flexDirection:'row',
   },
   header:{
     borderWidth:1,

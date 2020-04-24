@@ -7,9 +7,6 @@ import {
 
 import EventCard from "../components/event-card";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
 import { connect } from 'react-redux'
 import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
