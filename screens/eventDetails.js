@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import EventDetails from "../components/event-details"
 
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
 import {dbo} from '../api/dbo';
 import {db} from '../firebase';
 
@@ -15,9 +14,11 @@ class EventDetailsScreen extends Component{
       presents:[],
       maybe:[],
       absents:[],
+      canUpdate:false,
     }
   }
   componentDidMount=_=>{
+    this.canUpdate();
     this.snapshotEvent(this.props.event.id);
   }
   getUsers=(presence)=>{
@@ -51,6 +52,14 @@ class EventDetailsScreen extends Component{
   mayBePresent=(uid)=>{
     dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'maybe');
   }
+  canUpdate=_=>{
+    dbo.userAsOrganizersPrivilege(this.props.event.group,this.props.user.user.uid).then(res=>{
+      this.setState({canUpdate:res})
+    })
+  }
+  toEdit(){
+
+  }
   render(){
     return(
       <EventDetails
@@ -59,10 +68,12 @@ class EventDetailsScreen extends Component{
         isPresent={this.isPresent}
         isAbsent={this.isAbsent}
         mayBePresent={this.mayBePresent}
+        toEdit={this.toEdit}
         users={this.state.users}
         presents={this.state.presents}
         maybe={this.state.maybe}
         absents={this.state.absents}
+        canUpdate={this.state.canUpdate}
       />
     )
   }

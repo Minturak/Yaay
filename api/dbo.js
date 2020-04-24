@@ -242,6 +242,16 @@ class Dbo{
       db.collection('dispos').doc(dispoId).update({dates:availables})
     })
   }
+  userAsOrganizersPrivilege(grpId,uid){
+    let res = false;
+    return dbo.getGroupData(grpId).then(doc=>{
+      if(doc.data().admins.includes(uid) || doc.data().organizers.includes(uid)){
+        res = true
+      }
+    }).then(_=>{
+      return res
+    })
+  }
 }
 
 const dbo = new Dbo();

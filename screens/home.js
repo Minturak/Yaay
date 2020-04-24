@@ -136,7 +136,8 @@ class Home extends Component{
         <View style={styles.listContainer}>
           <FlatList
             data={this.state.events}
-            renderItem={({item})=><EventCard data={item}
+            renderItem={({item})=>
+            <EventCard data={item}
               navigation={this.props.navigation}
               isPresent={this.isPresent}
               isAbsent={this.isAbsent}
