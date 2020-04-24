@@ -1,3 +1,4 @@
+import moment from "moment";
 import firebase from "firebase";
 import {db} from '../firebase';
 
@@ -113,7 +114,9 @@ class Dbo{
     })
   }
   async createEvent(data){
-    let result = null
+    //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
+    data.frequency = 1;
+    data.reccurent=true;
     let users=[]
     let event = {
       name:data.name,
@@ -130,31 +133,22 @@ class Dbo{
       absents:[],
       maybe:[],
       noresponse:[],
+      link:new Date(data.date).getTime(),
+      until:new Date(data.until),
     }
-    this.getGroupData(data.group).then(doc=>{
+    this.getGroupData(event.group).then(doc=>{
       users.push(...doc.data().admins||[]);
       users.push(...doc.data().members||[]);
       users.push(...doc.data().organizers||[]);
       event.users=users
       event.noresponse=users
     }).then(_=>{
-      result = db.collection('events').add(event).then(docRef=>{
-        this.addEventToGroup(docRef.id,data.group)
-      })
-    })
-  }
-  async addEventToGroup(eventId,groupId){
-    let events=[]
-    db.collection('groups').doc(groupId).get().then(doc=>{
-      events = doc.data().events;
-    }).then(_=>{
-      if(events!==undefined){
-        events.push(eventId);
-      }else{
-        events=[eventId]
+      while(moment(event.date).isSameOrBefore(moment(event.until),'day,')){
+        db.collection('events').add(event)
+        let newDate = new Date(event.date)
+        newDate.setDate(newDate.getDate()+ parseInt(data.frequency))
+        event.date = newDate
       }
-    }).then(_=>{
-      db.collection('groups').doc(groupId).update({events:events})
     })
   }
   async getEventData(id){

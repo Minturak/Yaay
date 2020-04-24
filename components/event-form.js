@@ -23,8 +23,9 @@ class EventForm extends Component{
       allDay:false,
       minUser:0,
       maxUser:0,
+      frequency:0,
       allowComments:false,
-      reccurent:true,
+      reccurent:false,
 
       showDate:false,
       showStartTime:false,
@@ -198,8 +199,8 @@ class EventForm extends Component{
               <Item style={styles.nbDays}>
                 <Input
                   keyboardType={'numeric'}
-                  onChangeText={(text)=> this.setState({maxUser:text})}
-                  value={this.state.maxUser}
+                  onChangeText={(text)=> this.setState({frequency:text})}
+                  value={this.state.frequency}
                 />
               </Item>
               <Text> jours</Text>
@@ -218,7 +219,7 @@ class EventForm extends Component{
                   timeZoneOffsetInMinutes={0}
                   minimumDate={Date.now()}
                   value={new Date(this.state.until)}
-                  mode={'date'}
+                  mode={'calendar'}
                   is24Hour={true}
                   display="default"
                   onChange={this.setUntil}
