@@ -61,8 +61,8 @@ class EventDetailsScreen extends Component{
       this.setState({canUpdate:res})
     })
   }
-  toEdit(){
-
+  toEdit=_=>{
+    this.props.navigation.navigate('EditEventScreen');
   }
   delete=()=>{
     dbo.getLinkedEvents(this.props.event.link).then(events=>{

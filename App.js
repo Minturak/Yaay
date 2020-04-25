@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { useFonts } from '@use-expo/font';
 import { AppLoading } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
