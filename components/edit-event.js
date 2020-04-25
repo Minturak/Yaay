@@ -16,8 +16,8 @@ class EditEvent extends Component {
         name:this.props.event.name,
         desc:this.props.event.desc,
         date:moment(this.props.event.date.seconds*1000),
-        startTime:moment(this.props.event.startTime*1000),
-        endTime:moment(this.props.event.endTime*1000),
+        startTime:moment(this.props.event.startTime.seconds*1000),
+        endTime:moment(this.props.event.endTime.seconds*1000),
         minUser:this.props.event.minUser,
         maxUser:this.props.event.maxUser,
         allDay:this.props.event.allDay,
@@ -65,9 +65,10 @@ class EditEvent extends Component {
       this.setState({endTime:moment(time),showEndTime:false})
     }
   }
+  handleSubmit=_=>{
+    this.props.save(this.state)
+  }
   render() {
-    console.log(this.props.multiple);
-    
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}> Modifier </Text>

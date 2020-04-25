@@ -15,6 +15,14 @@ class EditEventScreen extends Component {
             this.setState({ multiple: events.size > 1 })
         })
     }
+    save = (data) => {
+        if(data.allEvents){
+            dbo.updateMultipleEvents(this.props.event.link,data)
+        }else{
+            dbo.updateOneEvent(this.props.event.id,data)
+        }
+        this.props.navigation.navigate('EventDetailsScreen')
+    }
     render() {
         if (this.state.multiple === undefined) {
             return null
@@ -24,6 +32,7 @@ class EditEventScreen extends Component {
                 user={this.props.user.user}
                 event={this.props.event}
                 multiple={this.state.multiple}
+                save={this.save}
             />
         );
     }

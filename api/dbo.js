@@ -255,14 +255,11 @@ class Dbo{
   async getLinkedEvents(link){
     return db.collection('events').where('link','==',link).get()
   }
-  deleteOneEvent(eventId,uid){
+  deleteOneEvent(eventId){
     db.collection('events').doc(eventId).update({users:[]}).then(_=>{
-      console.log('1');
       let i = 0
       while(i<100000000){i++}
-      db.collection('events').doc(eventId).delete().then(_=>{
-        console.log('2');
-      })
+      db.collection('events').doc(eventId).delete()
     })
   }
   deleteMutipleEvents(link){
@@ -273,6 +270,35 @@ class Dbo{
         while(i<100000000){i++}
       })
     });
+  }
+  updateOneEvent(eventId,data){
+    let event={}
+    db.collection('events').doc(eventId).get().then(doc=>{
+      event=doc.data();
+      event.name=data.name
+      event.desc=data.desc
+      if(!data.allEvents){
+        event.date=new Date(data.date)
+      }else{
+        event.date=new Date(doc.data().date.seconds*1000)
+      }
+      event.startTime=new Date(data.startTime)
+      event.endTime=new Date(data.endTime)
+      event.minUser=data.minUser
+      event.maxUser=data.maxUser
+      event.allDay=data.allDay
+    }).then(_=>{
+      db.collection('events').doc(eventId).set(event)
+    })
+  }
+  updateMultipleEvents(link,data){
+    db.collection('events').where('link','==',link).get().then(events=>{
+      events.forEach(event=>{
+        this.getEventData(event.id).then(doc=>{
+          this.updateOneEvent(event.id,data)
+        })
+      })
+    })
   }
 }
 
