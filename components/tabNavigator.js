@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Ionicons from "react-native-vector-icons/Ionicons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Home from "../screens/home"
 import Login from "../screens/login"
 import SignUp from "../screens/signUp"
@@ -20,16 +20,25 @@ import Disposition from "../screens/disposition"
 import DispositionsList from "../screens/dispositions";
 import DispositionDetailsScreen from "../screens/dispositionDetails";
 import EditEventScreen from "../screens/editEventScreen";
+import Account from "../screens/account"
 
 import { connect } from 'react-redux'
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const GroupsStack = createStackNavigator();
+const AccountStack = createStackNavigator();
 
 class TabNavigator extends Component{
   constructor(props){
     super(props)
+  }
+  accountScreens(){
+    return(
+      <AccountStack.Navigator initialRouteName="Account">
+        <AccountStack.Screen name="Account" component={Account} options={{ title: 'Profil' }}/>
+      </AccountStack.Navigator>
+    )
   }
   groupsScreens(){
     return(
@@ -66,13 +75,16 @@ class TabNavigator extends Component{
             let iconName;
             if(route.name==="Accueil"){return <Ionicons name={"md-home"} size={30} color={"#444444"}/>}
             else if(route.name==="Groupes"){return <MaterialIcons name={"group"} size={30} />}
-            return <Ionicons name={iconName} size={30} color={"#444444"}/>
+            else if(route.name==="Profil"){return <MaterialCommunityIcons name={"account"} size={30} />}
           }}
         )}
       >
         <Tabs.Screen name="Accueil" component={this.homeScreens}/>
         {this.props.user!==undefined &&
-          <Tabs.Screen name="Groupes" component={this.groupsScreens}/>
+          <>
+            <Tabs.Screen name="Groupes" component={this.groupsScreens}/>
+            <Tabs.Screen name="Profil" component={this.accountScreens}/>
+          </>
         }
       </Tabs.Navigator>
     )

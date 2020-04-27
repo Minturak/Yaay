@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import moment from "moment"
 
 class DispositionDetails extends Component {
@@ -39,12 +40,24 @@ class DispositionDetails extends Component {
     dispos[dateId]=!dispos[dateId]
     this.setState({newDispos:dispos})
   }
+  createEvent=_=>{
+    this.props.createEvent();
+  }
   render() {
     let dispo = this.props.dispo
     let user = this.props.user
     return (
       <View style={styles.root}>
-        <Text style={styles.title}>Titre : {dispo.name}</Text>
+        <View style={styles.titleAndIcons}>
+          <Text style={styles.title}>Titre : {dispo.name}</Text>
+          {this.props.canUpdate&&
+            <View style={styles.icons}>
+              <TouchableOpacity onPress={this.createEvent}>
+                <MaterialCommunityIcons name={"calendar-plus"} size={20}/>
+              </TouchableOpacity>
+            </View>
+          }
+        </View>
         <Text>Description : {dispo.desc}</Text>
         {this.state.edit?(
           <MaterialIcons name={"save"} size={30} style={styles.icon} onPress={this.saveChange}/>
@@ -116,6 +129,9 @@ const styles = StyleSheet.create({
   title:{
     fontSize:18
   },
+  titleAndIcons:{
+    flexDirection:'row',
+  },
   icon:{
     alignSelf:'flex-end'
   },
@@ -124,6 +140,10 @@ const styles = StyleSheet.create({
   },
   iconCross:{
     color:"#d93030"
+  },
+  icons:{
+    alignSelf:'flex-end',
+    flexDirection:'row',
   },
   tableContainer:{
     flexDirection:'row',
