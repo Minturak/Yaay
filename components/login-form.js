@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import {Item, Label, Input } from 'native-base'
 import {
@@ -15,11 +15,21 @@ class LoginForm extends Component{
       password:"",
       confirm:"",
       email:"",
+
+      errorEmail:false,
     }
   }
   handleVisibility=()=>{
     let showPassword = !this.state.showPassword;
     this.setState({showPassword})
+  }
+  forgottenPassword=_=>{
+    if(this.state.email.length==0){
+      this.setState({errorEmail:true})
+    }else{
+      this.setState({errorEmail:false})
+      this.props.forgottenPassword(this.state.email)
+    }
   }
   handleLogin=()=>{
     if(this.state.password !== "" && this.state.email !== ""){
@@ -29,7 +39,7 @@ class LoginForm extends Component{
   render(){
     return(
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.container}>
-        <Item floatingLabel style={styles.itemContainer}>
+        <Item floatingLabel style={[styles.itemContainer,this.state.errorEmail&&styles.error]}>
             <Label>E-mail</Label>
             <Input
               style={styles.input}
@@ -49,6 +59,9 @@ class LoginForm extends Component{
               autoCapitalize="none"
             />
         </Item>
+        <TouchableOpacity onPress={this.forgottenPassword} style={styles.forgotPwd}>
+          <Text style={styles.textPwd}>Mot de passe oublié</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={this.handleLogin}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Connexion</Text>
@@ -75,6 +88,17 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
   },
+  forgotPwd:{
+    alignItems:'center',
+  },
+  textPwd:{
+    color:'#0000ff',
+    textDecorationLine:'underline'
+  },
+  error:{
+    borderBottomWidth:1,
+    borderColor:'red'
+  }
 });
 
 export default LoginForm;

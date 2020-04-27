@@ -11,6 +11,9 @@ class Dbo{
   async handleSignUp(email,password){
     return firebase.auth().createUserWithEmailAndPassword(email,password)
   }
+  forgottenPassword(email){
+    return firebase.auth().sendPasswordResetEmail(email)
+  }
   createUserDocument(uid,name,email){
     db.collection('users').doc(uid).set({pseudo:name,email:email});
   }
