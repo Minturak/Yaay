@@ -37,6 +37,11 @@ class EventForm extends Component{
       errorName:false,
     }
   }
+  componentDidMount=_=>{
+    if(this.props.dispo!==undefined){
+      this.setState({name:this.props.dispo.name,desc:this.props.dispo.desc})
+    }
+  }
   showDatePicker=_=>{
     this.setState({showDate:true})
   }
@@ -96,18 +101,22 @@ class EventForm extends Component{
     }
   }
   render(){
+    let dispo = this.props.dispo
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Nouvel événement</Text>
-        <Picker
-          style={styles.picker}
-          selectedValue={this.state.group}
-          onValueChange={(itemValue)=>this.setState({group:itemValue})}
-        >
-          {this.props.groups.map(group=>{
-            return(<Picker.Item key={group.id} label={group.data.name} value={group.id}/>)
-          })}
-        </Picker>
+        {dispo===undefined &&
+          <Picker
+            style={styles.picker}
+            selectedValue={this.state.group}
+            onValueChange={(itemValue)=>this.setState({group:itemValue})}
+          >
+            {this.props.groups.map(group=>{
+              return(<Picker.Item key={group.id} label={group.data.name} value={group.id}/>)
+            })}
+          </Picker>
+        }
+        
         <Item floatingLabel style={[styles.itemContainer, this.state.errorName&&styles.error]}>
             <Label>Nom*</Label>
             <Input
@@ -116,6 +125,7 @@ class EventForm extends Component{
               autoCapitalize="sentences"
               autoCorrect={false}
               returnKeyType="next"
+              value={this.state.name}
             />
         </Item>
         <Item floatingLabel style={styles.itemContainer}>
@@ -127,26 +137,32 @@ class EventForm extends Component{
               multiline={true}
               autoCorrect={false}
               returnKeyType="next"
+              value={this.state.desc}
             />
         </Item>
-        <TouchableOpacity onPress={this.showDatePicker}>
-          <View style={[styles.itemContainer, styles.iconAndText]}>
-            <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
-            <Text>{this.state.date.format("D - MM - YYYY")}</Text>
+        {dispo===undefined && 
+          <View>
+            <TouchableOpacity onPress={this.showDatePicker}>
+            <View style={[styles.itemContainer, styles.iconAndText]}>
+              <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
+              <Text>{this.state.date.format("D - MM - YYYY")}</Text>
+            </View>
+          </TouchableOpacity>
+          {this.state.showDate && (
+            <DateTimePicker
+              name="dateTimePicker"
+              timeZoneOffsetInMinutes={0}
+              minimumDate={Date.now()}
+              value={new Date(this.state.date)}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              onChange={this.changeDate}
+            />
+          )}
           </View>
-        </TouchableOpacity>
-        {this.state.showDate && (
-          <DateTimePicker
-            name="dateTimePicker"
-            timeZoneOffsetInMinutes={0}
-            minimumDate={Date.now()}
-            value={new Date(this.state.date)}
-            mode={'date'}
-            is24Hour={true}
-            display="default"
-            onChange={this.changeDate}
-          />
-        )}
+        }
+        
         <View style={[styles.itemContainer, styles.iconAndText]}>
           <Label>Toute la journée</Label>
           <Switch
@@ -190,50 +206,68 @@ class EventForm extends Component{
             )}
           </View>
         )}
-        <View style={[styles.itemContainer, styles.iconAndText]}>
-          <Label>Répéter</Label>
-          <Switch
-            onValueChange={()=>this.setState({reccurent:!this.state.reccurent})}
-            value={this.state.reccurent}
-            style={styles.switch}
-          />
-        </View>
-        {this.state.reccurent&&(
+        {dispo===undefined && 
           <View>
-            <View style={[styles.itemContainer, styles.days]}>
-              <Text>Tous les </Text>
-              <Item style={styles.nbDays}>
-                <Input
-                  keyboardType={'numeric'}
-                  onChangeText={(text)=> this.setState({frequency:text})}
-                  value={this.state.frequency}
-                />
-              </Item>
-              <Text> jours</Text>
+            <View style={[styles.itemContainer, styles.iconAndText]}>
+              <Label>Répéter</Label>
+              <Switch
+                onValueChange={()=>this.setState({reccurent:!this.state.reccurent})}
+                value={this.state.reccurent}
+                style={styles.switch}
+              />
             </View>
-            <View style={[styles.itemContainer, styles.days]}>
-              <Text>Jusqu'au </Text>
-              <TouchableOpacity onPress={this.showRecurrentDate}>
-                <View style={[styles.itemContainer, styles.iconAndText]}>
-                  <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
-                  <Text>{this.state.until.format("D - MM - YYYY")}</Text>
+            {this.state.reccurent&&(
+              <View>
+                <View style={[styles.itemContainer, styles.days]}>
+                  <Text>Tous les </Text>
+                  <Item style={styles.nbDays}>
+                    <Input
+                      keyboardType={'numeric'}
+                      onChangeText={(text)=> this.setState({frequency:text})}
+                      value={this.state.frequency}
+                    />
+                  </Item>
+                  <Text> jours</Text>
                 </View>
-              </TouchableOpacity>
-              {this.state.showRecurrentDate && (
-                <DateTimePicker
-                  name="dateTimePicker"
-                  timeZoneOffsetInMinutes={0}
-                  minimumDate={Date.now()}
-                  value={new Date(this.state.until)}
-                  mode={'calendar'}
-                  is24Hour={true}
-                  display="default"
-                  onChange={this.setUntil}
-                />
-              )}
-            </View>
+                <View style={[styles.itemContainer, styles.days]}>
+                  <Text>Jusqu'au </Text>
+                  <TouchableOpacity onPress={this.showRecurrentDate}>
+                    <View style={[styles.itemContainer, styles.iconAndText]}>
+                      <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
+                      <Text>{this.state.until.format("D - MM - YYYY")}</Text>
+                    </View>
+                  </TouchableOpacity>
+                  {this.state.showRecurrentDate && (
+                    <DateTimePicker
+                      name="dateTimePicker"
+                      timeZoneOffsetInMinutes={0}
+                      minimumDate={Date.now()}
+                      value={new Date(this.state.until)}
+                      mode={'calendar'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={this.setUntil}
+                    />
+                  )}
+                </View>
+              </View>
+            )}
           </View>
-        )}
+        }
+        {dispo!==undefined && 
+          <View>
+            <Picker
+              style={styles.picker}
+              selectedValue={this.state.date}
+              onValueChange={(itemValue)=>this.setState({date:itemValue})}
+            >
+            {dispo.dates.map(date=>{
+              return(<Picker.Item key={date.id} label={moment(new Date(date.date)).format("DD-MM")} value={moment(new Date(date.date)).format("DD-MM")}/>)
+             })
+            }
+            </Picker>
+          </View>
+        }
         <Item floatingLabel style={styles.itemContainer}>
           <Label>Participants minimum</Label>
           <Input

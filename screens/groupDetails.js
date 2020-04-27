@@ -60,7 +60,6 @@ class GroupDetailsScreen extends Component{
     })
   }
   update=(data)=>{
-    //mettre à jour l'affichage
     this.props.selectGroup({data:data,id:this.props.group.id});
   }
   addUser=(email)=>{

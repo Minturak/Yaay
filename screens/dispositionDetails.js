@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import DispositionDetails from "../components/disposition-details"
+import { bindActionCreators } from 'redux';
+import { eventFrom } from '../redux/actions/eventFrom';
 import { dbo } from '../api/dbo';
 
 class DispositionDetailsScreen extends Component {
@@ -47,9 +49,9 @@ class DispositionDetailsScreen extends Component {
       this.setState({canUpdate:res})
     })
   }
-  createEvent=(data)=>{
-    console.log('create');
-    
+  createEvent=_=>{
+    this.props.eventFrom(this.props.dispo)
+    this.props.navigation.navigate('CreateEvent')
   }
   render() {
     if(this.state.userDispos.length>0 && this.state.members.length>0){
@@ -73,4 +75,10 @@ const mapStateToProps = state => ({
   dispo:state.dispo,
   user:state.user
 });
-export default connect (mapStateToProps)(DispositionDetailsScreen);
+const mapDispatchToProps = dispatch => bindActionCreators(
+  {
+    eventFrom,
+  },
+  dispatch,
+)
+export default connect (mapStateToProps,mapDispatchToProps)(DispositionDetailsScreen);
