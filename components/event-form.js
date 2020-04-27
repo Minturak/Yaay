@@ -33,9 +33,9 @@ class EventForm extends Component{
       showRecurrentDate:false,
 
       errorEndTime:false,
+      errorNbUser:false,
+      errorName:false,
     }
-  }
-  componentDidMount(){
   }
   showDatePicker=_=>{
     this.setState({showDate:true})
@@ -78,14 +78,20 @@ class EventForm extends Component{
     }else{
       let time = selectedDate
       selectedDate.setTime(selectedDate.getTime());
-      if(moment(selectedDate.getTime()).isBefore(this.state.startTime)){
-        this.setState({errorEndTime:true})
-      }else{this.setState({errorEndTime:false})}
       this.setState({endTime:moment(time),showEndTime:false})
     }
   }
+  checkData=_=>{
+    this.setState({errorEndTime:this.state.endTime.isBefore(this.state.startTime)})
+    this.setState({errorNbUser:this.state.maxUser<this.state.minUser})
+    this.setState({errorName:this.state.name.length==0})
+    if(this.state.endTime.isBefore(this.state.startTime) || this.state.maxUser<this.state.minUser || this.state.name.length==0){
+      return false 
+    }
+    return true
+  }
   handleSubmit=_=>{
-    if(!this.state.errorEndTime){
+    if(this.checkData()){
       this.props.handleSubmit(this.state)
     }
   }
@@ -102,8 +108,8 @@ class EventForm extends Component{
             return(<Picker.Item key={group.id} label={group.data.name} value={group.id}/>)
           })}
         </Picker>
-        <Item floatingLabel style={styles.itemContainer}>
-            <Label>Nom</Label>
+        <Item floatingLabel style={[styles.itemContainer, this.state.errorName&&styles.error]}>
+            <Label>Nom*</Label>
             <Input
               style={styles.input}
               onChangeText={(text) => this.setState({name: text})}
@@ -236,7 +242,7 @@ class EventForm extends Component{
             value={this.state.minUser}
           />
         </Item>
-        <Item floatingLabel style={styles.itemContainer}>
+        <Item floatingLabel style={[styles.itemContainer, this.state.errorNbUser&&styles.error]}>
           <Label>Participants maximum</Label>
           <Input
             keyboardType={'numeric'}
