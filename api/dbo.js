@@ -132,7 +132,7 @@ class Dbo{
       minUser:data.minUser,
       maxUser:data.maxUser,
       allowComments:data.allowComments,
-      presents:[],
+      presents:data.presents||[],
       absents:[],
       maybe:[],
       noresponse:[],
