@@ -86,6 +86,15 @@ class EventForm extends Component{
       this.setState({endTime:moment(time),showEndTime:false})
     }
   }
+  changeDateFromPicker=(value)=>{
+    this.setState({date:value})
+    let index = -1
+    this.props.dispo.dates.map(date=>{
+      if(moment(date.date).isSame(this.state.date,'day')){
+        index = date.id;
+    }})
+    this.setState({presents:this.props.dispo.dates[index+1].available})
+  }
   checkData=_=>{
     this.setState({errorEndTime:this.state.endTime.isBefore(this.state.startTime)})
     this.setState({errorNbUser:this.state.maxUser<this.state.minUser})
@@ -259,10 +268,10 @@ class EventForm extends Component{
             <Picker
               style={styles.picker}
               selectedValue={this.state.date}
-              onValueChange={(itemValue)=>this.setState({date:itemValue})}
+              onValueChange={(itemValue)=>this.changeDateFromPicker(itemValue)}
             >
             {dispo.dates.map(date=>{
-              return(<Picker.Item key={date.id} label={moment(new Date(date.date)).format("DD-MM")} value={moment(new Date(date.date)).format("DD-MM")}/>)
+              return(<Picker.Item key={date.id} label={moment(new Date(date.date)).format("DD-MM")} value={moment(new Date(date.date))}/>)
              })
             }
             </Picker>

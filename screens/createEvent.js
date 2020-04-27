@@ -16,8 +16,6 @@ class CreateEvent extends Component{
     this.props.navigation.navigate('Home');
   }
   render(){
-    console.log(this.props.eventFromDispo);
-    
     return(
       <EventForm 
         groups={this.props.groups} 
