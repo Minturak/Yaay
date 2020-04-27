@@ -47,6 +47,10 @@ class DispositionDetailsScreen extends Component {
       this.setState({canUpdate:res})
     })
   }
+  createEvent=(data)=>{
+    console.log('create');
+    
+  }
   render() {
     if(this.state.userDispos.length>0 && this.state.members.length>0){
       return (
@@ -54,6 +58,7 @@ class DispositionDetailsScreen extends Component {
           dispo={this.props.dispo} 
           user={this.props.user}
           changeDispo={this.changeDispo}
+          createEvent={this.createEvent}
           members={this.state.members}
           userDispos={this.state.userDispos}
           canUpdate={this.state.canUpdate}

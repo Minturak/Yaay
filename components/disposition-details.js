@@ -40,6 +40,9 @@ class DispositionDetails extends Component {
     dispos[dateId]=!dispos[dateId]
     this.setState({newDispos:dispos})
   }
+  createEvent=_=>{
+    this.props.createEvent();
+  }
   render() {
     let dispo = this.props.dispo
     let user = this.props.user
@@ -49,7 +52,7 @@ class DispositionDetails extends Component {
           <Text style={styles.title}>Titre : {dispo.name}</Text>
           {this.props.canUpdate&&
             <View style={styles.icons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.createEvent}>
                 <MaterialCommunityIcons name={"calendar-plus"} size={20}/>
               </TouchableOpacity>
             </View>
