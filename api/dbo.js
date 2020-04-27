@@ -15,10 +15,10 @@ class Dbo{
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }
+  //User related
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
   }
-  //User related
   createUserDocument(uid,name,email){
     db.collection('users').doc(uid).set({pseudo:name,email:email});
   }
