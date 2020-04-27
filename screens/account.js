@@ -10,12 +10,11 @@ class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user:''
     };
   }
   componentDidMount=_=>{
     dbo.getUserData(this.props.user.user.uid).then(doc=>{
-      console.log(doc.data());
-      
       this.setState({user:doc.data()})
     })
   }
@@ -24,6 +23,9 @@ class Account extends Component {
     this.props.navigation.replace('Login')
   }
   render() {
+    if(this.state.user.length==0){
+      return null
+    }
     return (
       <AccountDetails 
         user={this.state.user}
