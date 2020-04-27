@@ -64,46 +64,44 @@ class DispositionDetails extends Component {
           </View>
           <ScrollView style={styles.table} horizontal={true}>
             {dispo.dates.map(date=>{
-              if(date.selected){
-                return(
-                  <View>
-                    <View style={styles.thead} key={date.id}>
-                      <Text>{moment(date.date).format("DD.MM")}</Text>
-                    </View>
-                    {dispo.members.map(uid=>{
-                      if(uid===user.user.uid){
-                        return(
-                        <View style={styles.cell}>
-                          {this.state.edit?(
-                            <CheckBox
-                              checked={this.state.newDispos[date.id]}
-                              onPress={()=>{this.changeDispo(date.id)}}
-                            />
-                          ):(
-                            this.state.newDispos[date.id]?(
-                                <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
-                              ):(
-                                <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
-                              )
-                          )}
-                        </View>
-                        )
-                      }else{
-                        return(
-                          <View style={styles.cell}>
-                            {date.available.includes(uid)?(
-                                <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
-                              ):(
-                                <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
-                              )
-                            }
-                          </View>
-                        )
-                      }
-                    })}
+              return(
+                <View>
+                  <View style={styles.thead} key={date.id}>
+                    <Text>{moment(date.date).format("DD.MM")}</Text>
                   </View>
-                )
-              }
+                  {dispo.members.map(uid=>{
+                    if(uid===user.user.uid){
+                      return(
+                      <View style={styles.cell}>
+                        {this.state.edit?(
+                          <CheckBox
+                            checked={this.state.newDispos[date.id]}
+                            onPress={()=>{this.changeDispo(date.id)}}
+                          />
+                        ):(
+                          this.state.newDispos[date.id]?(
+                              <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
+                            ):(
+                              <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
+                            )
+                        )}
+                      </View>
+                      )
+                    }else{
+                      return(
+                        <View style={styles.cell}>
+                          {date.available.includes(uid)?(
+                              <MaterialIcons name={"check"} size={25} style={styles.iconCheck}/>
+                            ):(
+                              <MaterialIcons name={"close"} size={25} style={styles.iconCross}/>
+                            )
+                          }
+                        </View>
+                      )
+                    }
+                  })}
+                </View>
+              )
             })}
           </ScrollView>
         </View>
