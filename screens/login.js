@@ -1,20 +1,17 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Alert } from "react-native";
 import LoginForm from "../components/login-form"
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
 import { connect } from 'react-redux'
 import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
 import {dbo} from '../api/dbo';
-const firebase = require('firebase');
 
 class Login extends Component{
   toSignUp=()=>{
@@ -26,10 +23,28 @@ class Login extends Component{
       this.props.navigation.replace('Home');
     })
   }
+  forgottenPassword=(email)=>{
+    dbo.forgottenPassword(email).then(_=>{
+      Alert.alert(
+        "Récupération",
+        "Un email vous a été envoyé avec un lien de récuppération de mot de passe",
+        [
+          { text: "Ok"},
+        ],
+        { cancelable: false }
+      );
+    })
+    
+  }
   render(){
     return(
       <View>
-        <LoginForm navigation={this.props.navigation} connectUser={this.props.connectUser} handleLogin={this.handleLogin}/>
+        <LoginForm 
+          navigation={this.props.navigation} 
+          connectUser={this.props.connectUser} 
+          handleLogin={this.handleLogin}
+          forgottenPassword={this.forgottenPassword}
+        />
         <Text style={styles.textContent}>ou</Text>
         <TouchableOpacity onPress={this.toSignUp}>
           <View style={styles.signUpButton}>
