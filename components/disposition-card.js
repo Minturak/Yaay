@@ -4,6 +4,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp
   } from 'react-native-responsive-screen';
+  import moment from 'moment'
 
 class DispositionCard extends Component {
   constructor(props) {
@@ -13,7 +14,10 @@ class DispositionCard extends Component {
   }
 
   render() {
-    let dispo = this.props.dispo      
+    let dispo = this.props.dispo
+    if(moment(dispo.dates[5].date).isBefore(moment(new Date()))){
+      return null
+    }
     return (
       <TouchableOpacity onPress={()=>this.props.selectDispo(dispo.id)}>
         <View style={styles.container}>

@@ -30,6 +30,9 @@ class EventCard extends Component{
   }
   render(){
     let event = this.props.data
+    if(moment(event.date).isBefore(moment(new Date()))){
+      return null
+    }
     return(
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>this.eventSelected(event)}>
