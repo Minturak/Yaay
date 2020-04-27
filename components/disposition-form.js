@@ -31,7 +31,7 @@ class DispositionForm extends Component{
   }
   handleCheck=(evt)=>{
     let dates = this.state.dates;
-    dates[evt.id]={date:evt.date,selected:!evt.selected,id:evt.id,available:[]};
+    dates[evt.id]={date:evt.date,selected:!evt.selected,id:evt.id,available:[this.props.user.uid]};
     this.setState({dates:dates})
   }
   handleSave=_=>{

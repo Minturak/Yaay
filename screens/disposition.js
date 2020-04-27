@@ -15,11 +15,13 @@ class Disposition extends Component{
       <DispositionForm
         groups={this.props.groups}
         handleSave={this.handleSave}
+        user={this.props.user.user}
       />
     )
   }
 }
 const mapStateToProps = state => ({
   groups: state.groups,
+  user: state.user
 });
 export default connect(mapStateToProps)(Disposition);

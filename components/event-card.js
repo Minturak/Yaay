@@ -15,8 +15,9 @@ class EventCard extends Component{
     super(props)
   }
   eventSelected(event){
-    this.props.selectEvent(event);
+    this.props.selectEvent(event);    
     this.props.navigation.navigate('EventDetailsScreen');
+    
   }
   isPresent=_=>{
     this.props.isPresent(this.props.user.user.uid,this.props.data.id);
@@ -29,6 +30,9 @@ class EventCard extends Component{
   }
   render(){
     let event = this.props.data
+    if(moment(event.date).isBefore(moment(new Date()))){
+      return null
+    }
     return(
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>this.eventSelected(event)}>

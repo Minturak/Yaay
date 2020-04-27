@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import EventForm from '../components/event-form';
 
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import firebase from "firebase";
 import {dbo} from '../api/dbo';
 
 class CreateEvent extends Component{

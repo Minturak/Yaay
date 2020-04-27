@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Item, Input } from 'native-base'
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -29,12 +29,26 @@ class EventDetails extends Component{
     this.props.mayBePresent(this.props.user.user.uid);
     this.toggleButtons();
   }
+  toEdit=_=>{
+    this.props.toEdit();
+  }
+  delete=_=>{
+    this.props.delete()
+  }
   render(){
     let event = this.props.event;
     return(
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>{event.name}</Text>
+          <View style={styles.titleAndIcon}>
+            <Text style={styles.title}>{event.name}</Text>
+            {this.props.canUpdate && 
+              <View style={styles.icons}>
+                <MaterialIcons name={"edit"} size={20} onPress={this.toEdit}/>
+                <MaterialIcons name={"delete"} size={20} onPress={this.delete}/>
+              </View>
+            }
+          </View>
           <Text>{event.desc}</Text>
           <View style={styles.date}>
             <Text>Le {moment(new Date(event.date.seconds*1000)).format("D.MM.YYYY ")}</Text>
@@ -102,6 +116,13 @@ const styles = StyleSheet.create({
     marginRight:wp('2%'),
     padding:hp('2%'),
   },
+  titleAndIcon:{
+    flexDirection:'row',
+  },  
+  icons:{
+    alignSelf:'flex-end',
+    flexDirection:'row',
+  },
   header:{
     borderWidth:1,
     borderColor:'#ccc',
@@ -109,7 +130,8 @@ const styles = StyleSheet.create({
     padding:hp('2%'),
   },
   title:{
-    fontSize:18
+    fontSize:18,
+    flex:1
   },
   date:{
     flexDirection:'row',

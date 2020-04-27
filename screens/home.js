@@ -7,9 +7,6 @@ import {
 
 import EventCard from "../components/event-card";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
 import { connect } from 'react-redux'
 import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
@@ -136,7 +133,8 @@ class Home extends Component{
         <View style={styles.listContainer}>
           <FlatList
             data={this.state.events}
-            renderItem={({item})=><EventCard data={item}
+            renderItem={({item})=>
+            <EventCard data={item}
               navigation={this.props.navigation}
               isPresent={this.isPresent}
               isAbsent={this.isAbsent}

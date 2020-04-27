@@ -1,3 +1,4 @@
+import moment from "moment";
 import firebase from "firebase";
 import {db} from '../firebase';
 
@@ -83,45 +84,39 @@ class Dbo{
   async addMemberToGroup(idUser,idGroup){
     let members = [];
     let users = [];
-    let events = [];
-    let dispos = [];
     db.collection('groups').doc(idGroup).get().then(doc=>{
       members = doc.data().members;
       users = doc.data().users;
-      events = doc.data().events;
-      dispos = doc.data().dispos;
       members.push(idUser);
       users.push(idUser);
     }).then(_=>{
       db.collection('groups').doc(idGroup).update({members:members,users:users})
-      events.map(eventId=>{
-        this.addUserToEvent(eventId,idUser);
-      })
-      dispos.map(dispoId=>{
-        this.addUserToDispo(dispoId,idUser);
+      this.addUserToDispos(idGroup,idUser);
+      this.addUserToEvents(idGroup,idUser);
+    })
+  }
+  async addUserToEvents(grpId,uid){
+    db.collection('events').where('group','==',grpId).get().then(doc=>{
+      doc.forEach(event=>{
+        let users = event.data().users;
+        users.push(uid)
+        db.collection('events').doc(event.id).update({users:users})
       })
     })
   }
-  async addUserToEvent(eventId,uid){
-    let users = [];
-    db.collection('events').doc(eventId).get().then(doc=>{
-      users = doc.data().users;
-      users.push(uid);
-    }).then(_=>{
-      db.collection('events').doc(eventId).update({users:users})
-    })
-  }
-  async addUserToDispo(dispoId,uid){
-    let members = []
-    db.collection('dispos').doc(dispoId).get().then(doc=>{
-      members=doc.data().members;
-      members.push(uid)
-    }).then(_=>{
-      db.collection('dispos').doc(dispoId).update({members:members})
+  async addUserToDispos(grpId,uid){
+    db.collection('dispos').where('group','==',grpId).get().then(doc=>{
+      doc.forEach(dispo=>{
+        let members = dispo.data().members;
+        members.push(uid)
+        db.collection('dispos').doc(dispo.id).update({members:members})
+      })
     })
   }
   async createEvent(data){
-    let result = null
+    //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
+    data.frequency = data.frequency || 1;
+    data.reccurent=true;
     let users=[]
     let event = {
       name:data.name,
@@ -138,31 +133,22 @@ class Dbo{
       absents:[],
       maybe:[],
       noresponse:[],
+      link:new Date(data.date).getTime(),
+      until:new Date(data.until),
     }
-    this.getGroupData(data.group).then(doc=>{
+    this.getGroupData(event.group).then(doc=>{
       users.push(...doc.data().admins||[]);
       users.push(...doc.data().members||[]);
       users.push(...doc.data().organizers||[]);
       event.users=users
       event.noresponse=users
     }).then(_=>{
-      result = db.collection('events').add(event).then(docRef=>{
-        this.addEventToGroup(docRef.id,data.group)
-      })
-    })
-  }
-  async addEventToGroup(eventId,groupId){
-    let events=[]
-    db.collection('groups').doc(groupId).get().then(doc=>{
-      events = doc.data().events;
-    }).then(_=>{
-      if(events!==undefined){
-        events.push(eventId);
-      }else{
-        events=[eventId]
+      while(moment(event.date).isSameOrBefore(moment(event.until),'day,')){
+        db.collection('events').add(event)
+        let newDate = new Date(event.date)
+        newDate.setDate(newDate.getDate()+ parseInt(data.frequency))
+        event.date = newDate
       }
-    }).then(_=>{
-      db.collection('groups').doc(groupId).update({events:events})
     })
   }
   async getEventData(id){
@@ -254,6 +240,64 @@ class Dbo{
       }
     }).then(_=>{
       db.collection('dispos').doc(dispoId).update({dates:availables})
+    })
+  }
+  userAsOrganizersPrivilege(grpId,uid){
+    let res = false;
+    return dbo.getGroupData(grpId).then(doc=>{
+      if(doc.data().admins.includes(uid) || doc.data().organizers.includes(uid)){
+        res = true
+      }
+    }).then(_=>{
+      return res
+    })
+  }
+  async getLinkedEvents(link){
+    return db.collection('events').where('link','==',link).get()
+  }
+  deleteOneEvent(eventId){
+    db.collection('events').doc(eventId).update({users:[]}).then(_=>{
+      let i = 0
+      while(i<100000000){i++}
+      db.collection('events').doc(eventId).delete()
+    })
+  }
+  deleteMutipleEvents(link){
+    db.collection('events').where('link','==',link).get().then(events=>{
+      events.forEach(event=>{
+        db.collection('events').doc(event.id).delete();
+        let i = 0
+        while(i<100000000){i++}
+      })
+    });
+  }
+  updateOneEvent(eventId,data){
+    let event={}
+    db.collection('events').doc(eventId).get().then(doc=>{
+      event=doc.data();
+      event.name=data.name
+      event.desc=data.desc
+      if(!data.allEvents){
+        event.date=new Date(data.date)
+      }else{
+        event.date=new Date(doc.data().date.seconds*1000)
+      }
+      event.startTime=new Date(data.startTime)
+      event.endTime=new Date(data.endTime)
+      event.minUser=data.minUser
+      event.maxUser=data.maxUser
+      event.allDay=data.allDay
+    }).then(_=>{
+      db.collection('events').doc(eventId).set(event)
+    })
+  }
+  updateMultipleEvents(link,data){
+    db.collection('events').where('link','==',link).get().then(events=>{
+      events.forEach(event=>{
+        this.getEventData(event.id).then(doc=>{
+          this.updateOneEvent(event.id,data)
+        })
+      })
     })
   }
 }
