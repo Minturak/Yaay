@@ -9,6 +9,7 @@ class DispositionDetailsScreen extends Component {
     this.state={
       members:[],
       userDispos:[],
+      canUpdate:false,
     }
   }
   componentDidMount=_=>{
@@ -29,6 +30,7 @@ class DispositionDetailsScreen extends Component {
       }
     })
     this.setState({userDispos:userDispos})
+    this.canUpdate()
   }
   changeDispo=(dates)=>{
     let uid = this.props.user.user.uid
@@ -40,6 +42,11 @@ class DispositionDetailsScreen extends Component {
     })
     this.setState({userDispos:dates})
   }
+  canUpdate=_=>{
+    dbo.userAsOrganizersPrivilege(this.props.dispo.group,this.props.user.user.uid).then(res=>{
+      this.setState({canUpdate:res})
+    })
+  }
   render() {
     if(this.state.userDispos.length>0 && this.state.members.length>0){
       return (
@@ -49,6 +56,7 @@ class DispositionDetailsScreen extends Component {
           changeDispo={this.changeDispo}
           members={this.state.members}
           userDispos={this.state.userDispos}
+          canUpdate={this.state.canUpdate}
         />
       );
     }else{
