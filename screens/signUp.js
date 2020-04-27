@@ -1,16 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import SignUpForm from "../components/signup-form";
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationActions, StackActions  } from 'react-navigation';
 
 import { connect } from 'react-redux'
 import { connectUser } from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
 
-import firebase from "firebase";
-import { db } from '../firebase'
 import {dbo} from '../api/dbo';
 
 class SignUp extends Component{
