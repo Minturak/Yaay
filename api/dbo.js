@@ -116,10 +116,10 @@ class Dbo{
       })
     })
   }
-  async createEvent(data){
+  createEvent(data){
     //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
     data.frequency = data.frequency || 1;
-    data.reccurent=true;
+    if(!data.reccurent){data.until = data.date}
     let users=[]
     let event = {
       name:data.name,

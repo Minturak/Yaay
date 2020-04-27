@@ -10,10 +10,9 @@ import {dbo} from '../api/dbo';
 class CreateEvent extends Component{
   componentWillUnmount=_=>{
     this.props.eventFrom(undefined)
-    
   }
   handleSubmit=(state)=>{
-    dbo.createEvent(state);
+    dbo.createEvent(state)
     this.props.navigation.navigate('Home');
   }
   render(){
