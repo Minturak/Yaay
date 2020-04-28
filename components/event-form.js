@@ -26,6 +26,8 @@ class EventForm extends Component{
       frequency:0,
       allowComments:false,
       reccurent:false,
+      dateArray:[],
+      selectedDate:0,
 
       showDate:false,
       showStartTime:false,
@@ -40,6 +42,11 @@ class EventForm extends Component{
   componentDidMount=_=>{
     if(this.props.dispo!==undefined){
       this.setState({name:this.props.dispo.name,desc:this.props.dispo.desc})
+      let dateArray = []
+      this.props.dispo.dates.map(date=>{
+        dateArray.push(moment(new Date(date.date)))
+      })
+      this.setState({dateArray:dateArray})
     }
   }
   showDatePicker=_=>{
@@ -87,13 +94,8 @@ class EventForm extends Component{
     }
   }
   changeDateFromPicker=(value)=>{
-    this.setState({date:value})
-    let index = -1
-    this.props.dispo.dates.map(date=>{
-      if(moment(date.date).isSame(this.state.date,'day')){
-        index = date.id;
-    }})
-    this.setState({presents:this.props.dispo.dates[index+1].available})
+    this.setState({selectedDate:value})
+    this.setState({presents:this.props.dispo.dates[value].available})
   }
   checkData=_=>{
     this.setState({errorEndTime:this.state.endTime.isBefore(this.state.startTime)})
@@ -267,11 +269,11 @@ class EventForm extends Component{
           <View>
             <Picker
               style={styles.picker}
-              selectedValue={this.state.date}
+              selectedValue={this.state.selectedDate}
               onValueChange={(itemValue)=>this.changeDateFromPicker(itemValue)}
             >
-            {dispo.dates.map(date=>{
-              return(<Picker.Item key={date.id} label={moment(new Date(date.date)).format("DD-MM")} value={moment(new Date(date.date))}/>)
+            {this.state.dateArray.map((date,id)=>{
+              return(<Picker.Item key={id} label={date.format("DD-MM")} value={id}/>)
              })
             }
             </Picker>

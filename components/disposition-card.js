@@ -15,7 +15,7 @@ class DispositionCard extends Component {
 
   render() {
     let dispo = this.props.dispo
-    if(moment(dispo.dates[5].date).isBefore(moment(new Date()))){
+    if(moment(dispo.dates[5].date).isBefore(moment(new Date()),'day')){
       return null
     }
     return (
