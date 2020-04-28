@@ -13,8 +13,6 @@ class AccountDetails extends Component {
   }
 
   render() {
-    console.log(this.props.user);
-    
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Mon profil</Text>

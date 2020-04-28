@@ -37,11 +37,7 @@ class DispositionDetailsScreen extends Component {
   changeDispo=(dates)=>{
     let uid = this.props.user.user.uid
     let dispoId = this.props.dispo.id
-    dates.map((available,id)=>{
-      if(available!==undefined){
-        dbo.setDispos(uid,dispoId,id,available)
-      }
-    })
+    dbo.setDispos(uid,dispoId,dates)
     this.setState({userDispos:dates})
   }
   canUpdate=_=>{

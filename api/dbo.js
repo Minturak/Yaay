@@ -290,18 +290,22 @@ class Dbo{
       db.collection('groups').doc(groupId).update({dispos:dispos})
     })
   }
-  async setDispos(uid,dispoId,dateId,available){
+  async setDispos(uid,dispoId,dispos){
     let availables = []
     db.collection('dispos').doc(dispoId).get().then(doc=>{
       availables=doc.data().dates
-      if(available){
-        if(!availables[dateId].available.includes(uid)){availables[dateId].available.push(uid)}
-      }else{
-        if(availables[dateId].available.includes(uid)){
-          let index = availables[dateId].available.indexOf(uid)
-          availables[dateId].available.splice(index,1)
+      dispos.map((available,dateId)=>{
+        if(available){
+          if(!availables[dateId].available.includes(uid)){
+            availables[dateId].available.push(uid)
+          }
+        }else{
+          if(availables[dateId].available.includes(uid)){
+            let index = availables[dateId].available.indexOf(uid)
+            availables[dateId].available.splice(index,1)
+          }
         }
-      }
+      })
     }).then(_=>{
       db.collection('dispos').doc(dispoId).update({dates:availables})
     })
