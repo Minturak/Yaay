@@ -22,6 +22,8 @@ import DispositionDetailsScreen from "../screens/dispositionDetails";
 import EditEventScreen from "../screens/editEventScreen";
 import Account from "../screens/account"
 
+
+
 import { connect } from 'react-redux'
 
 const Tabs = createBottomTabNavigator();
@@ -75,7 +77,7 @@ class TabNavigator extends Component{
             let iconName;
             if(route.name==="Accueil"){return <Ionicons name={"md-home"} size={30} color={"#444444"}/>}
             else if(route.name==="Groupes"){return <MaterialIcons name={"group"} size={30} />}
-            else if(route.name==="Profil"){return <MaterialCommunityIcons name={"account"} size={30} />}
+            else if(route.name==="Profil"){return <Ionicons name={"md-person"} size={30} color={"#444444"}/>}
           }}
         )}
       >

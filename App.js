@@ -27,9 +27,12 @@ const store = configureStore();
 export default function App(){
   let [fontsLoaded] = useFonts({
     'FontAwesome': require('./node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf'),
-    'Ionicons': require('./node_modules/react-native-vector-icons/Fonts/Ionicons.ttf'),
-    'MaterialIcons': require('./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
-    'MaterialCommunityIcons': require('./node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+    'Ionicons': require('./node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+    'Material Design Icons': require('./assets/fonts/MaterialIcons.ttf'),
+    'Material Icons': require('./assets/fonts/MaterialIcons.ttf'),
+    'MaterialIcons': require('./assets/fonts/MaterialIcons.ttf'),
+    'MaterialCommunityIcons': require('./node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+    'Material Community Icons': require('./node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
   });
 
   if (!fontsLoaded) {
