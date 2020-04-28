@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import { CheckBox } from 'react-native-elements'
-import { StyleSheet, Text, View, TouchableOpacity, Picker} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Picker, ScrollView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -39,7 +39,7 @@ class DispositionForm extends Component{
   }
   render(){
     return(
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Nouvel disposition</Text>
         <Picker
           style={styles.picker}
@@ -80,6 +80,7 @@ class DispositionForm extends Component{
                 checked={date.selected}
                 containerStyle={styles.checkBox}
                 onPress={()=>{this.handleCheck(date)}}
+                iconType={'font-awesome'}
               />
             )
           })}
@@ -89,7 +90,7 @@ class DispositionForm extends Component{
             <Text style={{color:'#ffffff'}}>Créer</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     )
   }
 }

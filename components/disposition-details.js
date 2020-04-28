@@ -53,7 +53,7 @@ class DispositionDetails extends Component {
           {this.props.canUpdate&&
             <View style={styles.icons}>
               <TouchableOpacity onPress={this.createEvent}>
-                <MaterialCommunityIcons name={"calendar-plus"} size={20}/>
+                <MaterialIcons name={"queue"} size={20}/>
               </TouchableOpacity>
             </View>
           }
@@ -90,6 +90,7 @@ class DispositionDetails extends Component {
                           <CheckBox
                             checked={this.state.newDispos[date.id]}
                             onPress={()=>{this.changeDispo(date.id)}}
+                            iconType={'font-awesome'}
                           />
                         ):(
                           this.state.newDispos[date.id]?(
@@ -167,10 +168,8 @@ const styles = StyleSheet.create({
   cell:{
     borderBottomWidth:1,
     borderRightWidth:1,
-    paddingHorizontal:wp('1%'),
-    paddingVertical:hp('1%'),
-    minHeight:hp('5%'),
-    maxHeight:hp('5%'),
+    minHeight:hp('8%'),
+    maxHeight:hp('8%'),
     justifyContent: 'center',
     alignItems: 'center',
     flex:1,
@@ -186,8 +185,8 @@ const styles = StyleSheet.create({
     borderTopWidth:0,
     paddingHorizontal:wp('1%'),
     paddingVertical:hp('1%'),
-    minHeight:hp('5%'),
-    maxHeight:hp('5%'),
+    minHeight:hp('8%'),
+    maxHeight:hp('8%'),
   }
 });
 export default DispositionDetails;

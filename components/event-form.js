@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Ionicons from "react-native-vector-icons/Ionicons"
 import moment from "moment";
 
 class EventForm extends Component{
@@ -155,7 +156,7 @@ class EventForm extends Component{
           <View>
             <TouchableOpacity onPress={this.showDatePicker}>
             <View style={[styles.itemContainer, styles.iconAndText]}>
-              <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
+              <Ionicons name={"md-calendar"} size={30} color={"#444444"}/>
               <Text>{this.state.date.format("D - MM - YYYY")}</Text>
             </View>
           </TouchableOpacity>
@@ -183,10 +184,10 @@ class EventForm extends Component{
           />
         </View>
         {!this.state.allDay && (
-          <View style={[styles.iconAndText]}>
+          <View >
             <TouchableOpacity onPress={this.showStartTime}>
               <View style={[styles.itemContainer, styles.iconAndText]}>
-                <MaterialCommunityIcons name={"clock-outline"} size={30} style={styles.icon}/>
+                <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.startTime.format("HH:mm")}</Text>
               </View>
             </TouchableOpacity>
@@ -201,7 +202,7 @@ class EventForm extends Component{
             )}
             <TouchableOpacity onPress={this.showEndTime}>
               <View style={[styles.itemContainer, styles.iconAndText, this.state.errorEndTime&&styles.error]}>
-                <MaterialCommunityIcons name={"clock-outline"} size={30} style={styles.icon}/>
+                <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.endTime.format("HH:mm")}</Text>
               </View>
             </TouchableOpacity>
