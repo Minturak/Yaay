@@ -25,14 +25,16 @@ class GroupDetails extends Component{
       <View style={styles.container}>
         <View style={styles.titleAndIcons}>
           <Text style={styles.title}>{group.data.name}</Text>
-          <View style={styles.icons}>
-            <TouchableOpacity onPress={()=>{this.setState({addingUser:!this.state.addingUser})}}>
-              <Ionicons name={"md-person-add"} size={25} style={styles.icon}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
-              <Ionicons name={"md-create"} size={25} style={styles.icon}/>
-            </TouchableOpacity>
-          </View>
+          {this.props.isAdmin && 
+            <View style={styles.icons}>
+              <TouchableOpacity onPress={()=>{this.setState({addingUser:!this.state.addingUser})}}>
+                <Ionicons name={"md-person-add"} size={25} style={styles.icon}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
+                <Ionicons name={"md-create"} size={25} style={styles.icon}/>
+              </TouchableOpacity>
+            </View>
+          }
         </View>
         <Text>Catégorie : {group.data.category}</Text>
         <Text>Description du groupe : {group.data.description}</Text>

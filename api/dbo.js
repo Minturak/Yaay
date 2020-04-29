@@ -50,6 +50,16 @@ class Dbo{
       return res
     })
   }
+  userAsAdminPrivilege(grpId,uid){
+    let res = false;
+    return dbo.getGroupData(grpId).then(doc=>{
+      if(doc.data().admins.includes(uid)){
+        res = true
+      }
+    }).then(_=>{
+      return res
+    })
+  }
   //Invitation related
   async addInvitationToUser(userId,groupId,data){
     let groups = []

@@ -75,11 +75,19 @@ class GroupDetailsScreen extends Component{
       })
     }
   }
+  userAsAdminPrivilege=_=>{
+    dbo.userAsAdminPrivilege(this.props.group.id,this.props.user.user.uid).then(res=>{
+      console.log(res);
+      
+      this.setState({isAdmin:res})
+    })
+  }
   componentDidMount(){
-    this.getAdmins();
-    this.getOrganizers();
-    this.getMembers();
-    this.test_snapshot();
+    this.getAdmins()
+    this.getOrganizers()
+    this.getMembers()
+    this.test_snapshot()
+    this.userAsAdminPrivilege()
   }
   render(){
     return(
@@ -90,12 +98,14 @@ class GroupDetailsScreen extends Component{
         members={this.state.members}
         addUser={this.addUser}
         navigation={this.props.navigation}
+        isAdmin={this.state.isAdmin}
       />
     )
   }
 }
 const mapStateToProps = state => ({
   group: state.group,
+  user: state.user,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
