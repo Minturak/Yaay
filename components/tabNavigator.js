@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Ionicons from "react-native-vector-icons/Ionicons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Home from "../screens/home"
 import Login from "../screens/login"
 import SignUp from "../screens/signUp"
