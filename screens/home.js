@@ -26,6 +26,8 @@ class Home extends Component{
     }
   }
   componentDidMount(){
+    console.log('mount');
+    
     if(this.props.categories===undefined){
       this.fetchCategories();
     }
@@ -102,6 +104,9 @@ class Home extends Component{
     dbo.setUserDisponibilityForEvent(uid,eventId,'maybe');
   }
   render(){
+    if(this.props.user===undefined){
+      return null
+    }
     return(
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>

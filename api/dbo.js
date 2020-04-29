@@ -40,7 +40,7 @@ class Dbo{
       })
     }
   }
-  userAsOrganizersPrivilege(grpId,uid){
+  async userAsOrganizersPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
       if(doc.data().admins.includes(uid) || doc.data().organizers.includes(uid)){
@@ -50,7 +50,7 @@ class Dbo{
       return res
     })
   }
-  userAsAdminPrivilege(grpId,uid){
+  async userAsAdminPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
       if(doc.data().admins.includes(uid)){
