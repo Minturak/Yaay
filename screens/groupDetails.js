@@ -73,11 +73,26 @@ class GroupDetailsScreen extends Component{
     if(email!=="" && email!==undefined){
       dbo.getUserWithEmail(email).then(doc=>{
         if(doc.empty){
-          console.log('Aucun utilisateur inscrit avec cet email!');
+          Alert.alert(
+            "Erreur",
+            "Aucun utilisateur inscrit avec cet email!",
+            [
+              { text: "Ok"},
+            ],
+            { cancelable: true }
+          );
         }else{
           doc.forEach(user=>{
             dbo.addInvitationToUser(user.id,this.props.group.id,user.data())
           })
+          Alert.alert(
+            "Succès",
+            "Invitation envoyée!",
+            [
+              { text: "Ok"},
+            ],
+            { cancelable: true }
+          );
         }
       })
     }
