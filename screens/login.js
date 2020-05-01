@@ -21,6 +21,15 @@ class Login extends Component{
     dbo.handleLogin(email,password).then(user=>{
       this.props.connectUser(user);
       this.props.navigation.replace('Home');
+    }).catch(error=>{
+      Alert.alert(
+        "Erreur",
+        "L'email ou le mot de passe est incorrecte",
+        [
+          { text: "Ok"},
+        ],
+        { cancelable: false }
+      );
     })
   }
   forgottenPassword=(email)=>{

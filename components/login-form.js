@@ -58,6 +58,7 @@ class LoginForm extends Component{
                 returnKeyType={"next"}
                 secureTextEntry={this.state.hidePassword}
                 autoCapitalize="none"
+                keyboardType="visible-password"
               />
             </Item>
           </View>
