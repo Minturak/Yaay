@@ -159,6 +159,100 @@ class Dbo{
     newColl.push(uid)
     db.collection('groups').doc(grpId).update({[oldRole]:oldColl,[newRole]:newColl})
   }
+  async removeUser(grpId,uid){
+    this.removeGroupFromUser(grpId,uid)
+    this.removeUserFromEvents(grpId,uid);
+    this.removeUserFromDispos(grpId,uid);
+    this.removeUserFromGroup(grpId,uid);
+  }
+  removeGroupFromUser(grpId,uid){
+    db.collection('users').doc(uid).get().then(doc=>{
+      let groups = doc.data().groups
+      let index = groups.indexOf(grpId)
+      groups.splice(index,1)
+      db.collection('users').doc(uid).update({groups:groups})
+    })
+  }
+  removeUserFromGroup(grpId,uid){
+    console.log('remove from group');
+    db.collection('groups').doc(grpId).get().then(doc=>{
+      let users = doc.data().users;
+      let index = users.indexOf(uid);
+      users.splice(index,1)
+      if(doc.data().admins.includes(uid)){
+        let admins = doc.data().admins
+        index = admins.indexOf(uid)
+        admins.splice(index,1)
+        db.collection('groups').doc(grpId).update({admins:admins,users:users})
+      }else if(doc.data().organizers.includes(uid)){
+        let organizers = doc.data().organizers
+        index = organizers.indexOf(uid)
+        organizers.splice(index,1)
+        db.collection('groups').doc(grpId).update({organizers:organizers,users:users})
+      }else if(doc.data().members.includes(uid)){
+        let members = doc.data().members
+        index = members.indexOf(uid)
+        members.splice(index,1)
+        db.collection('groups').doc(grpId).update({members:members,users:users})
+      }
+    })
+  }
+  removeUserFromEvents(grpId,uid){
+    console.log('remove from event');
+    
+    db.collection('events').where('group','==',grpId).get().then(docs=>{
+      docs.forEach(doc=>{
+        let users = doc.data().users
+        let index = users.indexOf(uid)
+        users.splice(index,1)
+        if(doc.data().presents.includes(uid)){
+          let presents = doc.data().presents
+          index = presents.indexOf(uid)
+          presents.splice(index,1)
+          db.collection('events').doc(doc.id).update({users:users,presents:presents})
+        }else if(doc.data().maybe.includes(uid)){
+          let maybe = doc.data().maybe
+          index = maybe.indexOf(uid)
+          maybe.splice(index,1)
+          db.collection('events').doc(doc.id).update({users:users,maybe:maybe})
+        }else if(doc.data().noresponse.includes(uid)){
+          let noresponse = doc.data().noresponse
+          index = noresponse.indexOf(uid)
+          noresponse.splice(index,1)
+          db.collection('events').doc(doc.id).update({users:users,noresponse:noresponse})
+        }else if(doc.data().absents.includes(uid)){
+          let absents = doc.data().absents
+          index = absents.indexOf(uid)
+          absents.splice(index,1)
+          db.collection('events').doc(doc.id).update({users:users,absents:absents})
+        }else{
+          db.collection('events').doc(doc.id).update({users:users})
+        }
+      })
+    })
+  }
+  removeUserFromDispos(grpId,uid){
+    console.log('remove from dispos');
+    
+    db.collection('dispos').where('group','==',grpId).get().then(docs=>{
+      docs.forEach(doc=>{
+        let members = doc.data().members
+        let index = members.indexOf(uid)
+        members.splice(index,1)
+        let dates = doc.data().dates
+        dates.forEach((date,id)=>{
+          if(date.available.includes(uid)){
+            let available = date.available
+            index = available.indexOf(uid)
+            available.splice(index,1)
+            date.available=available
+          }
+        })
+        db.collection('dispos').doc(doc.id).update({dates:dates,members:members})
+      })
+    })
+  }
+
   //Event related
   createEvent(data){
     //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes

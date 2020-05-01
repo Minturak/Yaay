@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -16,10 +16,8 @@ class UserDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opened:false,
     };
   }
-
   render() {
     return (
       <View style={styles.container}>
@@ -39,7 +37,7 @@ class UserDisplay extends Component {
               {this.props.role!==0 &&
                 <MenuOption onSelect={() => this.props.setUserRole(this.props.user.id,'admins')} text='Définir comme admin'/>
               }
-              <MenuOption onSelect={() => alert(`Not called`)}>
+              <MenuOption onSelect={() => this.props.removeUser(this.props.user.id,this.props.user.data.pseudo)}>
                 <Text style={{color: 'red'}}>Retirer</Text>
               </MenuOption>
             </MenuOptions>

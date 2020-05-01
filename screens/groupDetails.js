@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { selectGroup } from '../redux/actions/selectGroup'
 import { bindActionCreators } from 'redux';
-
+import { Alert } from "react-native";
 import GroupDetails from "../components/group-details";
 
 import { dbo } from '../api/dbo';
@@ -17,6 +17,9 @@ class GroupDetailsScreen extends Component{
       organizers:[],
       members:[],
     }
+  }
+  componentDidMount(){
+    this.groupSnapshot()
   }
   getAdmins(){
     let adminsId=this.props.group.data.admins;
@@ -87,8 +90,16 @@ class GroupDetailsScreen extends Component{
   setUserRole=(uid,newRole)=>{
     dbo.setUserRole(this.props.group.id,uid,newRole)
   }
-  componentDidMount(){
-    this.groupSnapshot()
+  removeUser=(uid,userName)=>{
+    Alert.alert(
+      "Suppression",
+      "Êtes-vous sûr de vouloir retirer "+userName+" de ce groupe ?",
+      [
+        { text: "Annuler"},
+        { text: "Oui", onPress: () => dbo.removeUser(this.props.group.id,uid)}
+      ],
+      { cancelable: true }
+    );
   }
   render(){
     return(
@@ -101,6 +112,7 @@ class GroupDetailsScreen extends Component{
         navigation={this.props.navigation}
         isAdmin={this.state.isAdmin}
         setUserRole={this.setUserRole}
+        removeUser={this.removeUser}
       />
     )
   }

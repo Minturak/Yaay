@@ -22,8 +22,6 @@ class GroupDetails extends Component{
   }
   render(){
     let group = this.props.group;
-    console.log(this.props.organizers);
-    
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
@@ -76,6 +74,7 @@ class GroupDetails extends Component{
                 setUserRole={this.props.setUserRole}
                 isAdmin={this.props.isAdmin}
                 nbAdmins={this.props.admins.length}
+                removeUser={this.props.removeUser}
               />
             )
           })}
@@ -90,6 +89,7 @@ class GroupDetails extends Component{
                 role={1}
                 setUserRole={this.props.setUserRole}
                 isAdmin={this.props.isAdmin}
+                removeUser={this.props.removeUser}
               />
             )
           })}
@@ -104,6 +104,7 @@ class GroupDetails extends Component{
                 role={2}
                 setUserRole={this.props.setUserRole}
                 isAdmin={this.props.isAdmin}
+                removeUser={this.props.removeUser}
               />
             )
           })}
