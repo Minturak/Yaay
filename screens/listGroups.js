@@ -1,6 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, View, Button, FlatList } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, FlatList, TouchableOpacity, Text } from 'react-native';
 import GroupCard from '../components/group-card'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
 
 import { connect } from 'react-redux'
 import { setGroups } from '../redux/actions/setGroups';
@@ -35,7 +39,11 @@ class ListGroups extends Component{
   render(){
     return(
       <View>
-        <Button color="#249E6B" title="create group" onPress={()=>this.props.navigation.navigate('GroupFormScreen')}/>
+        <TouchableOpacity onPress={this.handleLogin}>
+          <View style={styles.button}>
+            <Text style={{color:'#ffffff'}}>Créer un groupe</Text>
+          </View>
+        </TouchableOpacity>
         <FlatList
           data={this.state.groups}
           renderItem={({ item }) => <GroupCard groupData={item} navigation={this.props.navigation}/>}
@@ -45,9 +53,14 @@ class ListGroups extends Component{
   }
 }
 const styles = StyleSheet.create({
-  buttonStyle:{
+  button:{
     backgroundColor: '#249E6B',
-  },
+    alignItems: 'center',
+    padding: 10,
+    marginTop: hp('2%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  }
 });
 const mapStateToProps = state => ({
   groups: state.groups,
