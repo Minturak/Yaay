@@ -73,7 +73,6 @@ class TabNavigator extends Component{
         tabBarOptions={{activeTintColor:'#249E6B',showIcon: true}}
         screenOptions={({route})=>({
           tabBarIcon:()=>{
-            let iconName;
             if(route.name==="Accueil"){return <Ionicons name={"md-home"} size={30} color={"#444444"}/>}
             else if(route.name==="Groupes"){return <MaterialIcons name={"group"} size={30} />}
             else if(route.name==="Profil"){return <Ionicons name={"md-person"} size={30} color={"#444444"}/>}
