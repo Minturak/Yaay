@@ -18,6 +18,7 @@ class EventDetailsScreen extends Component{
       presents:[],
       maybe:[],
       absents:[],
+      noresponse:[],
       canUpdate:false,
     }
   }
@@ -28,12 +29,17 @@ class EventDetailsScreen extends Component{
   getUsers=(presence)=>{
     let ids = this.state.event[presence];
     let users = [];
-    ids.map(id=>{
-      dbo.getUserData(id).then(doc=>{
-        users.push({...doc.data(),id:id})
-        this.setState({[presence]:users})
+    if(ids!==undefined && ids.length>0){
+      ids.map(id=>{
+        dbo.getUserData(id).then(doc=>{
+          users.push({...doc.data(),id:id})
+          this.setState({[presence]:users})
+        })
       })
-    })
+    }else{
+      this.setState({[presence]:[]})
+    }
+    
   }
   snapshotEvent=(id)=>{
     db.collection('events').doc(id).onSnapshot(doc=>{
@@ -46,6 +52,7 @@ class EventDetailsScreen extends Component{
     this.getUsers("presents");
     this.getUsers("maybe");
     this.getUsers("absents");
+    this.getUsers("noresponse");
   }
   isPresent=(uid)=>{
     dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'presents');
@@ -104,6 +111,7 @@ class EventDetailsScreen extends Component{
         presents={this.state.presents}
         maybe={this.state.maybe}
         absents={this.state.absents}
+        noresponse={this.state.noresponse}
         canUpdate={this.state.canUpdate}
       />
     )

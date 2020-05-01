@@ -312,13 +312,18 @@ class Dbo{
     })
   }
   updateDisponibilitiesForEvent(uid,eventId,doc,dispo,inCollection){
+    let noresponse = doc.data().noresponse
+    let index = noresponse.indexOf(uid)
+    if(index>-1){
+      noresponse.splice(index,1)
+    }
     if(inCollection==="null"){
       let updateCol = doc.data()[dispo]
       updateCol.push(uid)
-      db.collection('events').doc(eventId).update({[dispo]:updateCol})
+      db.collection('events').doc(eventId).update({[dispo]:updateCol,noresponse:noresponse})
     }else{
       let inColl = doc.data()[inCollection];
-      let index = inColl.indexOf(uid);
+      index = inColl.indexOf(uid);
       inColl.splice(index,1);
       let updateCol = doc.data()[dispo];
       if(!updateCol.includes(uid)){
@@ -332,7 +337,7 @@ class Dbo{
           updateCol.push(uid);
         }
       }
-      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
+      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol,noresponse:noresponse});
     }
   }
   async getLinkedEvents(link){
