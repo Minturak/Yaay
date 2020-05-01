@@ -26,8 +26,6 @@ class Home extends Component{
     }
   }
   componentDidMount(){
-    console.log('mount');
-    
     if(this.props.categories===undefined){
       this.fetchCategories();
     }

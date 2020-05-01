@@ -137,6 +137,28 @@ class Dbo{
   async editGroup(name,description,category,id){
     db.collection('groups').doc(id).update({name:name,description:description,category:category})
   }
+  async setUserRole(grpId,uid,newRole){
+    this.getGroupData(grpId).then(doc=>{
+      let isAdmin = doc.data().admins.includes(uid);
+      let isOrganizer = doc.data().organizers.includes(uid);
+      let isMember = doc.data().members.includes(uid);
+      if(isAdmin){
+        this.changeUserRole(grpId,doc,uid,newRole,'admins')
+      }else if(isOrganizer){
+        this.changeUserRole(grpId,doc,uid,newRole,'organizers')
+      }else if(isMember){
+        this.changeUserRole(grpId,doc,uid,newRole,'members')
+      }
+    })
+  }
+  async changeUserRole(grpId,doc,uid,newRole,oldRole){
+    let oldColl = doc.data()[oldRole]
+    let newColl = doc.data()[newRole]
+    let index = oldColl.indexOf(uid)
+    oldColl.splice(index,1)
+    newColl.push(uid)
+    db.collection('groups').doc(grpId).update({[oldRole]:oldColl,[newRole]:newColl})
+  }
   //Event related
   createEvent(data){
     //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes

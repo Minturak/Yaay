@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux'
 import { selectGroup } from '../redux/actions/selectGroup'
@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 import GroupDetails from "../components/group-details";
 
 import { dbo } from '../api/dbo';
-import firebase from "firebase";
 import {db} from '../firebase';
 
 class GroupDetailsScreen extends Component{
@@ -31,14 +30,16 @@ class GroupDetailsScreen extends Component{
   }
   getOrganizers(){
     let orgaId=this.props.group.data.organizers;
-    let orga=[];
-    if(orgaId!==undefined){
+    let organizers=[];
+    if(orgaId!==undefined && orgaId.length>0){
       orgaId.map(id=>{
         dbo.getUserData(id).then(doc=>{
-          admins.push({id:id,data:doc.data()});
-          this.setState({organizers:orga})
+          organizers.push({id:id,data:doc.data()});
+          this.setState({organizers:organizers})
         })
       })
+    }else{
+      this.setState({organizers:[]})
     }
   }
   getMembers(){
@@ -53,14 +54,17 @@ class GroupDetailsScreen extends Component{
       })
     }
   }
-  test_snapshot(){
-    const doc = db.collection('groups').doc(this.props.group.id);
-    const observer = doc.onSnapshot(docSnapshot=>{
+  groupSnapshot(){
+    db.collection('groups').doc(this.props.group.id).onSnapshot(docSnapshot=>{
       this.update(docSnapshot.data());
     })
   }
   update=(data)=>{
     this.props.selectGroup({data:data,id:this.props.group.id});
+    this.getAdmins()
+    this.getOrganizers()
+    this.getMembers()
+    this.userAsAdminPrivilege()
   }
   addUser=(email)=>{
     if(email!=="" && email!==undefined){
@@ -77,17 +81,14 @@ class GroupDetailsScreen extends Component{
   }
   userAsAdminPrivilege=_=>{
     dbo.userAsAdminPrivilege(this.props.group.id,this.props.user.user.uid).then(res=>{
-      console.log(res);
-      
       this.setState({isAdmin:res})
     })
   }
+  setUserRole=(uid,newRole)=>{
+    dbo.setUserRole(this.props.group.id,uid,newRole)
+  }
   componentDidMount(){
-    this.getAdmins()
-    this.getOrganizers()
-    this.getMembers()
-    this.test_snapshot()
-    this.userAsAdminPrivilege()
+    this.groupSnapshot()
   }
   render(){
     return(
@@ -99,6 +100,7 @@ class GroupDetailsScreen extends Component{
         addUser={this.addUser}
         navigation={this.props.navigation}
         isAdmin={this.state.isAdmin}
+        setUserRole={this.setUserRole}
       />
     )
   }

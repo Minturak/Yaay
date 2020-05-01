@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import GroupForm from "../components/group-form"
 
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from "firebase";
 import {dbo} from '../api/dbo';
