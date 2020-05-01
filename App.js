@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from "./components/tabNavigator";
 import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore'
+import { MenuProvider } from 'react-native-popup-menu';
 
 // The code below hides the message of Yellow box (on Android)
 import { YellowBox } from 'react-native';
@@ -40,9 +41,11 @@ export default function App(){
   }else{
     return (
       <Provider store={store}>
-        <NavigationContainer>
-          <TabNavigator/>
-        </NavigationContainer>
+        <MenuProvider>
+          <NavigationContainer>
+            <TabNavigator/>
+          </NavigationContainer>
+        </MenuProvider>
       </Provider>
     );
   }

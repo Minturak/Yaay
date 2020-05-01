@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import Ionicons from "react-native-vector-icons/Ionicons"
+import UserDisplay from './user-display'
 
 class GroupDetails extends Component{
   constructor(props){
@@ -20,83 +22,139 @@ class GroupDetails extends Component{
   }
   render(){
     let group = this.props.group;
+    console.log(this.props.organizers);
+    
     return(
-      <View style={styles.container}>
-        <Text style={styles.title}>{group.data.name}</Text>
-        <Text>Catégorie : {group.data.category}</Text>
-        <Text>Description du groupe : {group.data.description}</Text>
-        <Text>Administrateurs : </Text>
-        {this.props.admins.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        <Text>Organisateurs : </Text>
-        {this.props.organizers.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        <Text>Membres : </Text>
-        {this.props.members.map((user,key)=>{
-          return(
-              <Text key={key}>{user.data.pseudo}</Text>
-          )
-        })}
-        {!this.state.addingUser &&
-          <TouchableOpacity onPress={()=>{this.setState({addingUser:!this.state.addingUser})}}>
-            <View style={styles.AddButton}>
-              <Text style={{color:'#ffffff'}}>Ajouter un utilisateur</Text>
-            </View>
-          </TouchableOpacity>
-        }
-        {this.state.addingUser &&
-          <View>
-            <Item floatingLabel style={styles.itemContainer}>
-                <Label>Email de l'utilisateur</Label>
-                <Input
-                  style={styles.input}
-                  onChangeText={(text) => this.setState({addingEmail: text})}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoCorrect={false}
-                  returnKeyType="done"
-                  onSubmitEditing={()=>this.addUser()}
-                />
-            </Item>
-            <TouchableOpacity onPress={()=>this.addUser()}>
-              <View style={styles.AddButton}>
-                <Text style={{color:'#ffffff'}}>Valider</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.titleAndIcons}>
+            <Text style={styles.title}>{group.data.name}</Text>
+            {this.props.isAdmin && 
+              <View style={styles.icons}>
+                <TouchableOpacity onPress={()=>{this.setState({addingUser:!this.state.addingUser})}}>
+                  <Ionicons name={"md-person-add"} size={25} style={styles.icon}/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
+                  <Ionicons name={"md-create"} size={25} style={styles.icon}/>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            }
+          </View>
+          <Text>Catégorie : {group.data.category}</Text>
+          <Text>Description du groupe : {group.data.description}</Text>
+        </View>
+        {this.state.addingUser &&
+          <View style={styles.inputContainer}>
+            <View style={styles.input}>
+              <Item floatingLabel style={styles.itemContainer}>
+                  <Label>Email de l'utilisateur</Label>
+                  <Input
+                    onChangeText={(text) => this.setState({addingEmail: text})}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    autoCorrect={false}
+                    returnKeyType="done"
+                    onSubmitEditing={()=>this.addUser()}
+                  />
+              </Item>
+            </View>
+            <View style={styles.iconCheck}>
+              <TouchableOpacity onPress={()=>this.addUser()}>
+                <Ionicons name={"md-checkmark"} size={25}/>
+              </TouchableOpacity>
+            </View>
           </View>
         }
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
-          <View style={styles.AddButton}>
-            <Text style={{color:'#ffffff'}}>Modifier</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.subTitle}>Administrateurs : </Text>
+        <View style={styles.usersList}>
+          {this.props.admins.map((user,key)=>{
+            return(
+              <UserDisplay
+                key={key}
+                user={user}
+                role={0}
+                setUserRole={this.props.setUserRole}
+                isAdmin={this.props.isAdmin}
+                nbAdmins={this.props.admins.length}
+              />
+            )
+          })}
+        </View>
+        <Text style={styles.subTitle}>Organisateurs : </Text>
+        <View style={styles.usersList}>
+          {this.props.organizers.map((user,key)=>{
+            return(
+              <UserDisplay
+                key={key}
+                user={user}
+                role={1}
+                setUserRole={this.props.setUserRole}
+                isAdmin={this.props.isAdmin}
+              />
+            )
+          })}
+        </View>
+        <Text style={styles.subTitle}>Membres : </Text>
+        <View style={styles.usersList}>
+          {this.props.members.map((user,key)=>{
+            return(
+              <UserDisplay
+                key={key}
+                user={user} 
+                role={2}
+                setUserRole={this.props.setUserRole}
+                isAdmin={this.props.isAdmin}
+              />
+            )
+          })}
+        </View>
+      </ScrollView>
     )
   }
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     padding:wp('4%'),
   },
-  AddButton: {
-    backgroundColor: '#249E6B',
-    alignItems: 'center',
-    padding: 10,
-    marginTop: hp('4%'),
-    marginLeft: wp('9%'),
-    marginRight: wp('9%'),
+  header:{
+    borderBottomWidth:1,
+    borderColor:'#249E6B',
+    paddingBottom:hp('1%'),
+    marginBottom:hp('1%'),
   },
   title:{
     fontSize:22,
-    marginBottom:hp('2%')
+    marginBottom:hp('2%'),
+    fontWeight:'bold',
+    flex:1
+  },
+  titleAndIcons:{
+    flexDirection:'row',
+  },
+  icons:{
+    alignSelf:'flex-end',
+    flexDirection:'row',
+  },
+  icon:{
+    marginHorizontal:wp('2%'),
+    color:"#444444",
+    marginBottom:hp('2%'),
+  },
+  inputContainer:{
+    flexDirection:'row'
+  },
+  input:{
+    flex:1
+  },
+  iconCheck:{
+    alignSelf:'center'
+  },
+  subTitle:{
+    fontWeight:'bold',
+    marginTop:hp('1%')
+  },
+  usersList:{
+    marginLeft:wp('2%'),
   },
 });
 
