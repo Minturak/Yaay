@@ -27,32 +27,34 @@ class CreateEvent extends Component{
     this.props.navigation.navigate('Home');
   }
   selectGroups=_=>{
-    let groups = []
     this.props.groups.map(group=>{
-      dbo.userAsOrganizersPrivilege(group.id,this.props.user.user.uid).then(res=>{
-        if(res){
-          groups.push(group)
-          this.setState({groups:groups,ready:true})
-        }
-      })
-      this.setState({groups:groups,ready:true})
+      if(this.isOrganizer(group,this.props.user.user.uid)){
+        let groups = this.state.groups
+        groups.push(group)
+        this.setState({groups:groups})
+      }
     })
+    this.setState({ready:true})
     if(this.state.groups.length<1){
-      this.props.navigation.pop()
+      this.props.navigation.navigate('Home')
     }
   }
-  render(){
-    if(!this.state.ready){
-      return null
+  isOrganizer=(group,uid)=>{
+    if(group.data.admins.includes(uid)||group.data.organizers.includes(uid)){
+      return true
     }
-    console.log(this.state);
-    return(
-      <EventForm 
-        groups={this.state.groups} 
-        dispo={this.props.eventFromDispo}
-        handleSubmit={this.handleSubmit}
-      />
-    )
+    return false
+  }
+  render(){
+    if(this.state.ready){
+      return(
+        <EventForm 
+          groups={this.state.groups} 
+          dispo={this.props.eventFromDispo}
+          handleSubmit={this.handleSubmit}
+        />
+      )
+    }else{return null}
   }
 }
 const mapStateToProps = state => ({

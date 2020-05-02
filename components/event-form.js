@@ -47,8 +47,9 @@ class EventForm extends Component{
       this.props.dispo.dates.map(date=>{
         dateArray.push(moment(new Date(date.date)))
       })
-      this.setState({dateArray:dateArray,group:this.props.groups[0].id})
+      this.setState({dateArray:dateArray})
     }
+    this.setState({group:this.props.groups[0].id})
   }
   showDatePicker=_=>{
     this.setState({showDate:true})
@@ -114,6 +115,9 @@ class EventForm extends Component{
   }
   render(){
     let dispo = this.props.dispo
+    if(this.props.groups===undefined || this.props.groups.length<1){
+      return null
+    }
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Nouvel événement</Text>
