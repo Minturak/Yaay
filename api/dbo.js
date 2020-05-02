@@ -252,7 +252,6 @@ class Dbo{
       })
     })
   }
-
   //Event related
   createEvent(data){
     //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes

@@ -23,6 +23,7 @@ class Home extends Component{
       invitations:[],
       events:[],
       dispos:[],
+      showButtons:false,
     }
   }
   componentDidMount(){
@@ -37,6 +38,7 @@ class Home extends Component{
       this.listenerEvents(uid);
       this.listenerGroups(uid)
       this.listenerDispos(uid)
+      
     }
   }
   listenerGroups(uid){
@@ -46,6 +48,7 @@ class Home extends Component{
         groups.push({id:group.id,data:group.data()})
       })
       this.props.setGroups(groups);
+      this.showCreateButtons(uid);
     })
   }
   listenerDispos(uid){
@@ -92,6 +95,15 @@ class Home extends Component{
       this.props.setCategories(categories);
     })
   }
+  showCreateButtons=(uid)=>{
+    if(this.props.groups!==undefined){
+      this.props.groups.map(group=>{
+        if(group.data.admins.includes(uid)||group.data.organizers.includes(uid)){
+          this.setState({showButtons:true})
+        }
+      })
+    }
+  }
   isPresent=(uid,eventId)=>{
     dbo.setUserDisponibilityForEvent(uid,eventId,'presents');
   }
@@ -108,30 +120,34 @@ class Home extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
-          <View style={styles.button}>
-            <Text>Créer un événement</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
-          <View style={styles.button}>
-            <Text>Indiquer mes dispositions</Text>
-          </View>
-        </TouchableOpacity>
-        {this.state.invitations.length>0 &&
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
-            <View style={styles.button}>
-              <Text>Nouvels invitations !</Text>
+          {this.state.showButtons &&
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
+                <View style={styles.button}>
+                  <Text>Créer un événement</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
+                <View style={styles.button}>
+                  <Text>Indiquer mes dispositions</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        }
-        {this.state.dispos.length>0 &&
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
-            <View style={styles.button}>
-              <Text>Nouvels dispositions</Text>
-            </View>
-          </TouchableOpacity>
-        }
+          }
+          {this.state.invitations.length>0 &&
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
+              <View style={styles.button}>
+                <Text>Nouvels invitations !</Text>
+              </View>
+            </TouchableOpacity>
+          }
+          {this.state.dispos.length>0 &&
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
+              <View style={styles.button}>
+                <Text>Nouvels dispositions</Text>
+              </View>
+            </TouchableOpacity>
+          }
         </View>
         <View style={styles.listContainer}>
           <FlatList
