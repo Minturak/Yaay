@@ -16,7 +16,7 @@ class EventForm extends Component{
     this.state={
       name:'',
       desc:'',
-      group:this.props.groups[0].id,
+      group:undefined,
       date:moment(),
       startTime:moment(),
       endTime:moment(),
@@ -47,7 +47,7 @@ class EventForm extends Component{
       this.props.dispo.dates.map(date=>{
         dateArray.push(moment(new Date(date.date)))
       })
-      this.setState({dateArray:dateArray})
+      this.setState({dateArray:dateArray,group:this.props.groups[0].id})
     }
   }
   showDatePicker=_=>{
