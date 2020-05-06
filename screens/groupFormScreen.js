@@ -22,6 +22,7 @@ class GroupFormScreen extends Component{
   }
   handleSubmit=(name,desc,cat)=>{
     dbo.createGroup(name,desc,cat,this.props.user.user.uid)
+    this.props.navigation.pop()
     this.props.navigation.navigate('ListGroups');
   }
   render(){
