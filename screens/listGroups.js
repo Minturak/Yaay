@@ -34,10 +34,13 @@ class ListGroups extends Component{
       this.setState({groups:groups})
     })
   }
+  toCreateGroup(){
+    this.props.navigation.navigate('GroupFormScreen')
+  }
   render(){
     return(
       <View>
-        <TouchableOpacity onPress={this.handleLogin}>
+        <TouchableOpacity onPress={()=>{this.toCreateGroup()}}>
           <View style={styles.button}>
             <Text style={styles.whiteText}>Créer un groupe</Text>
           </View>
