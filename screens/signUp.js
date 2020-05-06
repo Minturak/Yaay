@@ -21,13 +21,16 @@ class SignUp extends Component{
     }else{
       dbo.handleSignUp(email,password).then(user=>{
         let uid = user.user.uid;
+        dbo.sendEmailVerification()
         dbo.createUserDocument(uid,pseudo,email);
         this.props.connectUser(user);
         this.props.navigation.replace('Home');
       }).catch(error=>{
+        console.log(error);
+        
         Alert.alert(
           "Erreur",
-          error[0],
+          "Erreur : "+error.message,
           [
             { text: "Ok"},
           ],
