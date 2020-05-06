@@ -15,6 +15,15 @@ class Dbo{
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }
+  sendEmailVerification(){
+    let newUser = firebase.auth().currentUser;
+    newUser.sendEmailVerification()
+  }
+  verifiedEmail(){
+    let user = firebase.auth().currentUser;
+    user.reload()
+    return user.emailVerified;
+  }
   //User related
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
@@ -72,6 +81,7 @@ class Dbo{
           db.collection('users').doc(userId).update({
             invitations:invitations
           })
+          this.emailInvitation(groupId,userId)
         }
       }
     })
@@ -254,7 +264,6 @@ class Dbo{
   }
   //Event related
   createEvent(data){
-    //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
     data.frequency = data.frequency || 1;
     if(!data.reccurent){data.until = data.date}
     let users=[]
@@ -288,6 +297,13 @@ class Dbo{
         let newDate = new Date(event.date)
         newDate.setDate(newDate.getDate()+ parseInt(data.frequency))
         event.date = newDate
+      }
+      if(data.reccurent){
+        console.log(data);
+        
+        this.emailNewRecurrentEvent(data.group,data.date,data.name,data.frequency)
+      }else{
+        this.emailNewEvent(data.group,data.date,data.name)
       }
     })
   }
@@ -388,7 +404,7 @@ class Dbo{
     })
   }
   //Dispo related
-  async addDispo(name,desc,groupId,dates){
+  async addDispo(name,desc,groupId,dates,uid){
     let members = []
     this.getGroupData(groupId).then(doc=>{
       members.push(...doc.data().admins||[]);
@@ -402,6 +418,7 @@ class Dbo{
         dates:dates,
         members:members,
       }).then(docRef=>{
+        this.emailNewDispo(groupId,name,uid)
         this.addDispoToGroup(groupId,docRef.id)
       })
     })
@@ -438,6 +455,112 @@ class Dbo{
       })
     }).then(_=>{
       db.collection('dispos').doc(dispoId).update({dates:availables})
+    })
+  }
+  //Email related
+  async emailNewEvent(grpId,date,name){
+    /*
+    * Subject de l'email: Nom du groupe - Nouvel évènement le date de l'évènement
+    * Tu as reçu une invitation à un nouvel événement nom de l'évènement planifié le date de l'évènement . Merci d'indiquer ta présence directement depuis l'Application.
+    */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      email.message.subject=doc.data().name+" - Nouvel évènement le "+moment(date).format('DD-MM')
+      doc.data().users.map(userId=>{
+        this.getUserData(userId).then(userDoc=>{
+          email.to=userDoc.data().email
+          email.message.text="Tu as reçu une invitation à un nouvel événement "+ name+" planifié le "+moment(date).format('DD-MM')+". Merci d'indiquer ta présence directement depuis l'Application"
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailNewRecurrentEvent(grpId,date,name,frequency){
+    /**
+     * Subject : NOM_GROUPE - Nouvel évènement récurrent
+     * Text: L'événement NOM_EVENEMENT récurrent a été créé dans le groupe NOM_GROUPE
+     */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      email.message.subject=doc.data().name+" - Nouvel évènement récurrent"
+      doc.data().users.map(userId=>{
+        this.getUserData(userId).then(userDoc=>{
+          email.to=userDoc.data().email
+          email.message.text="L'évènement récurrent "+name+" a été ajouté dans le groupe "+doc.data().name+". \n Il commence le "+moment(date).format("DD-MM")+" et se repète tous les "+frequency+" jours. \n Pensez à indiquer vos disponibilités"
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailNewDispo(grpId,name,author){
+    //get groupe name
+    //get email of members of groupe
+    //build email
+    //foreach members send
+    let membersEmail=[]
+    let membersId=[]
+    let authorName=''
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      membersId=doc.data().users;
+      email.message.subject=doc.data().name+" - Nouvelles disponibilités"
+      this.getUserData(author).then(doc=>{authorName=doc.data().pseudo})
+    }).then(_=>{
+      membersId.map(id=>{
+        db.collection('users').doc(id).get().then(doc=>{
+          membersEmail.push(doc.data().email);
+          email.to=doc.data().email
+          email.message.text=authorName + " souhaite savoir tes disponibilité pour un "+name+" durant cette semaine. Connecte toi sur l'application et indique tes disponibilités."
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailInvitation(grpId,uid){
+    /*
+    * Subject: Vous avez reçu une nouvelle invitation
+    * Text: Vous avez reçu une invitation à rejoindre le groupe NOM_GROUPE. Connectez vous pour rejoindre ce groupe
+    */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      this.getUserData(uid).then(userDoc=>{
+        email.to=userDoc.data().email
+        email.message.subject="Vous avez reçu une nouvelle invitation"
+        email.message.text="Vous avez reçu une invitation à rejoindre le groupe : "+doc.data().name+". Connectez vous pour rejoindre ce groupe"
+        email.message.html=email.message.text
+        db.collection('mail').add({...email})
+      })
     })
   }
   //Others
