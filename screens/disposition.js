@@ -16,7 +16,7 @@ class Disposition extends Component{
     this.selectGroups()
   }
   handleSave=(data)=>{
-    dbo.addDispo(data.name,data.desc,data.group,data.dates).then(_=>{
+    dbo.addDispo(data.name,data.desc,data.group,data.dates,this.props.user.user.uid).then(_=>{
       this.props.navigation.navigate('Home');
     });
   }

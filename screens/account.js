@@ -23,7 +23,7 @@ class Account extends Component {
     this.props.navigation.replace('Login')
   }
   render() {
-    if(this.state.user.length==0){
+    if(this.state.user===undefined){
       return null
     }
     return (
