@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import DispositionDetails from "../components/disposition-details"
+
+import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { eventFrom } from '../redux/actions/eventFrom';
+
 import { dbo } from '../api/dbo';
 
 class DispositionDetailsScreen extends Component {
@@ -15,6 +17,11 @@ class DispositionDetailsScreen extends Component {
     }
   }
   componentDidMount=_=>{
+    this.getMembers()
+    this.getMembersDispos()
+    this.canUpdate()
+  }
+  getMembers=_=>{
     let members=[];
     this.props.dispo.members.map(uid=>{
       dbo.getUserData(uid).then(doc=>{
@@ -23,6 +30,8 @@ class DispositionDetailsScreen extends Component {
         this.setState({members:members})
       })
     })
+  }
+  getMembersDispos=_=>{
     let userDispos = [];
     this.props.dispo.dates.map(date=>{
       if(date.available.includes(this.props.user.user.uid)){
@@ -32,7 +41,6 @@ class DispositionDetailsScreen extends Component {
       }
     })
     this.setState({userDispos:userDispos})
-    this.canUpdate()
   }
   changeDispo=(dates)=>{
     let uid = this.props.user.user.uid
@@ -45,6 +53,8 @@ class DispositionDetailsScreen extends Component {
       this.setState({canUpdate:res})
     })
   }
+  //redirect to tje create event screen with the dispo in redux
+  //so the screen is pre-filled
   createEvent=_=>{
     this.props.eventFrom(this.props.dispo)
     this.props.navigation.navigate('CreateEvent')

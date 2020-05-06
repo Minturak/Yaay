@@ -42,6 +42,7 @@ class Dbo{
   async getUserWithEmail(email){
     return db.collection('users').where("email","==",email).get();
   }
+  //
   async userAsOrganizersPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
@@ -441,6 +442,7 @@ class Dbo{
       db.collection('groups').doc(groupId).update({dispos:dispos})
     })
   }
+  //
   async setDispos(uid,dispoId,dispos){
     let availables = []
     db.collection('dispos').doc(dispoId).get().then(doc=>{
