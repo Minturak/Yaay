@@ -57,9 +57,6 @@ const styles = StyleSheet.create({
   centerText:{
     alignSelf:'flex-start'
   },
-  forgotPwd:{
-    alignItems:'center',
-  },
   textLink:{
     color:'#0000ff',
     textDecorationLine:'underline'

@@ -23,12 +23,14 @@ class Dbo{
     let newUser = firebase.auth().currentUser;
     newUser.sendEmailVerification()
   }
+  //
   verifiedEmail(){
     let user = firebase.auth().currentUser;
     user.reload()
     return user.emailVerified;
   }
   //User related
+  //
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
   }
