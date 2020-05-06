@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import EventCard from "../components/event-card";
-
+import { Alert } from "react-native";
 import { connect } from 'react-redux'
 import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
@@ -38,7 +38,17 @@ class Home extends Component{
       this.listenerEvents(uid);
       this.listenerGroups(uid)
       this.listenerDispos(uid)
-      
+      if(!dbo.verifiedEmail()){
+        Alert.alert(
+          "Adresse email non validée",
+          "Cliquez sur le lien qui vous a été envoyé au moment de votre inscription",
+          [
+            {text: "Ok"},
+            {text:"Renvoyer le lien", onPress:()=>{dbo.sendEmailVerification()}}
+          ],
+          { cancelable: false }
+        );
+      }
     }
   }
   listenerGroups(uid){
@@ -62,7 +72,10 @@ class Home extends Component{
   }
   listenerInvites(uid){
     db.collection('users').doc(uid).onSnapshot(doc=>{
-      let invites = doc.data().invitations||[];
+      let invites = []
+      if(doc.data().invitations!==undefined){
+        invites = doc.data().invitations;
+      }
     this.setState({invitations:invites});
     this.props.setInvitations(invites);
     });
