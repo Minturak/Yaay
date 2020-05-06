@@ -6,12 +6,14 @@ class Dbo{
   constructor(){
   }
   //Login related
+  //
   async handleLogin(email,password){
     return firebase.auth().signInWithEmailAndPassword(email,password)
   }
   async handleSignUp(email,password){
     return firebase.auth().createUserWithEmailAndPassword(email,password)
   }
+  //
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }

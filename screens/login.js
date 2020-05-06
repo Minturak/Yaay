@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Alert } from "react-native";
+
 import LoginForm from "../components/login-form"
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -21,7 +23,7 @@ class Login extends Component{
     dbo.handleLogin(email,password).then(user=>{
       this.props.connectUser(user);
       this.props.navigation.replace('Home');
-    }).catch(error=>{
+    }).catch(_=>{
       Alert.alert(
         "Erreur",
         "L'email ou le mot de passe est incorrecte",
@@ -42,21 +44,27 @@ class Login extends Component{
         ],
         { cancelable: false }
       );
+    }).catch(error=>{
+      Alert.alert(
+        "Erreur",
+        "Erreur : "+error.message,
+        [
+          { text: "Ok"},
+        ],
+        { cancelable: false }
+      );
     })
-    
   }
   render(){
     return(
       <View>
-        <LoginForm 
-          navigation={this.props.navigation} 
-          connectUser={this.props.connectUser} 
+        <LoginForm
           handleLogin={this.handleLogin}
           forgottenPassword={this.forgottenPassword}
         />
         <Text style={styles.textContent}>ou</Text>
         <TouchableOpacity onPress={this.toSignUp}>
-          <View style={styles.signUpButton}>
+          <View style={styles.button}>
             <Text style={{color:'#ffffff'}}>Créer un compte</Text>
           </View>
         </TouchableOpacity>
@@ -69,12 +77,7 @@ const styles = StyleSheet.create({
     marginTop:hp('2%'),
     textAlign:'center'
   },
-  button:{
-    marginTop: hp('4%'),
-    marginLeft: wp('9%'),
-    marginRight: wp('9%'),
-  },
-  signUpButton: {
+  button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
@@ -84,13 +87,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({
-  user: state.user,
-});
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
       connectUser
     },
     dispatch,
 )
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);

@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
   },
   iconCheck:{
     alignSelf:'center',
-
   }
 });
 
