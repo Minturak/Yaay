@@ -10,7 +10,7 @@ class DispositionsList extends Component {
   constructor(props) {
     super(props);
     this.state={
-        dispos:[],
+      dispos:[],
     }
   }
   componentDidMount(){
@@ -45,7 +45,6 @@ class DispositionsList extends Component {
             <DispositionCard 
               dispo={item}
               selectDispo={this.selectDispo}
-              navigation={this.props.navigation}
             />
           }
         />
@@ -54,7 +53,6 @@ class DispositionsList extends Component {
   }
 }
 const mapStateToProps = state => ({
-  groups: state.groups,
   user: state.user,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(

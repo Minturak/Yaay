@@ -16,7 +16,7 @@ import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";
 import Disposition from "../screens/disposition"
-import DispositionsList from "../screens/dispositions";
+import DispositionsList from "../screens/dispositionsList";
 import DispositionDetailsScreen from "../screens/dispositionDetails";
 import EditEventScreen from "../screens/editEventScreen";
 import Account from "../screens/account"
