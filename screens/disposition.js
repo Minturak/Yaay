@@ -7,12 +7,10 @@ class Disposition extends Component{
   constructor(props){
     super(props)
     this.state={
-      ready:false,
       groups:[]
     }
   }
   componentDidMount=_=>{
-    this.setState({ready:false})
     this.selectGroups()
   }
   handleSave=(data)=>{
@@ -20,6 +18,8 @@ class Disposition extends Component{
       this.props.navigation.navigate('Home');
     });
   }
+  //filter groups displayed in picker
+  //based on if the actual user is an organizer or an admin
   selectGroups=_=>{
     this.props.groups.map(group=>{
       if(this.isOrganizer(group,this.props.user.user.uid)){
@@ -28,7 +28,6 @@ class Disposition extends Component{
         this.setState({groups:groups})
       }
     })
-    this.setState({ready:true})
     if(this.state.groups.length<1){
       this.props.navigation.navigate('Home')
     }
@@ -40,7 +39,7 @@ class Disposition extends Component{
     return false
   }
   render(){
-    if(!this.state.ready){
+    if(this.state.groups.length<1){
       return null
     }
     return(
