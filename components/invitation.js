@@ -12,9 +12,6 @@ class Invitation extends Component{
       group:this.props.group
     }
   }
-  componentDidMount(){
-
-  }
   acceptInvitation(){
     this.props.acceptInvitation(this.state.group.id);
   }

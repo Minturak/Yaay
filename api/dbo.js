@@ -41,21 +41,6 @@ class Dbo{
   async getUserWithEmail(email){
     return db.collection('users').where("email","==",email).get();
   }
-  async addGroupToUser(uid,doc,groupId){
-    let groupsOfUser = doc.data().groups || [];
-    //si il n'a aucun groupe, on crée le tableau groups dans le user
-    if(groupsOfUser===[]){
-      db.collection('users').doc(uid).update({
-        groups:[groupId]
-      })
-    }else{
-      //si il a déjà un ou + groupe on update le tableau
-      groupsOfUser.push(groupId);
-      db.collection('users').doc(uid).update({
-        groups:groupsOfUser
-      })
-    }
-  }
   async userAsOrganizersPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
@@ -93,6 +78,7 @@ class Dbo{
       }
     })
   }
+  //
   async removeInvitation(userId,groupId){
     let invitations=[];
     db.collection('users').doc(userId).get().then(doc=>{
@@ -102,6 +88,7 @@ class Dbo{
     if(index > -1){ invitations.splice(index,1); }
     db.collection('users').doc(userId).update({invitations:invitations});
   }
+  //
   async addMemberToGroup(idUser,idGroup){
     let members = [];
     let users = [];
@@ -116,6 +103,7 @@ class Dbo{
       this.addUserToEvents(idGroup,idUser);
     })
   }
+  //
   async addUserToEvents(grpId,uid){
     db.collection('events').where('group','==',grpId).get().then(doc=>{
       doc.forEach(event=>{
@@ -125,6 +113,7 @@ class Dbo{
       })
     })
   }
+  //
   async addUserToDispos(grpId,uid){
     db.collection('dispos').where('group','==',grpId).get().then(doc=>{
       doc.forEach(dispo=>{
