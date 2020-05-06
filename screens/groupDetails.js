@@ -21,6 +21,18 @@ class GroupDetailsScreen extends Component{
   componentDidMount(){
     this.groupSnapshot()
   }
+  groupSnapshot(){
+    db.collection('groups').doc(this.props.group.id).onSnapshot(docSnapshot=>{
+      this.update(docSnapshot.data());
+    })
+  }
+  update=(data)=>{
+    this.props.selectGroup({data:data,id:this.props.group.id});
+    this.getAdmins()
+    this.getOrganizers()
+    this.getMembers()
+    this.userAsAdminPrivilege()
+  }
   getAdmins(){
     let adminsId=this.props.group.data.admins;
     let admins=[];
@@ -57,17 +69,10 @@ class GroupDetailsScreen extends Component{
       })
     }
   }
-  groupSnapshot(){
-    db.collection('groups').doc(this.props.group.id).onSnapshot(docSnapshot=>{
-      this.update(docSnapshot.data());
+  userAsAdminPrivilege=_=>{
+    dbo.userAsAdminPrivilege(this.props.group.id,this.props.user.user.uid).then(res=>{
+      this.setState({isAdmin:res})
     })
-  }
-  update=(data)=>{
-    this.props.selectGroup({data:data,id:this.props.group.id});
-    this.getAdmins()
-    this.getOrganizers()
-    this.getMembers()
-    this.userAsAdminPrivilege()
   }
   addUser=(email)=>{
     if(email!=="" && email!==undefined){
@@ -84,23 +89,19 @@ class GroupDetailsScreen extends Component{
         }else{
           doc.forEach(user=>{
             dbo.addInvitationToUser(user.id,this.props.group.id,user.data())
+          }).then(_=>{
+            Alert.alert(
+              "Succès",
+              "Invitation envoyée!",
+              [
+                { text: "Ok"},
+              ],
+              { cancelable: true }
+            );
           })
-          Alert.alert(
-            "Succès",
-            "Invitation envoyée!",
-            [
-              { text: "Ok"},
-            ],
-            { cancelable: true }
-          );
         }
       })
     }
-  }
-  userAsAdminPrivilege=_=>{
-    dbo.userAsAdminPrivilege(this.props.group.id,this.props.user.user.uid).then(res=>{
-      this.setState({isAdmin:res})
-    })
   }
   setUserRole=(uid,newRole)=>{
     dbo.setUserRole(this.props.group.id,uid,newRole)

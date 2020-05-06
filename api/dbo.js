@@ -38,6 +38,7 @@ class Dbo{
   createUserDocument(uid,name,email){
     db.collection('users').doc(uid).set({pseudo:name,email:email});
   }
+  //
   async getUserWithEmail(email){
     return db.collection('users').where("email","==",email).get();
   }
@@ -51,6 +52,7 @@ class Dbo{
       return res
     })
   }
+  //
   async userAsAdminPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
@@ -62,6 +64,7 @@ class Dbo{
     })
   }
   //Invitation related
+  //
   async addInvitationToUser(userId,groupId,data){
     let groups = []
     db.collection('users').doc(userId).get().then(doc=>{
@@ -124,6 +127,7 @@ class Dbo{
     })
   }
   //Group related
+  //
   async getGroupData(id){
     return db.collection('groups').doc(id).get();
   }
@@ -140,9 +144,11 @@ class Dbo{
       dispos:[]
     })
   }
+  //
   async editGroup(name,description,category,id){
     db.collection('groups').doc(id).update({name:name,description:description,category:category})
   }
+  //
   async setUserRole(grpId,uid,newRole){
     this.getGroupData(grpId).then(doc=>{
       let isAdmin = doc.data().admins.includes(uid);
@@ -165,6 +171,7 @@ class Dbo{
     newColl.push(uid)
     db.collection('groups').doc(grpId).update({[oldRole]:oldColl,[newRole]:newColl})
   }
+  //
   async removeUser(grpId,uid){
     this.removeGroupFromUser(grpId,uid)
     this.removeUserFromEvents(grpId,uid);
@@ -561,6 +568,7 @@ class Dbo{
     })
   }
   //Others
+  //
   async getCategories(){
     return db.collection('constants').doc('categories').get();
   }
