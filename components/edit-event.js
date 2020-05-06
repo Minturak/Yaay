@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Ionicons from "react-native-vector-icons/Ionicons"
 import moment from "moment";
 
 class EditEvent extends Component {
@@ -33,9 +34,6 @@ class EditEvent extends Component {
   }
   showEndTime=_=>{
     this.setState({showEndTime:true})
-  }
-  showRecurrentDate=_=>{
-    this.setState({showRecurrentDate:true})
   }
   changeDate=(event,selectedDate)=>{
     if(event.type==='dismissed'){
@@ -109,7 +107,7 @@ class EditEvent extends Component {
           <View>
             <TouchableOpacity onPress={this.showDatePicker}>
             <View style={[styles.itemContainer, styles.iconAndText]}>
-              <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
+              <Ionicons name={"md-calendar"} size={30} style={styles.icon}/>
               <Text>{this.state.date.format("D - MM - YYYY")}</Text>
             </View>
           </TouchableOpacity>

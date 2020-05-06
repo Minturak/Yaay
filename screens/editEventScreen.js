@@ -29,7 +29,6 @@ class EditEventScreen extends Component {
         }
         return (
             <EditEvent
-                user={this.props.user.user}
                 event={this.props.event}
                 multiple={this.state.multiple}
                 save={this.save}

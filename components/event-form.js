@@ -6,7 +6,6 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import moment from "moment";
 
@@ -160,7 +159,7 @@ class EventForm extends Component{
           <View>
             <TouchableOpacity onPress={this.showDatePicker}>
             <View style={[styles.itemContainer, styles.iconAndText]}>
-              <Ionicons name={"md-calendar"} size={30} color={"#444444"}/>
+              <Ionicons name={"md-calendar"} size={30} color={"#444444"} style={styles.icon}/>
               <Text>{this.state.date.format("D - MM - YYYY")}</Text>
             </View>
           </TouchableOpacity>
@@ -249,7 +248,7 @@ class EventForm extends Component{
                   <Text>Jusqu'au </Text>
                   <TouchableOpacity onPress={this.showRecurrentDate}>
                     <View style={[styles.itemContainer, styles.iconAndText]}>
-                      <MaterialCommunityIcons name={"calendar-month"} size={30} style={styles.icon}/>
+                      <Ionicons name={"md-calendar"} size={30} color={"#444444"} style={styles.icon}/>
                       <Text>{this.state.until.format("D - MM - YYYY")}</Text>
                     </View>
                   </TouchableOpacity>
