@@ -10,6 +10,7 @@ class Dbo{
   async handleLogin(email,password){
     return firebase.auth().signInWithEmailAndPassword(email,password)
   }
+  //
   async handleSignUp(email,password){
     return firebase.auth().createUserWithEmailAndPassword(email,password)
   }
@@ -17,6 +18,7 @@ class Dbo{
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }
+  //
   sendEmailVerification(){
     let newUser = firebase.auth().currentUser;
     newUser.sendEmailVerification()
@@ -30,6 +32,7 @@ class Dbo{
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
   }
+  //
   createUserDocument(uid,name,email){
     db.collection('users').doc(uid).set({pseudo:name,email:email});
   }

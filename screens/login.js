@@ -17,7 +17,7 @@ import {dbo} from '../api/dbo';
 
 class Login extends Component{
   toSignUp=()=>{
-    this.props.navigation.navigate('SignUp')
+    this.props.navigation.navigate('SignUp');
   }
   handleLogin=(email,password)=>{
     dbo.handleLogin(email,password).then(user=>{

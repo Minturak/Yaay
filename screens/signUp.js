@@ -24,10 +24,9 @@ class SignUp extends Component{
         dbo.sendEmailVerification()
         dbo.createUserDocument(uid,pseudo,email);
         this.props.connectUser(user);
+        this.props.navigation.pop();
         this.props.navigation.replace('Home');
       }).catch(error=>{
-        console.log(error);
-        
         Alert.alert(
           "Erreur",
           "Erreur : "+error.message,
@@ -41,17 +40,14 @@ class SignUp extends Component{
   }
   render(){
     return(
-      <SignUpForm navigation={this.props.navigation} handleSignUp={this.handleSignUp}/>
+      <SignUpForm handleSignUp={this.handleSignUp}/>
     )
   }
 }
-const mapStateToProps = state => ({
-  user: state.user,
-});
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
       connectUser
     },
     dispatch,
 )
-export default connect(mapStateToProps,mapDispatchToProps)(SignUp);
+export default connect(null,mapDispatchToProps)(SignUp);
