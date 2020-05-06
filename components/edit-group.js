@@ -5,6 +5,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { Alert } from "react-native";
 
 class EditGroup extends Component{
   constructor(props){
@@ -25,7 +26,16 @@ class EditGroup extends Component{
   }
   handleEdit=()=>{
     if(this.state.name !== '' && this.state.categorie !== ''){
-        this.props.handleEdit(this.state.name,this.state.desc,this.state.categorie,this.props.group.id);
+      this.props.handleEdit(this.state.name,this.state.desc,this.state.categorie,this.props.group.id);
+    }else{
+      Alert.alert(
+        "Erreur",
+        "Veuillez renseigner un nom et une catégorie",
+        [
+          {text: "Ok"}
+        ],
+        { cancelable: false }
+      );
     }
   }
   render(){
@@ -58,7 +68,7 @@ class EditGroup extends Component{
         <Picker
           style={styles.picker}
           selectedValue={this.state.categorie}
-          onValueChange={(itemValue, itemIndex) =>this.setState({categorie: itemValue})}
+          onValueChange={(itemValue) =>this.setState({categorie: itemValue})}
         >
           {this.state.categories.map(label =>{
             return (<Picker.Item key={label} label={label} value={label}/>)
@@ -66,7 +76,7 @@ class EditGroup extends Component{
         </Picker>
         <TouchableOpacity onPress={this.handleEdit}>
           <View style={styles.signUpButton}>
-            <Text style={{color:'#ffffff'}}>Enregistrer</Text>
+            <Text style={styles.whiteText}>Enregistrer</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -100,6 +110,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign:'center'
   },
+  whiteText:{
+    color:'#ffffff'
+  }
 });
 
 export default EditGroup;

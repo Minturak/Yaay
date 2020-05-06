@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import {setCategories} from '../redux/actions/setCategories'
 import { bindActionCreators } from 'redux';
 
-import firebase from "firebase";
 import {dbo} from '../api/dbo';
 
 class GroupFormScreen extends Component{
@@ -22,8 +21,7 @@ class GroupFormScreen extends Component{
     })
   }
   handleSubmit=(name,desc,cat)=>{
-    var idUser = firebase.auth().currentUser.uid;
-    dbo.createGroup(name,desc,cat,idUser)
+    dbo.createGroup(name,desc,cat,this.props.user.user.uid)
     this.props.navigation.navigate('ListGroups');
   }
   render(){
@@ -36,7 +34,8 @@ class GroupFormScreen extends Component{
   }
 }
 const mapStateToProps = state => ({
-  categories: state.categories
+  categories: state.categories,
+  user: state.user,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
