@@ -7,8 +7,6 @@ import {
 } from 'react-native-responsive-screen';
 
 import { connect } from 'react-redux'
-import { setGroups } from '../redux/actions/setGroups';
-import { bindActionCreators } from 'redux';
 
 import {db} from '../firebase';
 
@@ -41,7 +39,7 @@ class ListGroups extends Component{
       <View>
         <TouchableOpacity onPress={this.handleLogin}>
           <View style={styles.button}>
-            <Text style={{color:'#ffffff'}}>Créer un groupe</Text>
+            <Text style={styles.whiteText}>Créer un groupe</Text>
           </View>
         </TouchableOpacity>
         <FlatList
@@ -60,16 +58,12 @@ const styles = StyleSheet.create({
     marginTop: hp('2%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   }
 });
 const mapStateToProps = state => ({
-  groups: state.groups,
   user: state.user,
 });
-const mapDispatchToProps = dispatch => bindActionCreators(
-    {
-      setGroups
-    },
-    dispatch,
-)
-export default connect(mapStateToProps,mapDispatchToProps)(ListGroups);
+export default connect(mapStateToProps)(ListGroups);
