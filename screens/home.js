@@ -8,7 +8,6 @@ import {
 import EventCard from "../components/event-card";
 import { Alert } from "react-native";
 import { connect } from 'react-redux'
-import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
 import { setGroups } from '../redux/actions/setGroups'
 import { bindActionCreators } from 'redux';
@@ -27,9 +26,6 @@ class Home extends Component{
     }
   }
   componentDidMount(){
-    if(this.props.categories===undefined){
-      this.fetchCategories();
-    }
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
@@ -38,6 +34,7 @@ class Home extends Component{
       this.listenerEvents(uid);
       this.listenerGroups(uid)
       this.listenerDispos(uid)
+      //remind the user of validating his email address
       if(!dbo.verifiedEmail()){
         Alert.alert(
           "Adresse email non validée",
@@ -50,25 +47,6 @@ class Home extends Component{
         );
       }
     }
-  }
-  listenerGroups(uid){
-    db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
-      let groups=[];
-      doc.forEach(group=>{
-        groups.push({id:group.id,data:group.data()})
-      })
-      this.props.setGroups(groups);
-      this.showCreateButtons(uid);
-    })
-  }
-  listenerDispos(uid){
-    db.collection('dispos').where("members","array-contains",uid).onSnapshot(doc=>{
-      let dispos = [];
-      doc.forEach(dispo=>{
-        dispos.push({id:dispo.id,...dispo.data()})
-      })
-      this.setState({dispos:dispos})
-    })
   }
   listenerInvites(uid){
     db.collection('users').doc(uid).onSnapshot(doc=>{
@@ -90,6 +68,25 @@ class Home extends Component{
       this.setState({events:events})
     })
   }
+  listenerGroups(uid){
+    db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
+      let groups=[];
+      doc.forEach(group=>{
+        groups.push({id:group.id,data:group.data()})
+      })
+      this.props.setGroups(groups);
+      this.showCreateButtons(uid);
+    })
+  }
+  listenerDispos(uid){
+    db.collection('dispos').where("members","array-contains",uid).onSnapshot(doc=>{
+      let dispos = [];
+      doc.forEach(dispo=>{
+        dispos.push({id:dispo.id,...dispo.data()})
+      })
+      this.setState({dispos:dispos})
+    })
+  }
   orderByDate=(a,b)=>{
     if ( a.date.seconds < b.date.seconds ){
       return -1;
@@ -99,15 +96,8 @@ class Home extends Component{
     }
     return 0;
   }
-  fetchCategories(){
-    let categories=[];
-    dbo.getCategories().then(doc=>{
-      doc.data().labels.map(label=>{
-        categories.push(label);
-      })
-      this.props.setCategories(categories);
-    })
-  }
+  //display or hide the buttons to create dispos and events
+  //depending on if the user is an admin or an organizer of any of his groups
   showCreateButtons=(uid)=>{
     if(this.props.groups!==undefined){
       this.props.groups.map(group=>{
@@ -185,14 +175,6 @@ const styles = StyleSheet.create({
   listContainer:{
     marginBottom:hp('27%'),
   },
-  invitations:{
-    alignItems:'center',
-    marginRight:wp('3%'),
-    marginLeft:wp('3%'),
-    width:wp('50%'),
-    backgroundColor:'#249E6B',
-    borderRadius:16,
-  },
   button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
@@ -209,12 +191,10 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   user: state.user,
-  categories: state.categories,
   groups: state.groups,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-      setCategories,
       setInvitations,
       setGroups
     },

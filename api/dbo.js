@@ -306,6 +306,7 @@ class Dbo{
   async getEventData(id){
     return db.collection('events').doc(id).get();
   }
+  //
   async setUserDisponibilityForEvent(uid,eventId,dispo){
     db.collection('events').doc(eventId).get().then(doc=>{
       let inPresents = doc.data().presents.includes(uid)||false;
