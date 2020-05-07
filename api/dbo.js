@@ -6,24 +6,19 @@ class Dbo{
   constructor(){
   }
   //Login related
-  //
   async handleLogin(email,password){
     return firebase.auth().signInWithEmailAndPassword(email,password)
   }
-  //
   async handleSignUp(email,password){
     return firebase.auth().createUserWithEmailAndPassword(email,password)
   }
-  //
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }
-  //
   sendEmailVerification(){
     let newUser = firebase.auth().currentUser;
     newUser.sendEmailVerification()
   }
-  //
   verifiedEmail(){
     let user = firebase.auth().currentUser;
     user.reload()
@@ -34,15 +29,12 @@ class Dbo{
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
   }
-  //
   createUserDocument(uid,name,email){
     db.collection('users').doc(uid).set({pseudo:name,email:email});
   }
-  //
   async getUserWithEmail(email){
     return db.collection('users').where("email","==",email).get();
   }
-  //
   async userAsOrganizersPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
@@ -53,7 +45,6 @@ class Dbo{
       return res
     })
   }
-  //
   async userAsAdminPrivilege(grpId,uid){
     let res = false;
     return dbo.getGroupData(grpId).then(doc=>{
@@ -65,7 +56,6 @@ class Dbo{
     })
   }
   //Invitation related
-  //
   async addInvitationToUser(userId,groupId,data){
     let groups = []
     db.collection('users').doc(userId).get().then(doc=>{
@@ -82,7 +72,6 @@ class Dbo{
       }
     })
   }
-  //
   async removeInvitation(userId,groupId){
     let invitations=[];
     db.collection('users').doc(userId).get().then(doc=>{
@@ -92,7 +81,6 @@ class Dbo{
     if(index > -1){ invitations.splice(index,1); }
     db.collection('users').doc(userId).update({invitations:invitations});
   }
-  //
   async addMemberToGroup(idUser,idGroup){
     let members = [];
     let users = [];
@@ -107,7 +95,6 @@ class Dbo{
       this.addUserToEvents(idGroup,idUser);
     })
   }
-  //
   async addUserToEvents(grpId,uid){
     db.collection('events').where('group','==',grpId).get().then(doc=>{
       doc.forEach(event=>{
@@ -117,7 +104,6 @@ class Dbo{
       })
     })
   }
-  //
   async addUserToDispos(grpId,uid){
     db.collection('dispos').where('group','==',grpId).get().then(doc=>{
       doc.forEach(dispo=>{
@@ -132,6 +118,7 @@ class Dbo{
   async getGroupData(id){
     return db.collection('groups').doc(id).get();
   }
+  //
   async createGroup(name,description,category,admin){
     return db.collection('groups').add({
       name:name,
@@ -164,6 +151,7 @@ class Dbo{
       }
     })
   }
+  //
   async changeUserRole(grpId,doc,uid,newRole,oldRole){
     let oldColl = doc.data()[oldRole]
     let newColl = doc.data()[newRole]
@@ -174,18 +162,9 @@ class Dbo{
   }
   //
   async removeUser(grpId,uid){
-    this.removeGroupFromUser(grpId,uid)
     this.removeUserFromEvents(grpId,uid);
     this.removeUserFromDispos(grpId,uid);
     this.removeUserFromGroup(grpId,uid);
-  }
-  removeGroupFromUser(grpId,uid){
-    db.collection('users').doc(uid).get().then(doc=>{
-      let groups = doc.data().groups
-      let index = groups.indexOf(grpId)
-      groups.splice(index,1)
-      db.collection('users').doc(uid).update({groups:groups})
-    })
   }
   removeUserFromGroup(grpId,uid){
     console.log('remove from group');
@@ -303,8 +282,6 @@ class Dbo{
         event.date = newDate
       }
       if(data.reccurent){
-        console.log(data);
-        
         this.emailNewRecurrentEvent(data.group,data.date,data.name,data.frequency)
       }else{
         this.emailNewEvent(data.group,data.date,data.name)
@@ -314,7 +291,6 @@ class Dbo{
   async getEventData(id){
     return db.collection('events').doc(id).get();
   }
-  //
   async setUserDisponibilityForEvent(uid,eventId,dispo){
     db.collection('events').doc(eventId).get().then(doc=>{
       let inPresents = doc.data().presents.includes(uid)||false;
@@ -360,17 +336,14 @@ class Dbo{
       db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol,noresponse:noresponse});
     }
   }
-  //
   async getLinkedEvents(link){
     return db.collection('events').where('link','==',link).get()
   }
-  //
   async deleteOneEvent(eventId){
     db.collection('events').doc(eventId).update({users:[]}).then(_=>{
       db.collection('events').doc(eventId).delete()
     })
   }
-  //
   async deleteMutipleEvents(link){
     db.collection('events').where('link','==',link).get().then(events=>{
       events.forEach(event=>{
@@ -378,7 +351,6 @@ class Dbo{
       })
     });
   }
-  //
   updateOneEvent(eventId,data){
     let event={}
     db.collection('events').doc(eventId).get().then(doc=>{
@@ -399,7 +371,6 @@ class Dbo{
       db.collection('events').doc(eventId).set(event)
     })
   }
-  //
   updateMultipleEvents(link,data){
     db.collection('events').where('link','==',link).get().then(events=>{
       events.forEach(event=>{
@@ -410,7 +381,6 @@ class Dbo{
     })
   }
   //Dispo related
-  //
   async addDispo(name,desc,groupId,dates,uid){
     let members = []
     this.getGroupData(groupId).then(doc=>{
@@ -426,25 +396,9 @@ class Dbo{
         members:members,
       }).then(docRef=>{
         this.emailNewDispo(groupId,name,uid)
-        this.addDispoToGroup(groupId,docRef.id)
       })
     })
   }
-  async addDispoToGroup(groupId,dispoId){
-    let dispos = [];
-    this.getGroupData(groupId).then(doc=>{
-      dispos=doc.data().dispos;
-    }).then(_=>{
-      if(dispos!==undefined){
-        dispos.push(dispoId)
-      }else{
-        dispos=[dispoId]
-      }
-    }).then(_=>{
-      db.collection('groups').doc(groupId).update({dispos:dispos})
-    })
-  }
-  //
   async setDispos(uid,dispoId,dispos){
     let availables = []
     db.collection('dispos').doc(dispoId).get().then(doc=>{
@@ -580,7 +534,6 @@ class Dbo{
     })
   }
   //Others
-  //
   async getCategories(){
     return db.collection('constants').doc('categories').get();
   }
