@@ -360,25 +360,25 @@ class Dbo{
       db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol,noresponse:noresponse});
     }
   }
+  //
   async getLinkedEvents(link){
     return db.collection('events').where('link','==',link).get()
   }
-  deleteOneEvent(eventId){
+  //
+  async deleteOneEvent(eventId){
     db.collection('events').doc(eventId).update({users:[]}).then(_=>{
-      let i = 0
-      while(i<100000000){i++}
       db.collection('events').doc(eventId).delete()
     })
   }
-  deleteMutipleEvents(link){
+  //
+  async deleteMutipleEvents(link){
     db.collection('events').where('link','==',link).get().then(events=>{
       events.forEach(event=>{
         db.collection('events').doc(event.id).delete();
-        let i = 0
-        while(i<100000000){i++}
       })
     });
   }
+  //
   updateOneEvent(eventId,data){
     let event={}
     db.collection('events').doc(eventId).get().then(doc=>{
@@ -399,6 +399,7 @@ class Dbo{
       db.collection('events').doc(eventId).set(event)
     })
   }
+  //
   updateMultipleEvents(link,data){
     db.collection('events').where('link','==',link).get().then(events=>{
       events.forEach(event=>{
@@ -409,6 +410,7 @@ class Dbo{
     })
   }
   //Dispo related
+  //
   async addDispo(name,desc,groupId,dates,uid){
     let members = []
     this.getGroupData(groupId).then(doc=>{
