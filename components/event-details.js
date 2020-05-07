@@ -36,7 +36,11 @@ class EventDetails extends Component{
     this.props.delete()
   }
   render(){
-    let event = this.props.event;
+    let event = this.props.event
+    //prevent crash after deletinf event
+    if(event.date===undefined){
+      return null
+    }
     return(
       <View style={styles.container}>
         <View style={styles.header}>
