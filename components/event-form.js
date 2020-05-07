@@ -103,9 +103,11 @@ class EventForm extends Component{
     })
   }
   checkData=_=>{
-    this.setState({errorEndTime:this.state.endTime.isBefore(this.state.startTime)})
-    this.setState({errorNbUser:this.state.maxUser<this.state.minUser})
-    this.setState({errorName:this.state.name.length==0})
+    this.setState({
+      errorEndTime:this.state.endTime.isBefore(this.state.startTime),
+      errorNbUser:this.state.maxUser<this.state.minUser,
+      errorName:this.state.name.length==0
+    })
     if(this.state.endTime.isBefore(this.state.startTime) || this.state.maxUser<this.state.minUser || this.state.name.length==0){
       return false 
     }

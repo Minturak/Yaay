@@ -54,6 +54,12 @@ class DispositionDetails extends Component {
               <TouchableOpacity onPress={this.createEvent}>
                 <MaterialIcons name={"queue"} size={30}/>
               </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.toEdit}>
+                <MaterialIcons name={"edit"} size={30}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.delete}>
+                <MaterialIcons name={"delete"} size={30}/>
+              </TouchableOpacity>
             </View>
           }
         </View>

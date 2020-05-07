@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DispositionDetails from "../components/disposition-details"
-
+import { Alert } from "react-native";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { eventFrom } from '../redux/actions/eventFrom';
@@ -53,6 +53,27 @@ class DispositionDetailsScreen extends Component {
       this.setState({canUpdate:res})
     })
   }
+  delete=_=>{
+    Alert.alert(
+      "Suppression",
+      "Êtes-vous sûr de vouloir supprimer cette disponibilité ?",
+      [
+        {text: "Non"},
+        {text:"Oui", onPress:()=>{
+            this.props.navigation.pop()
+            this.props.navigation.navigate('Home')
+            dbo.deleteDispo(this.props.dispo.id)
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  }
+  toEdit=_=>{
+    console.log('edit');
+    console.log(this.props.dispo);
+    
+  }
   //redirect to tje create event screen with the dispo in redux
   //so the screen is pre-filled
   createEvent=_=>{
@@ -70,6 +91,8 @@ class DispositionDetailsScreen extends Component {
           members={this.state.members}
           userDispos={this.state.userDispos}
           canUpdate={this.state.canUpdate}
+          delete={this.delete}
+          toEdit={this.toEdit}
         />
       );
     }else{

@@ -465,6 +465,11 @@ class Dbo{
       db.collection('dispos').doc(dispoId).update({dates:availables})
     })
   }
+  async deleteDispo(dispoId){
+    db.collection('dispos').doc(dispoId).update({members:[]}).then(_=>{
+      db.collection('dispos').doc(dispoId).delete()
+    })
+  }
   //Email related
   async emailNewEvent(grpId,date,name){
     /*
