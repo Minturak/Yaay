@@ -33,7 +33,7 @@ class DispositionsList extends Component {
         dispo=d
       }
     })
-    this.props.selectDispo(dispo);
+    this.props.selectDispo({id:id,...dispo});
     this.props.navigation.navigate('DispositionDetails');
   }
   render() {

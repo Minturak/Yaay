@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import DispositionDetails from "../components/disposition-details"
 import { Alert } from "react-native";
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
 import { eventFrom } from '../redux/actions/eventFrom';
+import { selectDispo } from '../redux/actions/selectDispo';
+import { bindActionCreators } from 'redux';
 
 import { dbo } from '../api/dbo';
+import { db } from '../firebase';
 
 class DispositionDetailsScreen extends Component {
   constructor(props) {
@@ -17,9 +19,15 @@ class DispositionDetailsScreen extends Component {
     }
   }
   componentDidMount=_=>{
+    this.dispoListener()
     this.getMembers()
     this.getMembersDispos()
     this.canUpdate()
+  }
+  dispoListener=_=>{
+    db.collection('dispos').doc(this.props.dispo.id).onSnapshot(doc=>{
+      this.props.selectDispo({id:this.props.dispo.id,...doc.data()})
+    })
   }
   getMembers=_=>{
     let members=[];
@@ -70,9 +78,7 @@ class DispositionDetailsScreen extends Component {
     );
   }
   toEdit=_=>{
-    console.log('edit');
-    console.log(this.props.dispo);
-    
+    this.props.navigation.navigate('DispositionEditScreen')
   }
   //redirect to tje create event screen with the dispo in redux
   //so the screen is pre-filled
@@ -107,6 +113,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
     eventFrom,
+    selectDispo,
   },
   dispatch,
 )

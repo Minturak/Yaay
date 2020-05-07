@@ -465,6 +465,9 @@ class Dbo{
       db.collection('dispos').doc(dispoId).update({dates:availables})
     })
   }
+  async editDispo(dispoId,name,desc){
+    db.collection('dispos').doc(dispoId).update({name:name,desc:desc})
+  }
   async deleteDispo(dispoId){
     db.collection('dispos').doc(dispoId).update({members:[]}).then(_=>{
       db.collection('dispos').doc(dispoId).delete()
