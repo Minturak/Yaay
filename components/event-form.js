@@ -46,9 +46,10 @@ class EventForm extends Component{
       this.props.dispo.dates.map(date=>{
         dateArray.push(moment(new Date(date.date)))
       })
-      this.setState({dateArray:dateArray})
+      this.setState({dateArray:dateArray,group:this.props.dispo.group})
+    }else{
+      this.setState({group:this.props.groups[0].id})
     }
-    this.setState({group:this.props.groups[0].id})
   }
   showDatePicker=_=>{
     this.setState({showDate:true})
@@ -95,8 +96,11 @@ class EventForm extends Component{
     }
   }
   changeDateFromPicker=(value)=>{
-    this.setState({selectedDate:value})
-    this.setState({presents:this.props.dispo.dates[value].available})
+    this.setState({
+      selectedDate:value,
+      presents:this.props.dispo.dates[value].available,
+      date:moment(this.props.dispo.dates[value].date)
+    })
   }
   checkData=_=>{
     this.setState({errorEndTime:this.state.endTime.isBefore(this.state.startTime)})
