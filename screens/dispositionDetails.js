@@ -57,9 +57,16 @@ class DispositionDetailsScreen extends Component {
     this.setState({userDispos:dates})
   }
   canUpdate=_=>{
+    let isOrganizer = false;
+    let isCreator = false;
     dbo.userAsOrganizersPrivilege(this.props.dispo.group,this.props.user.user.uid).then(res=>{
-      this.setState({canUpdate:res})
+      isOrganizer = res
+    }).then(_=>{
+      isCreator = this.props.user.user.uid === this.props.dispo.creator
+      let canUpdate = isOrganizer||isCreator
+      this.setState({canUpdate:canUpdate})
     })
+    
   }
   delete=_=>{
     Alert.alert(

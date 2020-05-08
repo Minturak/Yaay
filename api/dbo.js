@@ -394,7 +394,8 @@ class Dbo{
         group:groupId,
         dates:dates,
         members:members,
-      }).then(docRef=>{
+        creator:uid
+      }).then(_=>{
         this.emailNewDispo(groupId,name,uid)
       })
     })

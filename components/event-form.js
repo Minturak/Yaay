@@ -21,8 +21,8 @@ class EventForm extends Component{
       endTime:moment(),
       until:moment(),
       allDay:false,
-      minUser:0,
-      maxUser:0,
+      minUser:'0',
+      maxUser:'0',
       frequency:0,
       allowComments:false,
       reccurent:false,
@@ -37,6 +37,7 @@ class EventForm extends Component{
       errorEndTime:false,
       errorNbUser:false,
       errorName:false,
+      errorUntil:false,
     }
   }
   componentDidMount=_=>{
@@ -63,12 +64,13 @@ class EventForm extends Component{
   showRecurrentDate=_=>{
     this.setState({showRecurrentDate:true})
   }
-  changeDate=(event,selectedDate)=>{
+  setDate=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showDate:false})
     }else{
       this.setState({date:moment(selectedDate),showDate:false})
     }
+    
   }
   setUntil=(event,selectedDate)=>{
     if(event.type==='dismissed'){
@@ -76,39 +78,62 @@ class EventForm extends Component{
     }else{
       this.setState({until:moment(selectedDate),showRecurrentDate:false})
     }
+    this.setState({errorUntil:moment(selectedDate).isBefore(this.state.date,'day')})
+    console.log(moment(selectedDate).isBefore(this.state.date,'day'));
   }
-  changeStartTime=(event,selectedDate)=>{
+  setStartTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showStartTime:false})
     }else{
       let time = selectedDate
-      selectedDate.setTime(selectedDate.getTime());
+      time.setTime(selectedDate.getTime());
       this.setState({startTime:moment(time),showStartTime:false})
     }
+    this.setStartTime({errorEndTime:this.state.endTime.isBefore(moment(selectedDate))})
   }
-  changeEndTime=(event,selectedDate)=>{
+  setEndTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showEndTime:false})
     }else{
+      
       let time = selectedDate
-      selectedDate.setTime(selectedDate.getTime());
+      console.log(time);
+      
+      time.setTime(selectedDate.getTime());
       this.setState({endTime:moment(time),showEndTime:false})
     }
+    this.setStartTime({errorEndTime:moment(selectedDate).isBefore(this.state.startTime)})
   }
-  changeDateFromPicker=(value)=>{
+  setDateFromPicker=(value)=>{
     this.setState({
       selectedDate:value,
       presents:this.props.dispo.dates[value].available,
       date:moment(this.props.dispo.dates[value].date)
     })
   }
+  setName=(value)=>{
+    this.setState({
+      name:value,
+      errorName:value.length<1
+    })
+    this.checkData()
+  }
+  setMinUser=(value)=>{
+    this.setState({minUser:value})
+    this.checkData()
+  }
+  setMaxUser=(value)=>{
+    this.setState({maxUser:value})
+    this.checkData()
+  }
   checkData=_=>{
     this.setState({
       errorEndTime:this.state.endTime.isBefore(this.state.startTime),
       errorNbUser:this.state.maxUser<this.state.minUser,
-      errorName:this.state.name.length==0
+      errorName:this.state.name.length<1,
+      errorUntil:this.state.date.isBefore(this.state.until),
     })
-    if(this.state.endTime.isBefore(this.state.startTime) || this.state.maxUser<this.state.minUser || this.state.name.length==0){
+    if(this.state.errorEndTime || this.state.errorNbUser || this.state.errorName || this.state.errorUntil){
       return false 
     }
     return true
@@ -137,12 +162,11 @@ class EventForm extends Component{
             })}
           </Picker>
         }
-        
         <Item floatingLabel style={[styles.itemContainer, this.state.errorName&&styles.error]}>
             <Label>Nom*</Label>
             <Input
               style={styles.input}
-              onChangeText={(text) => this.setState({name: text})}
+              onChangeText={(text) => this.setName(text)}
               autoCapitalize="sentences"
               autoCorrect={false}
               returnKeyType="next"
@@ -178,12 +202,11 @@ class EventForm extends Component{
               mode={'date'}
               is24Hour={true}
               display="default"
-              onChange={this.changeDate}
+              onChange={this.setDate}
             />
           )}
           </View>
         }
-        
         <View style={[styles.itemContainer, styles.iconAndText]}>
           <Label>Toute la journée</Label>
           <Switch
@@ -193,7 +216,7 @@ class EventForm extends Component{
           />
         </View>
         {!this.state.allDay && (
-          <View >
+          <View style={[this.state.errorEndTime&&styles.error]}>
             <TouchableOpacity onPress={this.showStartTime}>
               <View style={[styles.itemContainer, styles.iconAndText]}>
                 <Ionicons name={"md-time"} size={30} color={"#444444"}/>
@@ -206,11 +229,11 @@ class EventForm extends Component{
                 value={new Date(this.state.startTime)}
                 mode={'time'}
                 display="default"
-                onChange={this.changeStartTime}
+                onChange={this.setStartTime}
               />
             )}
             <TouchableOpacity onPress={this.showEndTime}>
-              <View style={[styles.itemContainer, styles.iconAndText, this.state.errorEndTime&&styles.error]}>
+              <View style={[styles.itemContainer, styles.iconAndText]}>
                 <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.endTime.format("HH:mm")}</Text>
               </View>
@@ -222,7 +245,7 @@ class EventForm extends Component{
                 minimumDate={new Date(this.state.startTime)}
                 mode={'time'}
                 display="default"
-                onChange={this.changeEndTime}
+                onChange={this.setEndTime}
               />
             )}
           </View>
@@ -250,7 +273,7 @@ class EventForm extends Component{
                   </Item>
                   <Text> jours</Text>
                 </View>
-                <View style={[styles.itemContainer, styles.days]}>
+                <View style={[styles.itemContainer, styles.days, this.state.errorUntil&&styles.error]}>
                   <Text>Jusqu'au </Text>
                   <TouchableOpacity onPress={this.showRecurrentDate}>
                     <View style={[styles.itemContainer, styles.iconAndText]}>
@@ -280,7 +303,7 @@ class EventForm extends Component{
             <Picker
               style={styles.picker}
               selectedValue={this.state.selectedDate}
-              onValueChange={(itemValue)=>this.changeDateFromPicker(itemValue)}
+              onValueChange={(itemValue)=>this.setDateFromPicker(itemValue)}
             >
             {this.state.dateArray.map((date,id)=>{
               return(<Picker.Item key={id} label={date.format("DD-MM")} value={id}/>)
@@ -292,16 +315,16 @@ class EventForm extends Component{
         <Item floatingLabel style={styles.itemContainer}>
           <Label>Participants minimum</Label>
           <Input
-            keyboardType={'numeric'}
-            onChangeText={(text)=> this.setState({minUser:text})}
+            keyboardType={'number-pad'}
+            onChangeText={(text)=> this.setMinUser(text)}
             value={this.state.minUser}
           />
         </Item>
         <Item floatingLabel style={[styles.itemContainer, this.state.errorNbUser&&styles.error]}>
           <Label>Participants maximum</Label>
           <Input
-            keyboardType={'numeric'}
-            onChangeText={(text)=> this.setState({maxUser:text})}
+            keyboardType={'number-pad'}
+            onChangeText={(text)=> this.setMaxUser(text)}
             value={this.state.maxUser}
           />
         </Item>

@@ -123,16 +123,16 @@ class Home extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
+            <View style={styles.button}>
+              <Text>Indiquer mes dispositions</Text>
+            </View>
+          </TouchableOpacity>
           {this.state.showButtons &&
             <View style={styles.buttonsContainer}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
                 <View style={styles.button}>
                   <Text>Créer un événement</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
-                <View style={styles.button}>
-                  <Text>Indiquer mes dispositions</Text>
                 </View>
               </TouchableOpacity>
             </View>
