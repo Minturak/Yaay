@@ -3,6 +3,7 @@ import AccountDetails from '../components/account-details'
 import { connect } from 'react-redux'
 import { connectUser}  from '../redux/actions/connect';
 import { bindActionCreators } from 'redux';
+import { StackActions } from '@react-navigation/native';
 
 import {dbo} from '../api/dbo';
 
@@ -22,6 +23,7 @@ class Account extends Component {
   }
   disconnect=_=>{
     this.props.connectUser(undefined);
+    this.props.navigation.dispatch(StackActions.popToTop());
     this.props.navigation.replace('Login')
   }
   resendEmail=_=>{

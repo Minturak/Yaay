@@ -45,6 +45,9 @@ class DispositionDetails extends Component {
   render() {
     let dispo = this.props.dispo
     let user = this.props.user
+    if(this.props.user===undefined){
+      return null
+    }
     return (
       <View style={styles.root}>
         <View style={styles.titleAndIcons}>

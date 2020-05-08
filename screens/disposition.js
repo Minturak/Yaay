@@ -22,6 +22,9 @@ class Disposition extends Component{
     return false
   }
   render(){
+    if(this.props.user===undefined){
+      return null
+    }
     if(this.props.groups.length<1){
       return null
     }

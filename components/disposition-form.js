@@ -41,6 +41,9 @@ class DispositionForm extends Component{
     this.props.handleSave(this.state);
   }
   render(){
+    if(this.props.user===undefined){
+      return null
+    }
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Nouvel disposition</Text>
