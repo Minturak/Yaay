@@ -6,20 +6,24 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { Alert } from "react-native";
 import moment from "moment"
 
 class DispositionForm extends Component{
   constructor(props){
     super(props)
     this.state={
-      group:this.props.groups[0].id,
+      group:undefined,
       name:'',
       desc:'',
       dates:[],
     }
   }
-  componentDidMount(){
-    this.setDates();
+  componentDidMount=_=>{
+    if(this.props.groups!==undefined){
+      this.setDates();
+      this.setState({group:this.props.groups[0].id})
+    }
   }
   setDates(){
     let today = new Date();
@@ -35,9 +39,24 @@ class DispositionForm extends Component{
     this.setState({dates:dates})
   }
   handleSave=_=>{
-    this.props.handleSave(this.state);
+    if(this.state.name.length<1){
+      Alert.alert(
+        "Erreur",
+        "Indiquez au minimum un nom",
+        [
+          {text: "Ok"}
+        ],
+        { cancelable: false }
+      );
+    }else{
+      this.props.handleSave(this.state);
+    }
+    
   }
   render(){
+    if(this.props.user===undefined){
+      return null
+    }
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Nouvel disposition</Text>

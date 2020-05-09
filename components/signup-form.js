@@ -5,6 +5,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import Ionicons from "react-native-vector-icons/Ionicons"
 
 class SignUpForm extends Component{
   constructor(props){
@@ -18,14 +19,16 @@ class SignUpForm extends Component{
       pseudo:"",
     }
   }
-  handleVisibility=()=>{
-    let showPassword = !this.state.showPassword;
-    this.setState({showPassword})
+  handleVisibility=_=>{
+    let hidePassword = !this.state.hidePassword;
+    this.setState({hidePassword})
+  }
+  handleConfirmVisibility=_=>{
+    let hideConfirm = !this.state.hideConfirm;
+    this.setState({hideConfirm})
   }
   handleSignUp=()=>{
-    if(this.state.email!=="" && this.state.password===this.state.confirm){
-      this.props.handleSignUp(this.state.email,this.state.password,this.state.pseudo);
-    }
+    this.props.handleSignUp(this.state.email,this.state.password,this.state.confirm,this.state.pseudo);
   }
   render(){
     return(
@@ -51,24 +54,42 @@ class SignUpForm extends Component{
               returnKeyType="next"
             />
         </Item>
-        <Item floatingLabel style={styles.itemContainer}>
-            <Label>Mot de passe</Label>
-            <Input
-              onChangeText={(text) => this.setState({password: text})}
-              returnKeyType={"next"}
-              secureTextEntry={this.state.hidePassword}
-              autoCapitalize="none"
-            />
-        </Item>
-        <Item floatingLabel style={styles.itemContainer}>
-            <Label>Confirmer</Label>
-            <Input
-              onChangeText={(text) => this.setState({confirm: text})}
-              returnKeyType={"next"}
-              secureTextEntry={this.state.hideConfirm}
-              autoCapitalize="none"
-            />
-        </Item>
+        <View style={styles.pwdContainer}>
+          <View style={styles.input}>
+            <Item floatingLabel>
+              <Label>Mot de passe</Label>
+              <Input
+                onChangeText={(text) => this.setState({password: text})}
+                returnKeyType={"next"}
+                secureTextEntry={this.state.hidePassword}
+                autoCapitalize="none"
+              />
+            </Item>
+          </View>
+          <View style={styles.iconCheck}>
+            <TouchableOpacity onPress={()=>this.handleVisibility()}>
+              <Ionicons name={this.state.hidePassword?"md-eye":"md-eye-off"} size={25}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.pwdContainer}>
+          <View style={styles.input}>
+            <Item floatingLabel>
+              <Label>Confirmer</Label>
+              <Input
+                onChangeText={(text) => this.setState({confirm: text})}
+                returnKeyType={"next"}
+                secureTextEntry={this.state.hideConfirm}
+                autoCapitalize="none"
+              />
+          </Item>
+          </View>
+          <View style={styles.iconCheck}>
+            <TouchableOpacity onPress={()=>this.handleConfirmVisibility()}>
+              <Ionicons name={this.state.hideConfirm?"md-eye":"md-eye-off"} size={25}/>
+            </TouchableOpacity>
+          </View>
+        </View>
         <TouchableOpacity onPress={this.handleSignUp}>
           <View style={styles.signUpButton}>
             <Text style={{color:'#ffffff'}}>Inscription</Text>
@@ -95,6 +116,18 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
   },
+  pwdContainer:{
+    flexDirection:'row',
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+    marginTop: hp('4%'),
+  },
+  input:{
+    flex:1,
+  },
+  iconCheck:{
+    alignSelf:'center',
+  }
 });
 
 export default SignUpForm;

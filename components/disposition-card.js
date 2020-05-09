@@ -9,12 +9,10 @@ import {
 class DispositionCard extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
-
   render() {
     let dispo = this.props.dispo
+    //filter old dispos
     if(moment(dispo.dates[5].date).isBefore(moment(new Date()),'day')){
       return null
     }

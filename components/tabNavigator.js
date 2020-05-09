@@ -16,11 +16,11 @@ import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";
 import Disposition from "../screens/disposition"
-import DispositionsList from "../screens/dispositions";
+import DispositionsList from "../screens/dispositionsList";
 import DispositionDetailsScreen from "../screens/dispositionDetails";
 import EditEventScreen from "../screens/editEventScreen";
 import Account from "../screens/account"
-
+import DispositionEditScreen from "../screens/dispositionEdit"
 
 
 import { connect } from 'react-redux'
@@ -64,6 +64,7 @@ class TabNavigator extends Component{
         <HomeStack.Screen name="Dispositions" component={DispositionsList} options={{ title: 'Liste des dispositions' }}/>
         <HomeStack.Screen name="DispositionDetails" component={DispositionDetailsScreen} options={{ title: 'Détails' }}/>
         <HomeStack.Screen name="EditEventScreen" component={EditEventScreen} options={{ title: 'Modifier' }}/>
+        <HomeStack.Screen name="DispositionEditScreen" component={DispositionEditScreen} options={{ title: 'Modifier' }}/>
       </HomeStack.Navigator>
     )
   }
@@ -73,7 +74,6 @@ class TabNavigator extends Component{
         tabBarOptions={{activeTintColor:'#249E6B',showIcon: true}}
         screenOptions={({route})=>({
           tabBarIcon:()=>{
-            let iconName;
             if(route.name==="Accueil"){return <Ionicons name={"md-home"} size={30} color={"#444444"}/>}
             else if(route.name==="Groupes"){return <MaterialIcons name={"group"} size={30} />}
             else if(route.name==="Profil"){return <Ionicons name={"md-person"} size={30} color={"#444444"}/>}

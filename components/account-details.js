@@ -8,8 +8,6 @@ import {
 class AccountDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
 
   render() {
@@ -17,6 +15,14 @@ class AccountDetails extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>Mon profil</Text>
         <Text style={styles.centerText}>{this.props.user.email}</Text>
+        {!this.props.validated && 
+          <View>
+            <Text>Votre adresse email n'a pas été validée</Text>
+            <TouchableOpacity onPress={this.props.resendEmail}>
+              <Text style={styles.textLink}>Me renvoyer l'email</Text>
+            </TouchableOpacity>
+          </View>
+        }
         <Text style={styles.centerText}>{this.props.user.pseudo}</Text>
         <TouchableOpacity onPress={this.props.disconnect} style={styles.button}>
           <Text style={styles.whiteText}>Se déconnecter</Text>
@@ -48,6 +54,10 @@ const styles = StyleSheet.create({
   },
   centerText:{
     alignSelf:'flex-start'
+  },
+  textLink:{
+    color:'#0000ff',
+    textDecorationLine:'underline'
   },
 });
 export default AccountDetails;

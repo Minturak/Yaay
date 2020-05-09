@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { Alert } from "react-native";
 
 class GroupForm extends Component{
   constructor(props){
@@ -21,7 +22,14 @@ class GroupForm extends Component{
     if(this.state.name !== '' && this.state.categorie !== ""){
       this.props.handleSubmit(this.state.name,this.state.desc,this.state.categorie)
     }else{
-      //raise error
+      Alert.alert(
+        "Erreur",
+        "Veuillez renseigner un nom et une catégorie",
+        [
+          {text: "Ok"}
+        ],
+        { cancelable: false }
+      );
     }
   }
   componentDidMount(){
@@ -55,15 +63,15 @@ class GroupForm extends Component{
         <Picker
           style={styles.picker}
           selectedValue={this.state.categorie}
-          onValueChange={(itemValue, itemIndex) =>this.setState({categorie: itemValue})}
+          onValueChange={(itemValue) =>this.setState({categorie: itemValue})}
         >
           {this.state.categories.map(label =>{
             return (<Picker.Item key={label} label={label} value={label}/>)
           })}
         </Picker>
         <TouchableOpacity onPress={this.handleSubmit}>
-          <View style={styles.signUpButton}>
-            <Text style={{color:'#ffffff'}}>Créer</Text>
+          <View style={styles.button}>
+            <Text style={styles.whiteText}>Créer</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -79,7 +87,7 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
   },
-  signUpButton: {
+  button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
@@ -96,6 +104,9 @@ const styles = StyleSheet.create({
     marginTop:hp('4%'),
     fontSize: 32,
     textAlign:'center'
+  },
+  whiteText:{
+    color:'#ffffff'
   },
 });
 

@@ -6,7 +6,6 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import moment from "moment"
 
 class DispositionDetails extends Component {
@@ -46,14 +45,25 @@ class DispositionDetails extends Component {
   render() {
     let dispo = this.props.dispo
     let user = this.props.user
+    if(this.props.user===undefined){
+      return null
+    }
     return (
       <View style={styles.root}>
         <View style={styles.titleAndIcons}>
           <Text style={styles.title}>Titre : {dispo.name}</Text>
           {this.props.canUpdate&&
             <View style={styles.icons}>
-              <TouchableOpacity onPress={this.createEvent}>
-                <MaterialIcons name={"queue"} size={20}/>
+              {this.props.canTransform &&
+                <TouchableOpacity onPress={this.createEvent}>
+                  <MaterialIcons name={"queue"} size={30}/>
+                </TouchableOpacity>
+              }
+              <TouchableOpacity onPress={this.props.toEdit}>
+                <MaterialIcons name={"edit"} size={30}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.delete}>
+                <MaterialIcons name={"delete"} size={30}/>
               </TouchableOpacity>
             </View>
           }
@@ -128,7 +138,8 @@ const styles = StyleSheet.create({
     padding:hp('2%')
   },
   title:{
-    fontSize:18
+    fontSize:18,
+    flex:1
   },
   titleAndIcons:{
     flexDirection:'row',

@@ -1,47 +1,38 @@
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
-import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';
+import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity,} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import { Alert } from "react-native";
 
-class EditGroup extends Component{
-  constructor(props){
-    super(props)
-    this.state={
-      name:'',
-      desc:'',
-      categorie:'',
-
-      categories:[]
-    }
+class DispositionEdit extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name:this.props.dispo.name,
+      desc:this.props.dispo.desc
+    };
   }
-  componentDidMount(){
-    this.setState({name:this.props.group.data.name})
-    this.setState({desc:this.props.group.data.description})
-    this.setState({categories:this.props.categories})
-    this.setState({categorie:this.props.group.data.category})
-  }
-  handleEdit=()=>{
-    if(this.state.name !== '' && this.state.categorie !== ''){
-      this.props.handleEdit(this.state.name,this.state.desc,this.state.categorie,this.props.group.id);
-    }else{
+  handleEdit=_=>{
+    if(this.state.name.length<1){
       Alert.alert(
         "Erreur",
-        "Veuillez renseigner un nom et une catégorie",
+        "Le nom ne peut pas être vide",
         [
           {text: "Ok"}
         ],
         { cancelable: false }
       );
+    }else{
+      this.props.handleEdit(this.state)
     }
   }
-  render(){
-    return(
+  render() {
+    return (
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.container}>
-        <Text style={styles.title}>Modifier le groupe</Text>
+        <Text style={styles.title}>Modifier la disponibilité</Text>
         <Item floatingLabel style={styles.itemContainer}>
             <Label>Nom</Label>
             <Input
@@ -65,22 +56,13 @@ class EditGroup extends Component{
               value={this.state.desc}
             />
         </Item>
-        <Picker
-          style={styles.picker}
-          selectedValue={this.state.categorie}
-          onValueChange={(itemValue) =>this.setState({categorie: itemValue})}
-        >
-          {this.state.categories.map(label =>{
-            return (<Picker.Item key={label} label={label} value={label}/>)
-          })}
-        </Picker>
         <TouchableOpacity onPress={this.handleEdit}>
-          <View style={styles.signUpButton}>
+          <View style={styles.button}>
             <Text style={styles.whiteText}>Enregistrer</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -92,15 +74,10 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
   },
-  signUpButton: {
+  button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
     padding: 10,
-    marginTop: hp('4%'),
-    marginLeft: wp('9%'),
-    marginRight: wp('9%'),
-  },
-  picker:{
     marginTop: hp('4%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
@@ -114,5 +91,4 @@ const styles = StyleSheet.create({
     color:'#ffffff'
   }
 });
-
-export default EditGroup;
+export default DispositionEdit;

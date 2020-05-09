@@ -12,9 +12,6 @@ import { bindActionCreators } from 'redux';
 class GroupCard extends Component{
   constructor(props){
     super(props)
-    this.state={
-      members:[]
-    }
   }
   groupSelected(group){
     this.props.selectGroup(group);

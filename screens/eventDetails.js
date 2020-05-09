@@ -3,8 +3,6 @@ import EventDetails from "../components/event-details"
 import { Alert } from "react-native";
 
 import { connect } from 'react-redux'
-import { selectEvent } from '../redux/actions/selectEvent';
-import { bindActionCreators } from 'redux';
 
 import {dbo} from '../api/dbo';
 import {db} from '../firebase';
@@ -18,6 +16,7 @@ class EventDetailsScreen extends Component{
       presents:[],
       maybe:[],
       absents:[],
+      noresponse:[],
       canUpdate:false,
     }
   }
@@ -28,12 +27,16 @@ class EventDetailsScreen extends Component{
   getUsers=(presence)=>{
     let ids = this.state.event[presence];
     let users = [];
-    ids.map(id=>{
-      dbo.getUserData(id).then(doc=>{
-        users.push({...doc.data(),id:id})
-        this.setState({[presence]:users})
+    if(ids!==undefined && ids.length>0){
+      ids.map(id=>{
+        dbo.getUserData(id).then(doc=>{
+          users.push({...doc.data(),id:id})
+          this.setState({[presence]:users})
+        })
       })
-    })
+    }else{
+      this.setState({[presence]:[]})
+    }
   }
   snapshotEvent=(id)=>{
     db.collection('events').doc(id).onSnapshot(doc=>{
@@ -46,6 +49,7 @@ class EventDetailsScreen extends Component{
     this.getUsers("presents");
     this.getUsers("maybe");
     this.getUsers("absents");
+    this.getUsers("noresponse");
   }
   isPresent=(uid)=>{
     dbo.setUserDisponibilityForEvent(uid,this.props.event.id,'presents');
@@ -64,26 +68,41 @@ class EventDetailsScreen extends Component{
   toEdit=_=>{
     this.props.navigation.navigate('EditEventScreen');
   }
-  delete=()=>{
+  delete=_=>{
     dbo.getLinkedEvents(this.props.event.link).then(events=>{
       if(events.size>1){
         Alert.alert(
-          "Suppresion",
+          "Suppression",
           "Voulez-vous supprimer cet événement ou tous les événements similaires ?",
           [
             { text: "Annuler"},
-            { text: "Tous", onPress: () => {dbo.deleteMutipleEvents(this.props.event.link);this.props.navigation.navigate('Home')} },
-            { text: "Cet événement", onPress: () => {dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid);this.props.navigation.navigate('Home')}}
+            { text: "Tous", onPress: () => {
+                this.props.navigation.pop()
+                this.props.navigation.navigate('Home')
+                dbo.deleteMutipleEvents(this.props.event.link);
+              } 
+            },
+            { text: "Cet événement", onPress: () => {
+                this.props.navigation.pop()
+                this.props.navigation.navigate('Home');
+                dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid)
+              }
+            }
           ],
           { cancelable: true }
         );
       }else{
         Alert.alert(
-          "Suppresion",
+          "Suppression",
           "Êtes-vous sûr de vouloir supprimer cet événement ?",
           [
             { text: "Annuler"},
-            { text: "Oui", onPress: () => {dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid);this.props.navigation.navigate('Home')} },
+            { text: "Oui", onPress: () => {
+                this.props.navigation.pop()
+                this.props.navigation.navigate('Home')
+                dbo.deleteOneEvent(this.props.event.id,this.props.user.user.uid);
+              } 
+            },
           ],
           { cancelable: true }
         );
@@ -104,6 +123,7 @@ class EventDetailsScreen extends Component{
         presents={this.state.presents}
         maybe={this.state.maybe}
         absents={this.state.absents}
+        noresponse={this.state.noresponse}
         canUpdate={this.state.canUpdate}
       />
     )
@@ -114,10 +134,5 @@ const mapStateToProps = state => ({
   event: state.event,
   user: state.user,
 });
-const mapDispatchToProps = dispatch => bindActionCreators(
-  {
-    selectEvent
-  },
-  dispatch,
-)
-export default connect(mapStateToProps,mapDispatchToProps)(EventDetailsScreen);
+
+export default connect(mapStateToProps)(EventDetailsScreen);

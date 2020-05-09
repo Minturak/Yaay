@@ -5,23 +5,22 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import Ionicons from "react-native-vector-icons/Ionicons"
 
 class LoginForm extends Component{
   constructor(props){
     super(props)
     this.state={
       hidePassword: true,
-      hideConfirm: true,
       password:"",
-      confirm:"",
       email:"",
 
       errorEmail:false,
     }
   }
   handleVisibility=()=>{
-    let showPassword = !this.state.showPassword;
-    this.setState({showPassword})
+    let hidePassword = !this.state.hidePassword;
+    this.setState({hidePassword})
   }
   forgottenPassword=_=>{
     if(this.state.email.length==0){
@@ -50,15 +49,24 @@ class LoginForm extends Component{
               returnKeyType="next"
             />
         </Item>
-        <Item floatingLabel style={styles.itemContainer}>
-            <Label>Mot de passe</Label>
-            <Input
-              onChangeText={(text) => this.setState({password: text})}
-              returnKeyType={"next"}
-              secureTextEntry={this.state.hidePassword}
-              autoCapitalize="none"
-            />
-        </Item>
+        <View style={styles.pwdContainer}>
+          <View style={styles.input}>
+            <Item floatingLabel>
+              <Label>Mot de passe</Label>
+              <Input
+                onChangeText={(text) => this.setState({password: text})}
+                returnKeyType={"next"}
+                secureTextEntry={this.state.hidePassword}
+                autoCapitalize="none"
+              />
+            </Item>
+          </View>
+          <View style={styles.iconCheck}>
+            <TouchableOpacity onPress={()=>this.handleVisibility()}>
+              <Ionicons name={this.state.hidePassword?"md-eye":"md-eye-off"} size={25}/>
+            </TouchableOpacity>
+          </View>
+        </View>
         <TouchableOpacity onPress={this.forgottenPassword} style={styles.forgotPwd}>
           <Text style={styles.textPwd}>Mot de passe oublié</Text>
         </TouchableOpacity>
@@ -98,6 +106,18 @@ const styles = StyleSheet.create({
   error:{
     borderBottomWidth:1,
     borderColor:'red'
+  },
+  pwdContainer:{
+    flexDirection:'row',
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+    marginTop: hp('4%'),
+  },
+  input:{
+    flex:1,
+  },
+  iconCheck:{
+    alignSelf:'center',
   }
 });
 

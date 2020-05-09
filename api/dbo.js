@@ -15,7 +15,17 @@ class Dbo{
   forgottenPassword(email){
     return firebase.auth().sendPasswordResetEmail(email)
   }
+  sendEmailVerification(){
+    let newUser = firebase.auth().currentUser;
+    newUser.sendEmailVerification()
+  }
+  verifiedEmail(){
+    let user = firebase.auth().currentUser;
+    user.reload()
+    return user.emailVerified;
+  }
   //User related
+  //
   async getUserData(uid){
     return db.collection('users').doc(uid).get();
   }
@@ -24,21 +34,6 @@ class Dbo{
   }
   async getUserWithEmail(email){
     return db.collection('users').where("email","==",email).get();
-  }
-  async addGroupToUser(uid,doc,groupId){
-    let groupsOfUser = doc.data().groups || [];
-    //si il n'a aucun groupe, on crée le tableau groups dans le user
-    if(groupsOfUser===[]){
-      db.collection('users').doc(uid).update({
-        groups:[groupId]
-      })
-    }else{
-      //si il a déjà un ou + groupe on update le tableau
-      groupsOfUser.push(groupId);
-      db.collection('users').doc(uid).update({
-        groups:groupsOfUser
-      })
-    }
   }
   async userAsOrganizersPrivilege(grpId,uid){
     let res = false;
@@ -72,6 +67,7 @@ class Dbo{
           db.collection('users').doc(userId).update({
             invitations:invitations
           })
+          this.emailInvitation(groupId,userId)
         }
       }
     })
@@ -118,9 +114,11 @@ class Dbo{
     })
   }
   //Group related
+  //
   async getGroupData(id){
     return db.collection('groups').doc(id).get();
   }
+  //
   async createGroup(name,description,category,admin){
     return db.collection('groups').add({
       name:name,
@@ -134,9 +132,11 @@ class Dbo{
       dispos:[]
     })
   }
+  //
   async editGroup(name,description,category,id){
     db.collection('groups').doc(id).update({name:name,description:description,category:category})
   }
+  //
   async setUserRole(grpId,uid,newRole){
     this.getGroupData(grpId).then(doc=>{
       let isAdmin = doc.data().admins.includes(uid);
@@ -151,6 +151,7 @@ class Dbo{
       }
     })
   }
+  //
   async changeUserRole(grpId,doc,uid,newRole,oldRole){
     let oldColl = doc.data()[oldRole]
     let newColl = doc.data()[newRole]
@@ -159,19 +160,11 @@ class Dbo{
     newColl.push(uid)
     db.collection('groups').doc(grpId).update({[oldRole]:oldColl,[newRole]:newColl})
   }
+  //
   async removeUser(grpId,uid){
-    this.removeGroupFromUser(grpId,uid)
     this.removeUserFromEvents(grpId,uid);
     this.removeUserFromDispos(grpId,uid);
     this.removeUserFromGroup(grpId,uid);
-  }
-  removeGroupFromUser(grpId,uid){
-    db.collection('users').doc(uid).get().then(doc=>{
-      let groups = doc.data().groups
-      let index = groups.indexOf(grpId)
-      groups.splice(index,1)
-      db.collection('users').doc(uid).update({groups:groups})
-    })
   }
   removeUserFromGroup(grpId,uid){
     console.log('remove from group');
@@ -252,10 +245,8 @@ class Dbo{
       })
     })
   }
-
   //Event related
   createEvent(data){
-    //for some unknown reasons if frequency is 0 and reccurent is false the getGroupData crashes
     data.frequency = data.frequency || 1;
     if(!data.reccurent){data.until = data.date}
     let users=[]
@@ -290,6 +281,11 @@ class Dbo{
         newDate.setDate(newDate.getDate()+ parseInt(data.frequency))
         event.date = newDate
       }
+      if(data.reccurent){
+        this.emailNewRecurrentEvent(data.group,data.date,data.name,data.frequency)
+      }else{
+        this.emailNewEvent(data.group,data.date,data.name)
+      }
     })
   }
   async getEventData(id){
@@ -312,13 +308,18 @@ class Dbo{
     })
   }
   updateDisponibilitiesForEvent(uid,eventId,doc,dispo,inCollection){
+    let noresponse = doc.data().noresponse
+    let index = noresponse.indexOf(uid)
+    if(index>-1){
+      noresponse.splice(index,1)
+    }
     if(inCollection==="null"){
       let updateCol = doc.data()[dispo]
       updateCol.push(uid)
-      db.collection('events').doc(eventId).update({[dispo]:updateCol})
+      db.collection('events').doc(eventId).update({[dispo]:updateCol,noresponse:noresponse})
     }else{
       let inColl = doc.data()[inCollection];
-      let index = inColl.indexOf(uid);
+      index = inColl.indexOf(uid);
       inColl.splice(index,1);
       let updateCol = doc.data()[dispo];
       if(!updateCol.includes(uid)){
@@ -332,25 +333,21 @@ class Dbo{
           updateCol.push(uid);
         }
       }
-      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol});
+      db.collection('events').doc(eventId).update({[inCollection]:inColl,[dispo]:updateCol,noresponse:noresponse});
     }
   }
   async getLinkedEvents(link){
     return db.collection('events').where('link','==',link).get()
   }
-  deleteOneEvent(eventId){
+  async deleteOneEvent(eventId){
     db.collection('events').doc(eventId).update({users:[]}).then(_=>{
-      let i = 0
-      while(i<100000000){i++}
       db.collection('events').doc(eventId).delete()
     })
   }
-  deleteMutipleEvents(link){
+  async deleteMutipleEvents(link){
     db.collection('events').where('link','==',link).get().then(events=>{
       events.forEach(event=>{
         db.collection('events').doc(event.id).delete();
-        let i = 0
-        while(i<100000000){i++}
       })
     });
   }
@@ -384,7 +381,7 @@ class Dbo{
     })
   }
   //Dispo related
-  async addDispo(name,desc,groupId,dates){
+  async addDispo(name,desc,groupId,dates,uid){
     let members = []
     this.getGroupData(groupId).then(doc=>{
       members.push(...doc.data().admins||[]);
@@ -397,23 +394,10 @@ class Dbo{
         group:groupId,
         dates:dates,
         members:members,
-      }).then(docRef=>{
-        this.addDispoToGroup(groupId,docRef.id)
+        creator:uid
+      }).then(_=>{
+        this.emailNewDispo(groupId,name,uid)
       })
-    })
-  }
-  async addDispoToGroup(groupId,dispoId){
-    let dispos = [];
-    this.getGroupData(groupId).then(doc=>{
-      dispos=doc.data().dispos;
-    }).then(_=>{
-      if(dispos!==undefined){
-        dispos.push(dispoId)
-      }else{
-        dispos=[dispoId]
-      }
-    }).then(_=>{
-      db.collection('groups').doc(groupId).update({dispos:dispos})
     })
   }
   async setDispos(uid,dispoId,dispos){
@@ -434,6 +418,120 @@ class Dbo{
       })
     }).then(_=>{
       db.collection('dispos').doc(dispoId).update({dates:availables})
+    })
+  }
+  async editDispo(dispoId,name,desc){
+    db.collection('dispos').doc(dispoId).update({name:name,desc:desc})
+  }
+  async deleteDispo(dispoId){
+    db.collection('dispos').doc(dispoId).update({members:[]}).then(_=>{
+      db.collection('dispos').doc(dispoId).delete()
+    })
+  }
+  //Email related
+  async emailNewEvent(grpId,date,name){
+    /*
+    * Subject de l'email: Nom du groupe - Nouvel évènement le date de l'évènement
+    * Tu as reçu une invitation à un nouvel événement nom de l'évènement planifié le date de l'évènement . Merci d'indiquer ta présence directement depuis l'Application.
+    */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      email.message.subject=doc.data().name+" - Nouvel évènement le "+moment(date).format('DD-MM')
+      doc.data().users.map(userId=>{
+        this.getUserData(userId).then(userDoc=>{
+          email.to=userDoc.data().email
+          email.message.text="Tu as reçu une invitation à un nouvel événement "+ name+" planifié le "+moment(date).format('DD-MM')+". Merci d'indiquer ta présence directement depuis l'Application"
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailNewRecurrentEvent(grpId,date,name,frequency){
+    /**
+     * Subject : NOM_GROUPE - Nouvel évènement récurrent
+     * Text: L'événement NOM_EVENEMENT récurrent a été créé dans le groupe NOM_GROUPE
+     */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      email.message.subject=doc.data().name+" - Nouvel évènement récurrent"
+      doc.data().users.map(userId=>{
+        this.getUserData(userId).then(userDoc=>{
+          email.to=userDoc.data().email
+          email.message.text="L'évènement récurrent "+name+" a été ajouté dans le groupe "+doc.data().name+". \n Il commence le "+moment(date).format("DD-MM")+" et se repète tous les "+frequency+" jours. \n Pensez à indiquer vos disponibilités"
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailNewDispo(grpId,name,author){
+    //get groupe name
+    //get email of members of groupe
+    //build email
+    //foreach members send
+    let membersEmail=[]
+    let membersId=[]
+    let authorName=''
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      membersId=doc.data().users;
+      email.message.subject=doc.data().name+" - Nouvelles disponibilités"
+      this.getUserData(author).then(doc=>{authorName=doc.data().pseudo})
+    }).then(_=>{
+      membersId.map(id=>{
+        db.collection('users').doc(id).get().then(doc=>{
+          membersEmail.push(doc.data().email);
+          email.to=doc.data().email
+          email.message.text=authorName + " souhaite savoir tes disponibilité pour un "+name+" durant cette semaine. Connecte toi sur l'application et indique tes disponibilités."
+          email.message.html = email.message.text
+          db.collection('mail').add({...email})
+        })
+      })
+    })
+  }
+  async emailInvitation(grpId,uid){
+    /*
+    * Subject: Vous avez reçu une nouvelle invitation
+    * Text: Vous avez reçu une invitation à rejoindre le groupe NOM_GROUPE. Connectez vous pour rejoindre ce groupe
+    */
+    let email={
+      to:undefined,
+      message:{
+        subject:undefined,
+        text:undefined,
+        html:undefined,
+      }
+    }
+    this.getGroupData(grpId).then(doc=>{
+      this.getUserData(uid).then(userDoc=>{
+        email.to=userDoc.data().email
+        email.message.subject="Vous avez reçu une nouvelle invitation"
+        email.message.text="Vous avez reçu une invitation à rejoindre le groupe : "+doc.data().name+". Connectez vous pour rejoindre ce groupe"
+        email.message.html=email.message.text
+        db.collection('mail').add({...email})
+      })
     })
   }
   //Others

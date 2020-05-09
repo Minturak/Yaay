@@ -36,7 +36,11 @@ class EventDetails extends Component{
     this.props.delete()
   }
   render(){
-    let event = this.props.event;
+    let event = this.props.event
+    //prevent crash after deletinf event
+    if(event.date===undefined){
+      return null
+    }
     return(
       <View style={styles.container}>
         <View style={styles.header}>
@@ -83,24 +87,24 @@ class EventDetails extends Component{
             )}
         </View>
         <View>
-          <Text>Présents : </Text>{
+          <Text style={styles.subTitle}>Présents : </Text>{
             this.props.presents.map((user,key)=>{
-              return(<Text key={key}>{user.pseudo}</Text>)
+              return(<Text key={key} style={styles.user}>{user.pseudo}</Text>)
             })
           }
-          <Text>Absents : </Text>{
+          <Text style={styles.subTitle}>Absents : </Text>{
             this.props.absents.map((user,key)=>{
-              return(<Text key={key}>{user.pseudo}</Text>)
+              return(<Text key={key} style={styles.user}>{user.pseudo}</Text>)
             })
           }
-          <Text>Peut-être : </Text>{
+          <Text style={styles.subTitle}>Peut-être : </Text>{
             this.props.maybe.map((user,key)=>{
-              return(<Text key={key}>{user.pseudo}</Text>)
+              return(<Text key={key} style={styles.user}>{user.pseudo}</Text>)
             })
           }
-          <Text>Pas répondu : </Text>{
-            this.props.users.map((user,key)=>{
-              return(<Text key={key}>{user.pseudo}</Text>)
+          <Text style={styles.subTitle}>Pas répondu : </Text>{
+            this.props.noresponse.map((user,key)=>{
+              return(<Text key={key} style={styles.user}>{user.pseudo}</Text>)
             })
           }
         </View>
@@ -169,6 +173,13 @@ const styles = StyleSheet.create({
   selected:{
     borderWidth:1,
     borderColor:"#000000"
+  },
+  subTitle:{
+    fontWeight:'bold',
+    marginTop:hp('1%')
+  },
+  user:{
+    marginLeft:wp('2%')
   }
 });
 export default EventDetails;

@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
-
 import Invitation from '../components/invitation';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
 
 import {dbo} from '../api/dbo';
 import {db} from '../firebase';
@@ -24,8 +15,7 @@ class Invitations extends Component{
     }
   }
   snapshot(){
-    const doc = db.collection('users').doc(this.props.user.user.uid);
-    const observer = doc.onSnapshot(doc=>{
+    db.collection('users').doc(this.props.user.user.uid).onSnapshot(doc=>{
         this.updateList(doc.data());
     })
   }
@@ -44,7 +34,6 @@ class Invitations extends Component{
     }else{
       this.props.navigation.navigate('Home');
     }
-
   }
   componentDidMount(){
     this.fetchGroups(this.props.invitations);
@@ -53,9 +42,7 @@ class Invitations extends Component{
   acceptInvitation=(id)=>{
     dbo.addMemberToGroup(this.props.user.user.uid,id);
     dbo.removeInvitation(this.props.user.user.uid,id);
-    dbo.getUserData(this.props.user.user.uid).then(doc=>{
-      dbo.addGroupToUser(this.props.user.user.uid,doc,id);
-    })
+    dbo.getUserData(this.props.user.user.uid)
   }
   refuseInvitation=(id)=>{
     dbo.removeInvitation(this.props.user.user.uid,id);

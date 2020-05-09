@@ -6,9 +6,8 @@ import {
 } from 'react-native-responsive-screen';
 
 import EventCard from "../components/event-card";
-
+import { Alert } from "react-native";
 import { connect } from 'react-redux'
-import { setCategories } from '../redux/actions/setCategories';
 import { setInvitations } from '../redux/actions/setInvitations';
 import { setGroups } from '../redux/actions/setGroups'
 import { bindActionCreators } from 'redux';
@@ -23,12 +22,10 @@ class Home extends Component{
       invitations:[],
       events:[],
       dispos:[],
+      showButtons:false,
     }
   }
   componentDidMount(){
-    if(this.props.categories===undefined){
-      this.fetchCategories();
-    }
     if(this.props.user === undefined){
       this.props.navigation.replace('Login')
     }else{
@@ -37,29 +34,26 @@ class Home extends Component{
       this.listenerEvents(uid);
       this.listenerGroups(uid)
       this.listenerDispos(uid)
+      //remind the user of validating his email address
+      if(!dbo.verifiedEmail()){
+        Alert.alert(
+          "Adresse email non validée",
+          "Cliquez sur le lien qui vous a été envoyé au moment de votre inscription",
+          [
+            {text: "Ok"},
+            {text:"Renvoyer le lien", onPress:()=>{dbo.sendEmailVerification()}}
+          ],
+          { cancelable: false }
+        );
+      }
     }
-  }
-  listenerGroups(uid){
-    db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
-      let groups=[];
-      doc.forEach(group=>{
-        groups.push({id:group.id,data:group.data()})
-      })
-      this.props.setGroups(groups);
-    })
-  }
-  listenerDispos(uid){
-    db.collection('dispos').where("members","array-contains",uid).onSnapshot(doc=>{
-      let dispos = [];
-      doc.forEach(dispo=>{
-        dispos.push({id:dispo.id,...dispo.data()})
-      })
-      this.setState({dispos:dispos})
-    })
   }
   listenerInvites(uid){
     db.collection('users').doc(uid).onSnapshot(doc=>{
-      let invites = doc.data().invitations||[];
+      let invites = []
+      if(doc.data().invitations!==undefined){
+        invites = doc.data().invitations;
+      }
     this.setState({invitations:invites});
     this.props.setInvitations(invites);
     });
@@ -74,6 +68,25 @@ class Home extends Component{
       this.setState({events:events})
     })
   }
+  listenerGroups(uid){
+    db.collection('groups').where("users","array-contains",uid).onSnapshot(doc=>{
+      let groups=[];
+      doc.forEach(group=>{
+        groups.push({id:group.id,data:group.data()})
+      })
+      this.props.setGroups(groups);
+      this.showCreateButtons(uid);
+    })
+  }
+  listenerDispos(uid){
+    db.collection('dispos').where("members","array-contains",uid).onSnapshot(doc=>{
+      let dispos = [];
+      doc.forEach(dispo=>{
+        dispos.push({id:dispo.id,...dispo.data()})
+      })
+      this.setState({dispos:dispos})
+    })
+  }
   orderByDate=(a,b)=>{
     if ( a.date.seconds < b.date.seconds ){
       return -1;
@@ -83,14 +96,16 @@ class Home extends Component{
     }
     return 0;
   }
-  fetchCategories(){
-    let categories=[];
-    dbo.getCategories().then(doc=>{
-      doc.data().labels.map(label=>{
-        categories.push(label);
+  //display or hide the buttons to create dispos and events
+  //depending on if the user is an admin or an organizer of any of his groups
+  showCreateButtons=(uid)=>{
+    if(this.props.groups!==undefined){
+      this.props.groups.map(group=>{
+        if(group.data.admins.includes(uid)||group.data.organizers.includes(uid)){
+          this.setState({showButtons:true})
+        }
       })
-      this.props.setCategories(categories);
-    })
+    }
   }
   isPresent=(uid,eventId)=>{
     dbo.setUserDisponibilityForEvent(uid,eventId,'presents');
@@ -108,30 +123,34 @@ class Home extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
-          <View style={styles.button}>
-            <Text>Créer un événement</Text>
-          </View>
-        </TouchableOpacity>
         <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
-          <View style={styles.button}>
-            <Text>Indiquer mes dispositions</Text>
-          </View>
-        </TouchableOpacity>
-        {this.state.invitations.length>0 &&
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
             <View style={styles.button}>
-              <Text>Nouvels invitations !</Text>
+              <Text>Indiquer mes dispositions</Text>
             </View>
           </TouchableOpacity>
-        }
-        {this.state.dispos.length>0 &&
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
-            <View style={styles.button}>
-              <Text>Nouvels dispositions</Text>
+          {this.state.showButtons &&
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
+                <View style={styles.button}>
+                  <Text>Créer un événement</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        }
+          }
+          {this.state.invitations.length>0 &&
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
+              <View style={styles.button}>
+                <Text>Nouvelles invitations !</Text>
+              </View>
+            </TouchableOpacity>
+          }
+          {this.state.dispos.length>0 &&
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
+              <View style={styles.button}>
+                <Text>Nouvelles dispositions</Text>
+              </View>
+            </TouchableOpacity>
+          }
         </View>
         <View style={styles.listContainer}>
           <FlatList
@@ -156,14 +175,6 @@ const styles = StyleSheet.create({
   listContainer:{
     marginBottom:hp('27%'),
   },
-  invitations:{
-    alignItems:'center',
-    marginRight:wp('3%'),
-    marginLeft:wp('3%'),
-    width:wp('50%'),
-    backgroundColor:'#249E6B',
-    borderRadius:16,
-  },
   button: {
     backgroundColor: '#249E6B',
     alignItems: 'center',
@@ -180,12 +191,10 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   user: state.user,
-  categories: state.categories,
   groups: state.groups,
 });
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-      setCategories,
       setInvitations,
       setGroups
     },
