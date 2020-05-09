@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import NumericInput from 'react-native-numeric-input'
 import Ionicons from "react-native-vector-icons/Ionicons"
 import moment from "moment";
 
@@ -21,8 +22,8 @@ class EventForm extends Component{
       endTime:moment(),
       until:moment(),
       allDay:false,
-      minUser:'0',
-      maxUser:'0',
+      minUser:0,
+      maxUser:0,
       frequency:0,
       allowComments:false,
       reccurent:false,
@@ -70,7 +71,7 @@ class EventForm extends Component{
     }else{
       this.setState({date:moment(selectedDate),showDate:false})
     }
-    
+    this.checkData()
   }
   setUntil=(event,selectedDate)=>{
     if(event.type==='dismissed'){
@@ -78,8 +79,7 @@ class EventForm extends Component{
     }else{
       this.setState({until:moment(selectedDate),showRecurrentDate:false})
     }
-    this.setState({errorUntil:moment(selectedDate).isBefore(this.state.date,'day')})
-    console.log(moment(selectedDate).isBefore(this.state.date,'day'));
+    this.checkData()
   }
   setStartTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
@@ -89,20 +89,17 @@ class EventForm extends Component{
       time.setTime(selectedDate.getTime());
       this.setState({startTime:moment(time),showStartTime:false})
     }
-    this.setStartTime({errorEndTime:this.state.endTime.isBefore(moment(selectedDate))})
+    this.checkData()
   }
   setEndTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showEndTime:false})
     }else{
-      
       let time = selectedDate
-      console.log(time);
-      
       time.setTime(selectedDate.getTime());
       this.setState({endTime:moment(time),showEndTime:false})
     }
-    this.setStartTime({errorEndTime:moment(selectedDate).isBefore(this.state.startTime)})
+    this.checkData()
   }
   setDateFromPicker=(value)=>{
     this.setState({
@@ -119,7 +116,7 @@ class EventForm extends Component{
     this.checkData()
   }
   setMinUser=(value)=>{
-    this.setState({minUser:value})
+    this.setState({minUser:parseInt(value)})
     this.checkData()
   }
   setMaxUser=(value)=>{
@@ -127,16 +124,20 @@ class EventForm extends Component{
     this.checkData()
   }
   checkData=_=>{
+    let errEndTime=this.state.endTime.isBefore(this.state.startTime)
+    let errNbUser=this.state.maxUser<this.state.minUser
+    let errName = this.state.name.length<1
+    let errUntil = this.state.date.isAfter(this.state.until,'day') && this.state.reccurent
     this.setState({
-      errorEndTime:this.state.endTime.isBefore(this.state.startTime),
-      errorNbUser:this.state.maxUser<this.state.minUser,
-      errorName:this.state.name.length<1,
-      errorUntil:this.state.date.isBefore(this.state.until),
+      errorEndTime:errEndTime,
+      errorNbUser:errNbUser,
+      errorName:errName,
+      errorUntil:errUntil,
     })
-    if(this.state.errorEndTime || this.state.errorNbUser || this.state.errorName || this.state.errorUntil){
-      return false 
+    if(!errEndTime && !errNbUser && !errName && !errUntil){
+      return true
     }
-    return true
+    return false
   }
   handleSubmit=_=>{
     if(this.checkData()){
@@ -208,7 +209,7 @@ class EventForm extends Component{
           </View>
         }
         <View style={[styles.itemContainer, styles.iconAndText]}>
-          <Label>Toute la journée</Label>
+          <Label style={styles.switchLabel}>Toute la journée</Label>
           <Switch
             onValueChange={()=>this.setState({allDay:!this.state.allDay})}
             value={this.state.allDay}
@@ -216,7 +217,7 @@ class EventForm extends Component{
           />
         </View>
         {!this.state.allDay && (
-          <View style={[this.state.errorEndTime&&styles.error]}>
+          <View>
             <TouchableOpacity onPress={this.showStartTime}>
               <View style={[styles.itemContainer, styles.iconAndText]}>
                 <Ionicons name={"md-time"} size={30} color={"#444444"}/>
@@ -233,7 +234,7 @@ class EventForm extends Component{
               />
             )}
             <TouchableOpacity onPress={this.showEndTime}>
-              <View style={[styles.itemContainer, styles.iconAndText]}>
+              <View style={[styles.itemContainer, styles.iconAndText, this.state.errorEndTime&&styles.error]}>
                 <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.endTime.format("HH:mm")}</Text>
               </View>
@@ -253,7 +254,7 @@ class EventForm extends Component{
         {dispo===undefined && 
           <View>
             <View style={[styles.itemContainer, styles.iconAndText]}>
-              <Label>Répéter</Label>
+              <Label style={styles.switchLabel}>Répéter</Label>
               <Switch
                 onValueChange={()=>this.setState({reccurent:!this.state.reccurent})}
                 value={this.state.reccurent}
@@ -262,15 +263,18 @@ class EventForm extends Component{
             </View>
             {this.state.reccurent&&(
               <View>
-                <View style={[styles.itemContainer, styles.days]}>
+                <View style={[styles.nupdContainer, styles.days]}>
                   <Text>Tous les </Text>
-                  <Item style={styles.nbDays}>
-                    <Input
-                      keyboardType={'numeric'}
-                      onChangeText={(text)=> this.setState({frequency:text})}
-                      value={this.state.frequency}
-                    />
-                  </Item>
+                  <NumericInput 
+                    onChange={(text)=> this.setState({frequency:text})}
+                    value={this.state.frequency}
+                    minValue={0}
+                    valueType={'integer'}
+                    rounded={true}
+                    rightButtonBackgroundColor={'#249E6B'}
+                    leftButtonBackgroundColor={'#249E6B'}
+                    totalHeight={35}
+                  />
                   <Text> jours</Text>
                 </View>
                 <View style={[styles.itemContainer, styles.days, this.state.errorUntil&&styles.error]}>
@@ -312,24 +316,34 @@ class EventForm extends Component{
             </Picker>
           </View>
         }
-        <Item floatingLabel style={styles.itemContainer}>
-          <Label>Participants minimum</Label>
-          <Input
-            keyboardType={'number-pad'}
-            onChangeText={(text)=> this.setMinUser(text)}
+        <View style={styles.nupdContainer}>
+          <Text style={styles.nupdLabel}>Participants minimum :</Text>
+          <NumericInput 
+            onChange={(text)=> this.setMinUser(text)}
             value={this.state.minUser}
+            minValue={0}
+            valueType={'integer'}
+            rounded={true}
+            rightButtonBackgroundColor={'#249E6B'}
+            leftButtonBackgroundColor={'#249E6B'}
+            totalHeight={35}
           />
-        </Item>
-        <Item floatingLabel style={[styles.itemContainer, this.state.errorNbUser&&styles.error]}>
-          <Label>Participants maximum</Label>
-          <Input
-            keyboardType={'number-pad'}
-            onChangeText={(text)=> this.setMaxUser(text)}
+        </View>
+        <View style={[styles.nupdContainer, this.state.errorNbUser&&styles.error]}>
+          <Text style={styles.nupdLabel}>Participants maximum :</Text>
+          <NumericInput 
+            onChange={(text)=> this.setMaxUser(text)}
             value={this.state.maxUser}
+            minValue={0}
+            valueType={'integer'}
+            rounded={true}
+            rightButtonBackgroundColor={'#249E6B'}
+            leftButtonBackgroundColor={'#249E6B'}
+            totalHeight={35}
           />
-        </Item>
+        </View>
         <View style={[styles.itemContainer, styles.iconAndText]}>
-          <Label>Autoriser les commentaires</Label>
+          <Label style={styles.switchLabel}>Autoriser les commentaires</Label>
           <Switch
             onValueChange={()=>this.setState({allowComments:!this.state.allowComments})}
             value={this.state.allowComments}
@@ -380,6 +394,9 @@ const styles = StyleSheet.create({
   icon:{
     marginRight:wp('1%'),
   },
+  switchLabel:{
+    flex:1
+  },
   switch:{
     alignSelf:'flex-end'
   },
@@ -389,11 +406,20 @@ const styles = StyleSheet.create({
   },
   days:{
     flexDirection:'row',
-    alignItems:'flex-end',
-    marginTop:hp('-1%')
+    alignItems:'center'
   },
   nbDays:{
     width:wp('10%'),
   },
+  nupdContainer:{
+    flexDirection:'row',
+    marginTop: hp('1%'),
+    marginLeft: wp('9%'),
+    marginRight: wp('9%'),
+  },
+  nupdLabel:{
+    flex:1,
+    fontSize:18
+  }
 });
 export default EventForm;
