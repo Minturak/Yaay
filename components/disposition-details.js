@@ -54,9 +54,11 @@ class DispositionDetails extends Component {
           <Text style={styles.title}>Titre : {dispo.name}</Text>
           {this.props.canUpdate&&
             <View style={styles.icons}>
-              <TouchableOpacity onPress={this.createEvent}>
-                <MaterialIcons name={"queue"} size={30}/>
-              </TouchableOpacity>
+              {this.props.canTransform &&
+                <TouchableOpacity onPress={this.createEvent}>
+                  <MaterialIcons name={"queue"} size={30}/>
+                </TouchableOpacity>
+              }
               <TouchableOpacity onPress={this.props.toEdit}>
                 <MaterialIcons name={"edit"} size={30}/>
               </TouchableOpacity>

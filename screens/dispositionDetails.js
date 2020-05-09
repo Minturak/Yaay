@@ -16,6 +16,7 @@ class DispositionDetailsScreen extends Component {
       members:[],
       userDispos:[],
       canUpdate:false,
+      canTransform:false,
     }
   }
   componentDidMount=_=>{
@@ -23,6 +24,7 @@ class DispositionDetailsScreen extends Component {
     this.getMembers()
     this.getMembersDispos()
     this.canUpdate()
+    this.canTransform()
   }
   dispoListener=_=>{
     db.collection('dispos').doc(this.props.dispo.id).onSnapshot(doc=>{
@@ -66,7 +68,11 @@ class DispositionDetailsScreen extends Component {
       let canUpdate = isOrganizer||isCreator
       this.setState({canUpdate:canUpdate})
     })
-    
+  }
+  canTransform=_=>{
+    dbo.userAsOrganizersPrivilege(this.props.dispo.group,this.props.user.user.uid).then(res=>{
+      this.setState({canTransform:res})
+    })
   }
   delete=_=>{
     Alert.alert(
@@ -104,6 +110,7 @@ class DispositionDetailsScreen extends Component {
           members={this.state.members}
           userDispos={this.state.userDispos}
           canUpdate={this.state.canUpdate}
+          canTransform={this.state.canTransform}
           delete={this.delete}
           toEdit={this.toEdit}
         />
