@@ -140,14 +140,14 @@ class Home extends Component{
           {this.state.invitations.length>0 &&
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
               <View style={styles.button}>
-                <Text>Nouvels invitations !</Text>
+                <Text>Nouvelles invitations !</Text>
               </View>
             </TouchableOpacity>
           }
           {this.state.dispos.length>0 &&
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
               <View style={styles.button}>
-                <Text>Nouvels dispositions</Text>
+                <Text>Nouvelles dispositions</Text>
               </View>
             </TouchableOpacity>
           }

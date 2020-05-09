@@ -5,6 +5,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { Alert } from "react-native";
 
 class DispositionEdit extends Component {
   constructor(props) {
@@ -15,7 +16,18 @@ class DispositionEdit extends Component {
     };
   }
   handleEdit=_=>{
-    this.props.handleEdit(this.state)
+    if(this.state.name.length<1){
+      Alert.alert(
+        "Erreur",
+        "Le nom ne peut pas être vide",
+        [
+          {text: "Ok"}
+        ],
+        { cancelable: false }
+      );
+    }else{
+      this.props.handleEdit(this.state)
+    }
   }
   render() {
     return (

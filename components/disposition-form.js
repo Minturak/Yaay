@@ -6,6 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
+import { Alert } from "react-native";
 import moment from "moment"
 
 class DispositionForm extends Component{
@@ -38,7 +39,19 @@ class DispositionForm extends Component{
     this.setState({dates:dates})
   }
   handleSave=_=>{
-    this.props.handleSave(this.state);
+    if(this.state.name.length<1){
+      Alert.alert(
+        "Erreur",
+        "Indiquez au minimum un nom",
+        [
+          {text: "Ok"}
+        ],
+        { cancelable: false }
+      );
+    }else{
+      this.props.handleSave(this.state);
+    }
+    
   }
   render(){
     if(this.props.user===undefined){
