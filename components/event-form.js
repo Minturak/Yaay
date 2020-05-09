@@ -196,7 +196,6 @@ class EventForm extends Component{
           </TouchableOpacity>
           {this.state.showDate && (
             <DateTimePicker
-              name="dateTimePicker"
               timeZoneOffsetInMinutes={0}
               minimumDate={Date.now()}
               value={new Date(this.state.date)}
@@ -285,19 +284,18 @@ class EventForm extends Component{
                       <Text>{this.state.until.format("D - MM - YYYY")}</Text>
                     </View>
                   </TouchableOpacity>
-                  {this.state.showRecurrentDate && (
+                </View>
+                {this.state.showRecurrentDate && (
                     <DateTimePicker
-                      name="dateTimePicker"
                       timeZoneOffsetInMinutes={0}
                       minimumDate={Date.now()}
                       value={new Date(this.state.until)}
-                      mode={'calendar'}
+                      mode={'date'}
                       is24Hour={true}
                       display="default"
                       onChange={this.setUntil}
                     />
                   )}
-                </View>
               </View>
             )}
           </View>
