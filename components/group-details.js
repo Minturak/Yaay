@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import Ionicons from "react-native-vector-icons/Ionicons"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import UserDisplay from './user-display'
 
 class GroupDetails extends Component{
@@ -22,8 +23,6 @@ class GroupDetails extends Component{
   }
   render(){
     let group = this.props.group;
-    console.log(this.props.newEmail);
-    
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
@@ -36,6 +35,9 @@ class GroupDetails extends Component{
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>this.props.navigation.navigate('EditGroupScreen')}>
                   <Ionicons name={"md-create"} size={25} style={styles.icon}/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.props.deleteGroup()}>
+                  <MaterialIcons name={"delete"} size={25} onPress={this.delete}/>
                 </TouchableOpacity>
               </View>
             }

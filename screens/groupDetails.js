@@ -117,6 +117,22 @@ class GroupDetailsScreen extends Component{
       { cancelable: true }
     );
   }
+  deleteGroup=_=>{
+    Alert.alert(
+      "Suppression",
+      "Supprimer ce groupe supprimera aussi tous les événements et les dispositions qui y sont liés. \nÊtes-vous sûr de vouloir supprimer ce groupe ?",
+      [
+        { text: "Annuler"},
+        { text: "Oui", onPress: () => {
+            this.props.navigation.pop()
+            this.props.navigation.navigate('Home')
+            dbo.deleteGroup(this.props.group.id)
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  }
   render(){
     return(
       <GroupDetails
@@ -129,6 +145,7 @@ class GroupDetailsScreen extends Component{
         isAdmin={this.state.isAdmin}
         setUserRole={this.setUserRole}
         removeUser={this.removeUser}
+        deleteGroup={this.deleteGroup}
       />
     )
   }

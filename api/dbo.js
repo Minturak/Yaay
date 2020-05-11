@@ -240,6 +240,23 @@ class Dbo{
       })
     })
   }
+  async deleteGroup(grpId){
+    db.collection('groups').doc(grpId).update({users:[]})
+    db.collection('events').where('group','==',grpId).get().then(events=>{
+      events.forEach(event=>{
+        db.collection('events').doc(event.id).update({users:[]}).then(_=>{
+          db.collection('events').doc(event.id).delete()
+        })
+      })
+    })
+    db.collection('dispos').where('group','==',grpId).get().then(dispos=>{
+      dispos.forEach(dispo=>{
+        db.collection('dispos').doc(dispo.id).update({members:[]}).then(_=>{
+          db.collection('dispos').doc(dispo.id).delete()
+        })
+      })
+    })
+  }
   //Event related
   createEvent(data){
     data.frequency = data.frequency || 1;
