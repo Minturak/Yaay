@@ -162,7 +162,6 @@ class Dbo{
     this.removeUserFromGroup(grpId,uid);
   }
   removeUserFromGroup(grpId,uid){
-    console.log('remove from group');
     db.collection('groups').doc(grpId).get().then(doc=>{
       let users = doc.data().users;
       let index = users.indexOf(uid);
@@ -186,8 +185,6 @@ class Dbo{
     })
   }
   removeUserFromEvents(grpId,uid){
-    console.log('remove from event');
-    
     db.collection('events').where('group','==',grpId).get().then(docs=>{
       docs.forEach(doc=>{
         let users = doc.data().users
@@ -220,8 +217,6 @@ class Dbo{
     })
   }
   removeUserFromDispos(grpId,uid){
-    console.log('remove from dispos');
-    
     db.collection('dispos').where('group','==',grpId).get().then(docs=>{
       docs.forEach(doc=>{
         let members = doc.data().members

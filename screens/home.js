@@ -117,7 +117,7 @@ class Home extends Component{
     dbo.setUserDisponibilityForEvent(uid,eventId,'maybe');
   }
   render(){
-    if(this.props.user===undefined){
+    if(this.props.user===undefined || this.props.groups===undefined){
       return null
     }
     return(
