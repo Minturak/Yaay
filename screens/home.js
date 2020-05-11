@@ -123,11 +123,18 @@ class Home extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
-            <View style={styles.button}>
-              <Text>Indiquer mes dispositions</Text>
+          {this.props.groups.length>0 && 
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
+              <View style={styles.button}>
+                <Text>Indiquer mes dispositions</Text>
+              </View>
+            </TouchableOpacity>
+          }
+          {this.props.groups.length<1 && 
+            <View styles={styles.welcomeText}>
+              <Text>Créez un groupe ou demandez à un administrateur de vous inviter dans un groupe pour commencer à utiliser l'application</Text>
             </View>
-          </TouchableOpacity>
+          }
           {this.state.showButtons &&
             <View style={styles.buttonsContainer}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
@@ -171,6 +178,8 @@ class Home extends Component{
 const styles = StyleSheet.create({
   container:{
     alignItems:'center',
+  },
+  welcomeText:{
   },
   listContainer:{
     marginBottom:hp('27%'),

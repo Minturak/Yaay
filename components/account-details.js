@@ -14,16 +14,16 @@ class AccountDetails extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Mon profil</Text>
-        <Text style={styles.centerText}>{this.props.user.email}</Text>
+        <Text style={[styles.centerText, styles.paddingText]}>{this.props.user.email}</Text>
         {!this.props.validated && 
           <View>
-            <Text>Votre adresse email n'a pas été validée</Text>
+            <Text style={styles.paddingText}>Votre adresse email n'a pas été validée</Text>
             <TouchableOpacity onPress={this.props.resendEmail}>
-              <Text style={styles.textLink}>Me renvoyer l'email</Text>
+              <Text style={[styles.textLink, styles.paddingText]}>Me renvoyer l'email</Text>
             </TouchableOpacity>
           </View>
         }
-        <Text style={styles.centerText}>{this.props.user.pseudo}</Text>
+        <Text style={[styles.centerText, styles.paddingText]}>{this.props.user.pseudo}</Text>
         <TouchableOpacity onPress={this.props.disconnect} style={styles.button}>
           <Text style={styles.whiteText}>Se déconnecter</Text>
         </TouchableOpacity>
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   },
   title:{
     marginTop:hp('2%'),
+    marginBottom:hp('1%'),
     fontSize:32,
     textAlign:'center',
   },
@@ -59,5 +60,8 @@ const styles = StyleSheet.create({
     color:'#0000ff',
     textDecorationLine:'underline'
   },
+  paddingText:{
+    marginBottom:hp('1%')
+  }
 });
 export default AccountDetails;
