@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-screen';
 import { Alert } from "react-native";
 import moment from "moment"
+import 'moment/locale/fr'
 
 class DispositionForm extends Component{
   constructor(props){
@@ -24,6 +25,7 @@ class DispositionForm extends Component{
       this.setDates();
       this.setState({group:this.props.groups[0].id})
     }
+    moment.locale('fr')
   }
   setDates(){
     let today = new Date();

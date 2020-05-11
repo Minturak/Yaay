@@ -32,7 +32,7 @@ class DispositionEdit extends Component {
   render() {
     return (
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} style={styles.container}>
-        <Text style={styles.title}>Modifier la disponibilité</Text>
+        <Text style={styles.title}>Modifier la disposition</Text>
         <Item floatingLabel style={styles.itemContainer}>
             <Label>Nom</Label>
             <Input
