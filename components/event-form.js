@@ -225,7 +225,6 @@ class EventForm extends Component{
             </TouchableOpacity>
             {this.state.showStartTime && (
               <DateTimePicker
-                testID="dateTimePicker"
                 value={new Date(this.state.startTime)}
                 mode={'time'}
                 display="default"
@@ -240,7 +239,6 @@ class EventForm extends Component{
             </TouchableOpacity>
             {this.state.showEndTime && (
               <DateTimePicker
-                testID="dateTimePicker"
                 value={new Date(this.state.endTime)}
                 minimumDate={new Date(this.state.startTime)}
                 mode={'time'}

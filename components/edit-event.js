@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import NumericInput from 'react-native-numeric-input'
 import Ionicons from "react-native-vector-icons/Ionicons"
 import moment from "moment";
 
@@ -14,16 +14,24 @@ class EditEvent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        name:this.props.event.name,
-        desc:this.props.event.desc,
-        date:moment(this.props.event.date.seconds*1000),
-        startTime:moment(this.props.event.startTime.seconds*1000),
-        endTime:moment(this.props.event.endTime.seconds*1000),
-        minUser:this.props.event.minUser,
-        maxUser:this.props.event.maxUser,
-        allDay:this.props.event.allDay,
+      name:this.props.event.name,
+      desc:this.props.event.desc,
+      date:moment(this.props.event.date.seconds*1000),
+      startTime:moment(this.props.event.startTime.seconds*1000),
+      endTime:moment(this.props.event.endTime.seconds*1000),
+      minUser:parseInt(this.props.event.minUser),
+      maxUser:parseInt(this.props.event.maxUser),
+      allDay:this.props.event.allDay,
 
-        allEvents:false,
+      allEvents:false,
+
+      showDate:false,
+      showStartTime:false,
+      showEndTime:false,
+
+      errorEndTime:false,
+      errorNbUser:false,
+      errorName:false,
     };
   }
   showDatePicker=_=>{
@@ -35,46 +43,77 @@ class EditEvent extends Component {
   showEndTime=_=>{
     this.setState({showEndTime:true})
   }
-  changeDate=(event,selectedDate)=>{
+  setDate=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showDate:false})
     }else{
       this.setState({date:moment(selectedDate),showDate:false})
     }
+    this.checkData()
   }
-  changeStartTime=(event,selectedDate)=>{
+  setStartTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showStartTime:false})
     }else{
       let time = selectedDate
-      selectedDate.setTime(selectedDate.getTime());
+      time.setTime(selectedDate.getTime());
       this.setState({startTime:moment(time),showStartTime:false})
     }
+    this.checkData()
   }
-  changeEndTime=(event,selectedDate)=>{
+  setEndTime=(event,selectedDate)=>{
     if(event.type==='dismissed'){
       this.setState({showEndTime:false})
     }else{
       let time = selectedDate
-      selectedDate.setTime(selectedDate.getTime());
-      if(moment(selectedDate.getTime()).isBefore(this.state.startTime)){
-        this.setState({errorEndTime:true})
-      }else{this.setState({errorEndTime:false})}
+      time.setTime(selectedDate.getTime());
       this.setState({endTime:moment(time),showEndTime:false})
     }
+    this.checkData()
+  }
+  setName=(value)=>{
+    this.setState({
+      name:value,
+      errorName:value.length<1
+    })
+    this.checkData()
+  }
+  setMinUser=(value)=>{
+    this.setState({minUser:parseInt(value)})
+    this.checkData()
+  }
+  setMaxUser=(value)=>{
+    this.setState({maxUser:value})
+    this.checkData()
+  }
+  checkData=_=>{
+    let errEndTime=this.state.endTime.isBefore(this.state.startTime)
+    let errNbUser=this.state.maxUser<this.state.minUser
+    let errName = this.state.name.length<1
+    this.setState({
+      errorEndTime:errEndTime,
+      errorNbUser:errNbUser,
+      errorName:errName,
+    })
+    if(!errEndTime && !errNbUser && !errName){
+      return true
+    }
+    return false
   }
   handleSubmit=_=>{
-    this.props.save(this.state)
+    if(this.checkData()){
+      this.props.save(this.state)
+    }
   }
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}> Modifier </Text>
-        <Item floatingLabel style={styles.itemContainer}>
-            <Label>Nom</Label>
+        <Item floatingLabel style={[styles.itemContainer, this.state.errorName&&styles.error]}>
+            <Label>Nom*</Label>
             <Input
               style={styles.input}
-              onChangeText={(text) => this.setState({name: text})}
+              onChangeText={(text) => this.setName(text)}
               autoCapitalize="sentences"
               autoCorrect={false}
               returnKeyType="next"
@@ -120,12 +159,11 @@ class EditEvent extends Component {
               mode={'date'}
               is24Hour={true}
               display="default"
-              onChange={this.changeDate}
+              onChange={this.setDate}
             />
           )}
           </View>
         )}
-        
         <View style={[styles.itemContainer, styles.iconAndText]}>
           <Label>Toute la journée</Label>
           <Switch
@@ -135,56 +173,64 @@ class EditEvent extends Component {
           />
         </View>
         {!this.state.allDay && (
-          <View style={[styles.iconAndText]}>
+          <View>
             <TouchableOpacity onPress={this.showStartTime}>
               <View style={[styles.itemContainer, styles.iconAndText]}>
-                <MaterialCommunityIcons name={"clock-outline"} size={30} style={styles.icon}/>
+                <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.startTime.format("HH:mm")}</Text>
               </View>
             </TouchableOpacity>
             {this.state.showStartTime && (
               <DateTimePicker
-                testID="dateTimePicker"
                 value={new Date(this.state.startTime)}
                 mode={'time'}
                 display="default"
-                onChange={this.changeStartTime}
+                onChange={this.setStartTime}
               />
             )}
             <TouchableOpacity onPress={this.showEndTime}>
               <View style={[styles.itemContainer, styles.iconAndText, this.state.errorEndTime&&styles.error]}>
-                <MaterialCommunityIcons name={"clock-outline"} size={30} style={styles.icon}/>
+                <Ionicons name={"md-time"} size={30} color={"#444444"}/>
                 <Text>{this.state.endTime.format("HH:mm")}</Text>
               </View>
             </TouchableOpacity>
             {this.state.showEndTime && (
               <DateTimePicker
-                testID="dateTimePicker"
                 value={new Date(this.state.endTime)}
                 minimumDate={new Date(this.state.startTime)}
                 mode={'time'}
                 display="default"
-                onChange={this.changeEndTime}
+                onChange={this.setEndTime}
               />
             )}
           </View>
         )}
-        <Item floatingLabel style={styles.itemContainer}>
-          <Label>Participants minimum</Label>
-          <Input
-            keyboardType={'numeric'}
-            onChangeText={(text)=> this.setState({minUser:text})}
+        <View style={[styles.nupdContainer, this.state.errorNbUser&&styles.error]}>
+          <Text style={styles.nupdLabel}>Participants minimum :</Text>
+          <NumericInput 
+            onChange={(text)=> this.setMinUser(text)}
             value={this.state.minUser}
+            minValue={0}
+            valueType={'integer'}
+            rounded={true}
+            rightButtonBackgroundColor={'#249E6B'}
+            leftButtonBackgroundColor={'#249E6B'}
+            totalHeight={35}
           />
-        </Item>
-        <Item floatingLabel style={styles.itemContainer}>
-          <Label>Participants maximum</Label>
-          <Input
-            keyboardType={'numeric'}
-            onChangeText={(text)=> this.setState({maxUser:text})}
+        </View>
+        <View style={[styles.nupdContainer, this.state.errorNbUser&&styles.error]}>
+          <Text style={styles.nupdLabel}>Participants maximum :</Text>
+          <NumericInput 
+            onChange={(text)=> this.setMaxUser(text)}
             value={this.state.maxUser}
+            minValue={0}
+            valueType={'integer'}
+            rounded={true}
+            rightButtonBackgroundColor={'#249E6B'}
+            leftButtonBackgroundColor={'#249E6B'}
+            totalHeight={35}
           />
-        </Item>
+        </View>
         <TouchableOpacity onPress={this.handleSubmit}>
           <View style={styles.button}>
             <Text style={{color:'#ffffff'}}>Sauvegarder</Text>
@@ -231,5 +277,15 @@ const styles = StyleSheet.create({
       borderBottomWidth:2,
       borderColor:'#ff0000',
     },
+    nupdContainer:{
+      flexDirection:'row',
+      marginTop: hp('1%'),
+      marginLeft: wp('9%'),
+      marginRight: wp('9%'),
+    },
+    nupdLabel:{
+      flex:1,
+      fontSize:18
+    }
   });
 export default EditEvent;
