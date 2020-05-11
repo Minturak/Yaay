@@ -88,11 +88,11 @@ class GroupDetailsScreen extends Component{
           );
         }else{
           doc.forEach(user=>{
-            dbo.addInvitationToUser(user.id,this.props.group.id,user.data())
-          }).then(_=>{
+            console.log(this.props.group.id);
+            dbo.addInvitationToUser(user.id,this.props.group.id)
             Alert.alert(
               "Succès",
-              "Invitation envoyée!",
+              "Une invitation a été envoyée !",
               [
                 { text: "Ok"},
               ],

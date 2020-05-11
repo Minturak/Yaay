@@ -17,11 +17,13 @@ class GroupDetails extends Component{
     }
   }
   addUser=_=>{
-    this.props.addUser(this.state.addingEmail);
+    this.props.addUser(this.state.addingEmail)
     this.setState({addingUser:!this.state.addingUser})
   }
   render(){
     let group = this.props.group;
+    console.log(this.props.newEmail);
+    
     return(
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
@@ -53,6 +55,7 @@ class GroupDetails extends Component{
                     autoCorrect={false}
                     returnKeyType="done"
                     onSubmitEditing={()=>this.addUser()}
+                    value={this.state.addingEmail}
                   />
               </Item>
             </View>

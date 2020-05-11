@@ -56,20 +56,21 @@ class Dbo{
     })
   }
   //Invitation related
-  async addInvitationToUser(userId,groupId,data){
-    let groups = []
-    db.collection('users').doc(userId).get().then(doc=>{
-      groups = doc.data().groups || [];
-      if(!groups.includes(groupId)){
-        let invitations = data.invitations || [];
-        if(!invitations.includes(groupId)){
-          invitations.push(groupId);
-          db.collection('users').doc(userId).update({
-            invitations:invitations
-          })
-          this.emailInvitation(groupId,userId)
+  async addInvitationToUser(userId,groupId){
+    this.getGroupData(groupId).then(groupDoc=>{
+      this.getUserData(userId).then(doc=>{
+        users = groupDoc.data().users
+        if(!users.includes(userId)){
+          let invitations = doc.data().invitations || [];
+          if(!invitations.includes(groupId)){
+            invitations.push(groupId);
+            db.collection('users').doc(userId).update({
+              invitations:invitations
+            })
+            this.emailInvitation(groupId,userId)
+          }
         }
-      }
+      })
     })
   }
   async removeInvitation(userId,groupId){
@@ -114,11 +115,9 @@ class Dbo{
     })
   }
   //Group related
-  //
   async getGroupData(id){
     return db.collection('groups').doc(id).get();
   }
-  //
   async createGroup(name,description,category,admin){
     return db.collection('groups').add({
       name:name,
@@ -132,11 +131,9 @@ class Dbo{
       dispos:[]
     })
   }
-  //
   async editGroup(name,description,category,id){
     db.collection('groups').doc(id).update({name:name,description:description,category:category})
   }
-  //
   async setUserRole(grpId,uid,newRole){
     this.getGroupData(grpId).then(doc=>{
       let isAdmin = doc.data().admins.includes(uid);
@@ -151,7 +148,6 @@ class Dbo{
       }
     })
   }
-  //
   async changeUserRole(grpId,doc,uid,newRole,oldRole){
     let oldColl = doc.data()[oldRole]
     let newColl = doc.data()[newRole]
@@ -160,7 +156,6 @@ class Dbo{
     newColl.push(uid)
     db.collection('groups').doc(grpId).update({[oldRole]:oldColl,[newRole]:newColl})
   }
-  //
   async removeUser(grpId,uid){
     this.removeUserFromEvents(grpId,uid);
     this.removeUserFromDispos(grpId,uid);
