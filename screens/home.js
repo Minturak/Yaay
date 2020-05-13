@@ -131,7 +131,7 @@ class Home extends Component{
             </TouchableOpacity>
           }
           {this.props.groups.length<1 && 
-            <View styles={styles.welcomeText}>
+            <View style={styles.welcomeText}>
               <Text>Créez un groupe ou demandez à un administrateur de vous inviter dans un groupe pour commencer à utiliser l'application</Text>
             </View>
           }
@@ -180,6 +180,8 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   welcomeText:{
+    paddingHorizontal:wp('2%'),
+    paddingVertical:hp('2%'),
   },
   listContainer:{
     marginBottom:hp('27%'),
