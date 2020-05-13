@@ -37,7 +37,7 @@ class GroupDetails extends Component{
                   <Ionicons name={"md-create"} size={25} style={styles.icon}/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>this.props.deleteGroup()}>
-                  <MaterialIcons name={"delete"} size={25} onPress={this.delete}/>
+                  <MaterialIcons name={"delete"} size={25} style={styles.icon}/>
                 </TouchableOpacity>
               </View>
             }
@@ -57,7 +57,6 @@ class GroupDetails extends Component{
                     autoCorrect={false}
                     returnKeyType="done"
                     onSubmitEditing={()=>this.addUser()}
-                    value={this.state.addingEmail}
                   />
               </Item>
             </View>
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
   },
   icon:{
-    marginHorizontal:wp('2%'),
+    marginRight:wp('2%'),
     color:"#444444",
     marginBottom:hp('2%'),
   },

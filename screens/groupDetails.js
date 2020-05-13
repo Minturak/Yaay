@@ -88,16 +88,27 @@ class GroupDetailsScreen extends Component{
           );
         }else{
           doc.forEach(user=>{
-            console.log(this.props.group.id);
-            dbo.addInvitationToUser(user.id,this.props.group.id)
-            Alert.alert(
-              "Succès",
-              "Une invitation a été envoyée !",
-              [
-                { text: "Ok"},
-              ],
-              { cancelable: true }
-            );
+            if(this.props.group.data.users.includes(user.id)){
+              Alert.alert(
+                "Erreur",
+                "L'utilisateur est déjà dans le groupe",
+                [
+                  { text: "Ok"},
+                ],
+                { cancelable: true }
+              );
+            }else{
+              dbo.addInvitationToUser(user.id,this.props.group.id)
+              Alert.alert(
+                "Succès",
+                "Une invitation a été envoyée !",
+                [
+                  { text: "Ok"},
+                ],
+                { cancelable: true }
+              );
+            }
+            
           })
         }
       })
