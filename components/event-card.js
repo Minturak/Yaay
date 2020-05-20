@@ -29,7 +29,7 @@ class EventCard extends Component{
   }
   render(){
     let event = this.props.data
-    if(moment(event.date).isBefore(moment(new Date()))){
+    if(moment(event.date.seconds*1000).isBefore(moment(new Date()),'day')){
       return null
     }
     return(
