@@ -1,3 +1,7 @@
+/**
+ * Affiche les onglets en bas de l'écran
+ * Gère les routes vers les différents composants
+ */
 import React, { Component } from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,7 +15,7 @@ import SignUp from "../screens/signUp"
 import GroupFormScreen from "../screens/groupFormScreen"
 import ListGroups from "../screens/listGroups"
 import GroupDetailsScreen from "../screens/groupDetails"
-import EditGroupScreen from "../screens/EditGroupScreen"
+import EditGroupScreen from "../screens/editGroupScreen"
 import Invitations from "../screens/invitations"
 import CreateEvent from "../screens/createEvent"
 import EventDetailsScreen from "../screens/eventDetails";

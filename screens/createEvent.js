@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la création d'un événement
+ */
 import React, { Component } from 'react';
 import EventForm from '../components/event-form';
 

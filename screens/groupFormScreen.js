@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la création d'un groupe
+ */
 import React, { Component } from 'react';
 import GroupForm from "../components/group-form"
 

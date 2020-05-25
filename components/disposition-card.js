@@ -1,3 +1,6 @@
+/**
+ * Affiche les disposition sous forme de cartes
+ */
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
@@ -12,7 +15,7 @@ class DispositionCard extends Component {
   }
   render() {
     let dispo = this.props.dispo
-    //filter old dispos
+    //filtre les dispos passées
     if(moment(dispo.dates[5].date).isBefore(moment(new Date()),'day')){
       return null
     }

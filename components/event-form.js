@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour créer un événement
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import {StyleSheet, Text, View, TouchableOpacity, Picker, Switch, ScrollView} from 'react-native';
@@ -348,7 +351,7 @@ class EventForm extends Component{
         </View>
         <TouchableOpacity onPress={this.handleSubmit}>
           <View style={styles.button}>
-            <Text style={{color:'#ffffff'}}>Créer</Text>
+            <Text style={styles.whiteText}>Créer</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -372,6 +375,9 @@ const styles = StyleSheet.create({
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
     marginBottom: hp('3%')
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   picker:{
     marginTop: hp('3%'),

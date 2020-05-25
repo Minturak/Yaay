@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la modification d'un groupe
+ */
 import React, { Component } from 'react';
 import EditGroup from "../components/edit-group"
 

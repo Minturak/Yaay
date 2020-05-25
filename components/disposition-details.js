@@ -1,3 +1,6 @@
+/**
+ * Affiche les détails pour une disposition
+ */
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { CheckBox } from 'react-native-elements'

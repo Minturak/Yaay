@@ -1,3 +1,6 @@
+/**
+ * Affiche une carte avec le nom du groupe pour y accéder
+ */
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {

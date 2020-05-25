@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour se connecter
+ */
 import React, { Component } from 'react';
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import {Item, Label, Input } from 'native-base'
@@ -72,7 +75,7 @@ class LoginForm extends Component{
         </TouchableOpacity>
         <TouchableOpacity onPress={this.handleLogin}>
           <View style={styles.signUpButton}>
-            <Text style={{color:'#ffffff'}}>Connexion</Text>
+            <Text style={styles.whiteText}>Connexion</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -95,6 +98,9 @@ const styles = StyleSheet.create({
     marginTop: hp('4%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   forgotPwd:{
     alignItems:'center',

@@ -1,3 +1,6 @@
+/**
+ * Fichier qui regroupe toutes les fonctions pour lire, écrire, modifier, supprimer dans la base de données
+ */
 import moment from "moment";
 import firebase from "firebase";
 import {db} from '../firebase';

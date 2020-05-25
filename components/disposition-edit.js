@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour modifier une disposition
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity,} from 'react-native';

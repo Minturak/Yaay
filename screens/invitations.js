@@ -1,3 +1,7 @@
+/**
+ * Gère la logique pour afficher les invitations
+ * Gère la logique pour accepter ou refuser une invitation
+ */
 import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import Invitation from '../components/invitation';

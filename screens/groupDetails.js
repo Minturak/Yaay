@@ -1,3 +1,8 @@
+/**
+ * Gère la logique pour l'affichage d'un groupe
+ * Gère la logique pour la modification d'un rôle ou la suppression d'un utilisateur
+ * Gère la logique pour l'ajout d'un utilisateur dans le groupe
+ */
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux'

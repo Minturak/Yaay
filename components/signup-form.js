@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour s'inscrire
+ */
 import React, { Component } from 'react';
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import {Item, Label, Input } from 'native-base'
@@ -92,7 +95,7 @@ class SignUpForm extends Component{
         </View>
         <TouchableOpacity onPress={this.handleSignUp}>
           <View style={styles.signUpButton}>
-            <Text style={{color:'#ffffff'}}>Inscription</Text>
+            <Text style={styles.whiteText}>Inscription</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -115,6 +118,9 @@ const styles = StyleSheet.create({
     marginTop: hp('4%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   pwdContainer:{
     flexDirection:'row',

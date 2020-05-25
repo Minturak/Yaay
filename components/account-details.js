@@ -1,3 +1,6 @@
+/**
+ * Affichage des informations du compte de l'utilisateur
+ */
 import React, { Component } from 'react';
 import {StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import {

@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour modifier un événement
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import { StyleSheet, Text, ScrollView, TouchableOpacity, View, Switch } from 'react-native';
@@ -233,7 +236,7 @@ class EditEvent extends Component {
         </View>
         <TouchableOpacity onPress={this.handleSubmit}>
           <View style={styles.button}>
-            <Text style={{color:'#ffffff'}}>Sauvegarder</Text>
+            <Text style={styles.whiteText}>Sauvegarder</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -262,6 +265,9 @@ const styles = StyleSheet.create({
       marginLeft: wp('9%'),
       marginRight: wp('9%'),
       marginBottom: hp('3%')
+    },
+    whiteText:{
+      color:'#ffffff'
     },
     iconAndText:{
       flexDirection:'row',

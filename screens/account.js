@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la page d'un compte
+ */
 import React, { Component } from 'react';
 import AccountDetails from '../components/account-details'
 import { connect } from 'react-redux'

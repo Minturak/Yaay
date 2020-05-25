@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour l'affichage de la liste des dispositions
+ */
 import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux'

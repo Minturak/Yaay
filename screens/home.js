@@ -1,3 +1,8 @@
+/**
+ * Gère la logique pour afficher les boutons de la page d'accueil
+ * Gère la logique pour afficher les cartes des événements
+ * Gère la logique pour indiquer sa présence à un événement depuis la carte de celui-ci
+ */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import {
@@ -96,8 +101,8 @@ class Home extends Component{
     }
     return 0;
   }
-  //display or hide the buttons to create dispos and events
-  //depending on if the user is an admin or an organizer of any of his groups
+  //affiche ou cache les boutons pour la création des disposition et des événement
+  //selon si l'utilisateut est un administrateur ou un organisateur de l'un des ses groupes
   showCreateButtons=(uid)=>{
     if(this.props.groups!==undefined){
       this.props.groups.map(group=>{
@@ -126,7 +131,7 @@ class Home extends Component{
           {this.props.groups.length>0 && 
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Disposition')}>
               <View style={styles.button}>
-                <Text>Indiquer mes dispositions</Text>
+                <Text style={styles.whiteText}>Indiquer mes dispositions</Text>
               </View>
             </TouchableOpacity>
           }
@@ -139,7 +144,7 @@ class Home extends Component{
             <View style={styles.buttonsContainer}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('CreateEvent')}>
                 <View style={styles.button}>
-                  <Text>Créer un événement</Text>
+                  <Text style={styles.whiteText}>Créer un événement</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -147,14 +152,14 @@ class Home extends Component{
           {this.state.invitations.length>0 &&
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Invitations')}>
               <View style={styles.button}>
-                <Text>Nouvelles invitations !</Text>
+                <Text style={styles.whiteText}>Nouvelles invitations !</Text>
               </View>
             </TouchableOpacity>
           }
           {this.state.dispos.length>0 &&
             <TouchableOpacity onPress={()=>this.props.navigation.navigate('Dispositions')}>
               <View style={styles.button}>
-                <Text>Nouvelles dispositions</Text>
+                <Text style={styles.whiteText}>Nouvelles dispositions</Text>
               </View>
             </TouchableOpacity>
           }
@@ -182,6 +187,9 @@ const styles = StyleSheet.create({
   welcomeText:{
     paddingHorizontal:wp('2%'),
     paddingVertical:hp('2%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   listContainer:{
     marginBottom:hp('27%'),

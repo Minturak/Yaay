@@ -1,3 +1,7 @@
+/**
+ * Gère la logique pour la connexion 
+ * Gère la logique pour la récupération de mot de passe
+ */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Alert } from "react-native";

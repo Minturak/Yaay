@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la modification d'un événement
+ */
 import React, { Component } from 'react';
 import EditEvent from '../components/edit-event'
 import { connect } from 'react-redux'

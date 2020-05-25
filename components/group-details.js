@@ -1,3 +1,6 @@
+/**
+ * Affiche les détails d'un groupe
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';

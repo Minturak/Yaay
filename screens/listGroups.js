@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour l'affichage de la liste des groupes
+ */
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList, TouchableOpacity, Text } from 'react-native';
 import GroupCard from '../components/group-card'

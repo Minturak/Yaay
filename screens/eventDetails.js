@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour l'affichage des détails d'un événement
+ */
 import React, { Component } from 'react';
 import EventDetails from "../components/event-details"
 import { Alert } from "react-native";

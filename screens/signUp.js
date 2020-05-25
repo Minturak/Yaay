@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la création d'un compte
+ */
 import React, { Component } from 'react';
 import SignUpForm from "../components/signup-form";
 import { Alert } from "react-native";

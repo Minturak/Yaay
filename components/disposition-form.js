@@ -1,3 +1,6 @@
+/**
+ * Affiche le formulaire pour créer une disposition
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import { CheckBox } from 'react-native-elements'
@@ -108,7 +111,7 @@ class DispositionForm extends Component{
         </View>
         <TouchableOpacity onPress={this.handleSave}>
           <View style={styles.saveButton}>
-            <Text style={{color:'#ffffff'}}>Créer</Text>
+            <Text style={styles.whiteText}>Créer</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -131,6 +134,9 @@ const styles = StyleSheet.create({
     marginTop: hp('4%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   picker:{
     marginTop: hp('4%'),

@@ -1,3 +1,6 @@
+/**
+ * Affiche un formulaire pour créer un groupe
+ */
 import React, { Component } from 'react';
 import {Item, Label, Input } from 'native-base'
 import {StyleSheet, Text, View, KeyboardAvoidingView, TouchableOpacity, Picker} from 'react-native';

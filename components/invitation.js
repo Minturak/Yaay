@@ -1,3 +1,6 @@
+/**
+ * Affiche une invitation avec les boutons pour accepter ou refuser
+ */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {

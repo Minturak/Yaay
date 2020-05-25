@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour l'affichage des détails d'une disposition
+ */
 import React, { Component } from 'react';
 import DispositionDetails from "../components/disposition-details"
 import { Alert } from "react-native";
@@ -93,8 +96,8 @@ class DispositionDetailsScreen extends Component {
   toEdit=_=>{
     this.props.navigation.navigate('DispositionEditScreen')
   }
-  //redirect to tje create event screen with the dispo in redux
-  //so the screen is pre-filled
+  //redirige vers la création d'un événement avec la dispo dans redux
+  //pour pré-remplire le formulaire
   createEvent=_=>{
     this.props.eventFrom(this.props.dispo)
     this.props.navigation.navigate('CreateEvent')

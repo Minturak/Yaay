@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour la modification d'une disposition
+ */
 import React, { Component } from 'react';
 import DispositionEdit from '../components/disposition-edit'
 import { connect } from 'react-redux'

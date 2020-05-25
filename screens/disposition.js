@@ -1,3 +1,6 @@
+/**
+ * Gère la logique pour l'affichage d'une disposition
+ */
 import React, { Component } from 'react';
 import DispositionForm from '../components/disposition-form';
 import { connect } from 'react-redux'

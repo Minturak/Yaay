@@ -1,3 +1,6 @@
+/**
+ * Affiche les détails d'un événement
+ */
 import React, { Component } from 'react';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
@@ -37,7 +40,7 @@ class EventDetails extends Component{
   }
   render(){
     let event = this.props.event
-    //prevent crash after deletinf event
+    //empêche l'affichage si l'événement vient d'être supprimé
     if(event.date===undefined){
       return null
     }
@@ -82,7 +85,7 @@ class EventDetails extends Component{
               </View>
             ):(
               <TouchableOpacity onPress={this.toggleButtons} style={styles.button}>
-                <Text>Modifier ma présence</Text>
+                <Text style={styles.whiteText}>Modifier ma présence</Text>
               </TouchableOpacity>
             )}
         </View>
@@ -147,6 +150,9 @@ const styles = StyleSheet.create({
     marginTop: hp('2%'),
     marginLeft: wp('9%'),
     marginRight: wp('9%'),
+  },
+  whiteText:{
+    color:'#ffffff'
   },
   buttonsContainer:{
     flexDirection:'row',

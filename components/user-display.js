@@ -1,3 +1,6 @@
+/**
+ * Affiche un utilisateur et un menu pour modifier ses droits ou le retirer d'un groupe
+ */
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {
@@ -38,7 +41,7 @@ class UserDisplay extends Component {
                 <MenuOption onSelect={() => this.props.setUserRole(this.props.user.id,'admins')} text='Définir comme admin'/>
               }
               <MenuOption onSelect={() => this.props.removeUser(this.props.user.id,this.props.user.data.pseudo)}>
-                <Text style={{color: 'red'}}>Retirer</Text>
+                <Text style={styles.redText}>Retirer</Text>
               </MenuOption>
             </MenuOptions>
           </Menu>
@@ -54,6 +57,9 @@ const styles = StyleSheet.create({
   user:{
     paddingVertical:hp('1%'),
     flex:1
+  },
+  redText:{
+    color:'red'
   },
 });
 export default UserDisplay;
